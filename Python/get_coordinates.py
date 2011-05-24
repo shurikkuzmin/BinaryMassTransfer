@@ -243,9 +243,12 @@ def Get_Bubble(file_name):
     pylab.figure()
     pylab.imshow(geometry)
     
-    numpy.savetxt("geometry.dat",geometry,fmt="%d")
-    numpy.savetxt("ux.dat",bubble_reference)
-    numpy.savetxt("uy.dat",vely)
+    #numpy.savetxt("geometry.dat",geometry,fmt="%d")
+    #numpy.savetxt("ux.dat",bubble_reference)
+    #numpy.savetxt("uy.dat",vely)
+    numpy.savetxt("geometry.dat",geometry.transpose(),fmt="%d")
+    numpy.savetxt("ux.dat",bubble_reference.transpose())
+    numpy.savetxt("uy.dat",vely.transpose())
     
     
     
