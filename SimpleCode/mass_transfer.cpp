@@ -40,16 +40,24 @@ int *bottom;
 int *top;
 
 //BGK relaxation parameter
-double omega=1.0;
-double omega_plus=omega;
+double omega=1.99;
+double omega_plus=2.0-omega;
 double omega_minus=omega;
+
+//Diffusion parameter
+double ce=1.0/3.0;
+//double diffusion=(1.0/omega_minus-0.5)*ce;
+//double ce=diffusion/(1.0/omega_minus-0.5);
+
 
 //Underlying lattice parameters
 double weights[]={4.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/36.0,1.0/36.0,1.0/36.0,1.0/36.0};
+double weights_trt[]={0.0,1.0/3.0,1.0/3.0,1.0/3.0,1.0/3.0,1.0/12.0,1.0/12.0,1.0/12.0,1.0/12.0};
 int cx[]={0,1,0,-1,0,1,-1,-1,1};
 int cy[]={0,0,1,0,-1,1,1,-1,-1};
 int compliment[]={0,3,4,1,2,7,8,5,6};
-
+int pxx[]={0, 1, -1, 1, -1, 0, 0, 0, 0};
+int pxy[]={0, 0, 0, 0, 0, 1, -1, 1, -1};
 void writedensity(std::string const & fname)
 {
 	std::string filename=fname+".dat";
@@ -169,7 +177,7 @@ void init()
 
 }
 
-void collide_column(int coor_y,int coor_bottom,int coor_top)
+void collide_column_bgk(int coor_y,int coor_bottom,int coor_top)
 {
 	for(int iX=coor_bottom;iX<=coor_top;iX++)
 	{
@@ -191,7 +199,7 @@ void collide_column(int coor_y,int coor_bottom,int coor_top)
 		for (int k=0; k<9; k++)
 			feqeq[k]=weights[k]*(dense_temp+3.0*dense_temp*(cx[k]*ux_temp+cy[k]*uy_temp)
             						         +4.5*dense_temp*((cx[k]*cx[k]-1.0/3.0)*ux_temp*ux_temp
-			        				                         +(cy[k]*cy[k]-1.0/3.0)*uy_temp*uy_temp
+															+(cy[k]*cy[k]-1.0/3.0)*uy_temp*uy_temp
 					    			                         +2.0*ux_temp*uy_temp*cx[k]*cy[k]));
 
 		for(int k=0; k < 9; k++)
@@ -201,16 +209,133 @@ void collide_column(int coor_y,int coor_bottom,int coor_top)
 	
 }
 
+
+
+void collide_column(int coor_y,int coor_bottom,int coor_top)
+{
+	for(int iX=coor_bottom;iX<=coor_top;iX++)
+	{
+		int counter=coor_y*NX+iX;
+		rho[counter]=0.0;
+        int offset=counter*NPOP;
+ 
+		double sum=0;
+		for(int k=0;k<NPOP;k++)
+			sum+=f[offset+k];
+	
+		rho[counter]=sum;
+
+		double dense_temp=rho[counter];
+		double ux_temp=ux[counter];
+		double uy_temp=uy[counter];
+
+		//BGK equilibrium
+		double feq[NPOP];
+	
+		//TRT equilibrium
+		double feq_plus[NPOP],feq_minus[NPOP];
+        double f_plus[NPOP],f_minus[NPOP];
+
+         //Speeding up the process
+        f_plus[0]=f[offset];
+        f_plus[1]=0.5*(f[offset+1]+f[offset+3]);
+        f_plus[2]=0.5*(f[offset+2]+f[offset+4]);
+        f_plus[3]=f_plus[1];
+        f_plus[4]=f_plus[2];
+        f_plus[5]=0.5*(f[offset+5]+f[offset+7]);
+        f_plus[6]=0.5*(f[offset+6]+f[offset+8]);
+        f_plus[7]=f_plus[5];
+        f_plus[8]=f_plus[6];
+
+        f_minus[0]=0.0;
+        f_minus[1]=0.5*(f[offset+1]-f[offset+3]);
+        f_minus[2]=0.5*(f[offset+2]-f[offset+4]);
+        f_minus[3]=-f_minus[1];
+        f_minus[4]=-f_minus[2];
+        f_minus[5]=0.5*(f[offset+5]-f[offset+7]);
+        f_minus[6]=0.5*(f[offset+6]-f[offset+8]);
+        f_minus[7]=-f_minus[5];
+        f_minus[8]=-f_minus[6];
+      
+        //The equilibrium populations are taken from Irina's bb_pressure and bb_examples
+        feq_minus[0]=0.0;
+        feq_minus[1]=weights_trt[1]*dense_temp*(cx[1]*ux_temp+cy[1]*uy_temp);
+        feq_minus[2]=weights_trt[2]*dense_temp*(cx[2]*ux_temp+cy[2]*uy_temp);
+        feq_minus[3]=-feq_minus[1];
+        feq_minus[4]=-feq_minus[2];
+        feq_minus[5]=weights_trt[5]*dense_temp*(cx[5]*ux_temp+cy[5]*uy_temp);
+        feq_minus[6]=weights_trt[6]*dense_temp*(cx[6]*ux_temp+cy[6]*uy_temp);
+        feq_minus[7]=-feq_minus[5];
+        feq_minus[8]=-feq_minus[6];
+        
+        double u_sq=ux_temp*ux_temp+uy_temp*uy_temp;
+		double u_mn=ux_temp*ux_temp-uy_temp*uy_temp;
+		double u_cr=ux_temp*uy_temp;
+		        
+        feq_plus[1]=weights_trt[1]*dense_temp*(ce+0.5*u_sq)+dense_temp*(0.25*u_mn*pxx[1]+0.25*u_cr*pxy[1]);
+        feq_plus[2]=weights_trt[2]*dense_temp*(ce+0.5*u_sq)+dense_temp*(0.25*u_mn*pxx[2]+0.25*u_cr*pxy[2]);
+        feq_plus[3]=feq_plus[1];
+        feq_plus[4]=feq_plus[2];
+        feq_plus[5]=weights_trt[5]*dense_temp*(ce+0.5*u_sq)+dense_temp*(0.25*u_mn*pxx[5]+0.25*u_cr*pxy[5]);
+        feq_plus[6]=weights_trt[6]*dense_temp*(ce+0.5*u_sq)+dense_temp*(0.25*u_mn*pxx[6]+0.25*u_cr*pxy[6]);
+        feq_plus[7]=feq_plus[5];
+        feq_plus[8]=feq_plus[6];
+        
+        //feq_plus[1]=weights_trt[1]*dense_temp*(ce+0.5*(3.0*(cx[1]*ux_temp+cy[1]*uy_temp)*(cx[1]*ux_temp+cy[1]*uy_temp)-u_sq));
+        //feq_plus[2]=weights_trt[2]*dense_temp*(ce+0.5*(3.0*(cx[2]*ux_temp+cy[2]*uy_temp)*(cx[2]*ux_temp+cy[2]*uy_temp)-u_sq));
+        //feq_plus[3]=feq_plus[1];
+        //feq_plus[4]=feq_plus[2];
+        //feq_plus[5]=weights_trt[5]*dense_temp*(ce+0.5*(3.0*(cx[5]*ux_temp+cy[5]*uy_temp)*(cx[5]*ux_temp+cy[5]*uy_temp)-u_sq));
+        //feq_plus[6]=weights_trt[6]*dense_temp*(ce+0.5*(3.0*(cx[6]*ux_temp+cy[6]*uy_temp)*(cx[6]*ux_temp+cy[6]*uy_temp)-u_sq));
+        //feq_plus[7]=feq_plus[5];
+        //feq_plus[8]=feq_plus[6];
+        feq_plus[0]=dense_temp-2.0*(feq_plus[1]+feq_plus[2]+feq_plus[5]+feq_plus[6]);
+
+
+		//for (int k=1; k<NPOP; k++)
+		//{
+			//double dot_product=cx[k]*ux_temp+cy[k]*uy_temp;
+			////feq[k]=weights_trt[k]*dense_temp*(1.0/3.0+dot_product)+
+			////					  dense_temp*(weights_trt[k]*0.5*u_sq+
+			////									0.25*u_mn*pxx[k]+0.25*u_cr*pxy[k]);
+			//feq[k]=weights_trt[k]*dense_temp*(1.0/3.0+dot_product+0.5*(3.0*dot_product*dot_product-u_sq));
+			//sum+=feq[k];
+		//}
+		
+        //for (int k=1; k<NPOP; k++)
+        //{
+        	//feq_plus[k]=0.5*(feq[k]+feq[compliment[k]]);
+            //feq_minus[k]=0.5*(feq[k]-feq[compliment[k]]);
+        //}
+
+		//feq[0]=dense_temp-sum;
+		
+
+        //feq_plus[0]=dense_temp-sum;
+        //feq_minus[0]=0.0;
+ 
+		//Collision operator
+		for(int k=0; k < NPOP; k++)
+			f2[offset+k]=f[offset+k]-omega_plus*(f_plus[k]-feq_plus[k])-omega_minus*(f_minus[k]-feq_minus[k]);
+
+	}
+
+	
+}
+
 void collide_bulk()
 {
 
     for(int iY=0;iY<NY;iY++)
 		if (bottom[iY]==top[iY])
 			collide_column(iY,1,NX-2);
+			//collide_column_bgk(iY,1,NX-2);
 		else
 		{
 			collide_column(iY,1,bottom[iY]);
 			collide_column(iY,top[iY],NX-2);
+			//collide_column_bgk(iY,1,bottom[iY]);
+			//collide_column_bgk(iY,top[iY],NX-2);
 		}
 			
 }
@@ -395,6 +520,28 @@ void stream()
 
 	
 }
+
+void calculate_mass_transfer(int time_counter)
+{
+	static std::ofstream fconc("concentration.dat");
+	
+    double conc=0.0;
+    int counter; 	
+    for(int iY=0;iY<NY;iY++)
+		if (bottom[iY]==top[iY])
+			for(int iX=1;iX<NX-1;iX++)
+				conc+=rho[iY*NX+iX];
+		else
+		{
+			for(int iX=1;iX<=bottom[iY];iX++)
+				conc+=rho[iY*NX+iX];
+			for(int iX=top[iY];iX<NX-1;iX++)
+				conc+=rho[iY*NX+iX];
+		}
+
+	fconc<<time_counter<<" "<<conc<<"\n";
+}
+
 int main(int argc, char* argv[])
 {
 
@@ -422,6 +569,7 @@ int main(int argc, char* argv[])
 			filewritedensity<<"density"<<std::string(6-counterconvert.str().size(),'0')<<counter;
 			
  			writedensity(filewritedensity.str());
+		    calculate_mass_transfer(counter);
 		}
 
 	}
