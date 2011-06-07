@@ -19,8 +19,8 @@ int NUM;
 const int NPOP=9;
 
 //Time steps
-int N=10000;
-int NOUTPUT=1000;
+int N=1000000;
+int NOUTPUT=20000;
 
 //Fields and populations
 double *f;
@@ -538,8 +538,16 @@ void calculate_mass_transfer(int time_counter)
 			for(int iX=top[iY];iX<NX-1;iX++)
 				conc+=rho[iY*NX+iX];
 		}
+		
+	double conc_outlet=0.0;
+	double sum_vel=0.0;
+	for(int iX=1;iX<NX-1;iX++)
+	{
+		conc_outlet+=rho[iX]*uy[iX];
+		sum_vel+=uy[iX];
+	}	
 
-	fconc<<time_counter<<" "<<conc<<"\n";
+	fconc<<time_counter<<" "<<conc<<" "<<conc_outlet/sum_vel<<"\n"<<std::flush;
 }
 
 int main(int argc, char* argv[])

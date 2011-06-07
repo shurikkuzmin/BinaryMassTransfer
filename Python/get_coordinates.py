@@ -2,6 +2,7 @@
 import pylab
 import numpy
 import math
+import os
 
 def Streamlines_Plot(ux,uy,phase):
     from PyNGL import Ngl
@@ -153,9 +154,9 @@ def Get_Zero(prof):
     for counter in range(0, len(prof)/2):
         if prof[counter]>=0 and prof[counter+1]<0:
             zero=-(prof[counter]*(counter+1)-prof[counter+1]*counter)/(prof[counter+1]-prof[counter])
-    print (zero-0.5)/(len(prof)-2)
+    return (zero-0.5)/(len(prof)-2)
 
-def Get_Bubble(file_name):
+def Get_Bubble(file_name,dir_name):
     
     #fig=pylab.figure()
     array=numpy.load(file_name)
@@ -163,7 +164,6 @@ def Get_Bubble(file_name):
     velx=array['v'][0]
     vely=array['v'][1]
     phase=array['phi']
-    Streamlines_Plot(velx,vely,phase)
     print "Dimensions=",dims
     print array.files
     center=phase[(dims[0]-1)/2,:]
@@ -175,20 +175,6 @@ def Get_Bubble(file_name):
     print z1,z2
 
         
-    #prof=array['phi'][:,((z1+z2)/2)%dims[1]]
-    #prof_domain=prof[1:len(prof)-1]
-    #pylab.figure()
-    #pylab.plot(prof)
-    #delta_x=1.0/float(dims[1]-2)
-    #x_domain=numpy.arange(0.5*delta_x,1.0,delta_x)
-    #x=numpy.arange(0.0,float(di))/ratio
-        #pylab.imshow(array['phi'])
-        #pylab.plot(x[0:20],prof[0:20],color[i],linewidth=3)
-    #pylab.plot(x_domain,prof_domain,"r+",markersize=10,linewidth=3)
-        #pylab.figure()
-        #pylab.plot(array[:, 520*i])
-        #pylab.savefig("grid_phase_prof_"+str(49*i)+".eps", dpi=300)
-    #Get_Zero(prof)
     
     #Performing perturbations
     #reference frame
@@ -196,6 +182,9 @@ def Get_Bubble(file_name):
     print "Interface velocity=",interface_velocity
     print "Capillary=",interface_velocity*2.0/3.0/math.sqrt(8*0.04*0.04/9.0)
     bubble_reference=array['v'][0]-interface_velocity
+ 
+    #Streamlines_Plot(velx,vely,phase)
+
     
     #Rolling the bubble to the end with certain shift
     shift=50
@@ -246,13 +235,71 @@ def Get_Bubble(file_name):
     #numpy.savetxt("geometry.dat",geometry,fmt="%d")
     #numpy.savetxt("ux.dat",bubble_reference)
     #numpy.savetxt("uy.dat",vely)
-    numpy.savetxt("geometry.dat",geometry.transpose(),fmt="%d")
-    numpy.savetxt("ux.dat",bubble_reference.transpose())
-    numpy.savetxt("uy.dat",vely.transpose())
+    numpy.savetxt(dir_name+"/geometry.dat",geometry.transpose(),fmt="%d")
+    numpy.savetxt(dir_name+"/ux.dat",bubble_reference.transpose())
+    numpy.savetxt(dir_name+"/uy.dat",vely.transpose())
+
+def Produce_Bunch():
+    print os.getcwd()
+    capillary_str=["3","5","8","10","20","40","60","80"]
+
+    velocities_real=[]
+    re_real=[]
+    widths_real=[]
+
+    for dir_temp in capillary_str:
+        dir_name="../../binary_microchannel/Sailfish/Capillary/Results/"+dir_temp
+        name=dir_name+"/capillary200000.npz"
+        if not os.path.isdir(dir_temp):
+            os.mkdir(dir_temp)
+        Get_Bubble(name,dir_temp)
+        array=numpy.load(name)
+        #prof=array['phi'][:,exam[i]]
+        dims=array['phi'].shape
+        print dims
+        #x=numpy.arange(0.0,float(ny[i]))/ratio
+        #pylab.imshow(array['phi'])
+    
+        #pylab.plot(prof)
+        #widths.append(Get_Zero(prof))
+        vel=array['v'][0]
+        center=array['phi'][dims[0]/2,:]
+       
+        z1 = numpy.min(numpy.where(center < 0.0))
+        z2 = numpy.max(numpy.where(center < 0.0))
+        if z1==0:
+            z2=numpy.min(numpy.where(center>0.0))+dims[1]
+            z1=numpy.max(numpy.where(center>0.0))
+        print z1,z2
+        
+        prof_real=array['phi'][:,((z1+z2)/2)%dims[1]]
+        widths_real.append(Get_Zero(prof_real))     
+        
+        
+        #vel_prof=vel[:,exam[i]]
+        #velocities.append(vel_prof[len(vel_prof)/2])
+        velocities_real.append(vel[dims[0]/2,z2%dims[1]])
+        re_real.append(vel[dims[0]/2,z2%dims[1]]*dims[0]/(2.0/3.0))
+    
+        #pylab.plot(x[0:20],prof[0:20],color[i],linewidth=3)
+        #pylab.plot(x,prof,style_diff[i],markersize=10,linewidth=3)
+        #pylab.figure()
+        #pylab.plot(array[:, 520*i])
+        #pylab.savefig("grid_phase_prof_"+str(49*i)+".eps", dpi=300)
+        #Get_Zero(prof)
+        #extrapolator=UnivariateSpline(array[0:(49*i+2)/2, 600*i], numpy.arange(0, (49*i+2)/2),  k=2)
+        #print extrapolator(0)
+
+        #os.chdir("../..")
+    
+    fig=pylab.figure()
+    #capillaries=numpy.array(velocities)*(2.0/3.0)/math.sqrt(8.0*0.04*0.04/9.0)
+    capillaries_real=numpy.array(velocities_real)*(2.0/3.0)/math.sqrt(8.0*0.04*0.04/9.0)
     
     
     
 if __name__=="__main__":
     file_name="Example/capillary200000.npz"
-    Get_Bubble(file_name)
+    #Get_Bubble(file_name)
+    Produce_Bunch()    
     pylab.show()

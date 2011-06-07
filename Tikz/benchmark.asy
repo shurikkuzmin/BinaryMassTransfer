@@ -10,10 +10,22 @@ pair A=(-7.5,0), B=(-7.5,2), C=(7.5,2), D=(7.5,0);
 
 //draw(unitsquare);
 draw (A--B--C--D--cycle);
-draw("$\partial_x C = 0$",(A+B)*0.5,W);
+//draw("$\partial_x C = 0$",(A+B)*0.5,W);
+draw("Periodic",(A+B)*0.5,W);
 draw("$\partial_y C = 0$",(C+B)*0.5,N);
 draw("$\partial_y C = 0$",(A+D)*0.5,S);
-draw("$C_0$",(C+D)*0.5,E);
+
+pair bubble_vel_top=B+(C-B)*0.65;
+pair bubble_vel_bottom=A+(D-A)*0.65;
+
+draw("$U_{\mathrm{bubble}}$",bubble_vel_top,S);
+draw("$U_{\mathrm{bubble}}$",bubble_vel_bottom,N);
+draw(bubble_vel_top+(-0.5,-0.1)--bubble_vel_top+(0.75,-0.1),linewidth(0.4mm),Arrow(1mm));
+draw(bubble_vel_bottom+(-0.5,0.1)--bubble_vel_bottom+(0.75,0.1),linewidth(0.4mm),Arrow(1mm));
+
+
+//draw("$C_0$",(C+D)*0.5,E);
+draw("Periodic",(C+D)*0.5,E);
 
 pair AxisCenter=(-8,-0.5);
 
@@ -25,7 +37,7 @@ draw("$y$",AxisCenter+(0,0.5),W);
 //draw(circle(0,r));
 real rad=0.8;
 real bubble_length=4;
-pair right_sphere=A+9.0/10.0*(D-A)+(0.0,1.0);
+pair right_sphere=A+3.5/10.0*(D-A)+(0.0,1.0);
 pair left_sphere=right_sphere-(bubble_length,0);
 path p1=arc(right_sphere,rad,-90,90);
 path p2=arc(left_sphere,rad,90,270);
