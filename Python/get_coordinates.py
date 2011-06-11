@@ -156,6 +156,35 @@ def Get_Zero(prof):
             zero=-(prof[counter]*(counter+1)-prof[counter+1]*counter)/(prof[counter+1]-prof[counter])
     return (zero-0.5)/(len(prof)-2)
 
+def Calculate_Perimeter(phase):
+       #for counter,omega_value in enumerate(omega_int):
+   #     pylab.figure(1) 
+   #     print "Omega=",omega_value 
+   #     filename="PhaseTRTScript/domainomega"+omega_str[omega.index(omega_value)]+"gamma"+gamma_str+"ux"+ux_str[ux.index(ux_value)]+".dat"
+   #     print "Filename=",filename        
+   #     data=numpy.loadtxt(filename)
+   #     #pylab.figure()        
+   #     CS=pylab.contour(x,y,data,[0.5]) #colors=[colors[counter]],linewidths=[4],linestyles=styles[counter])
+   #     path0=CS.collections[0].get_paths()[0]
+   #     cont=path0.vertices
+   #     pylab.figure(2)
+   #     #if counter<3:
+   #     pylab.plot(cont[:,0],cont[:,1],styles[counter],markerfacecolor="None",markersize=counter+10,alpha=0.5)
+    
+    dims=phase.shape
+    #x,y=numpy.mgrid[0:dims[0],0:dims[1]]
+    pylab.figure(99)
+    CS=pylab.contour(phase,[0.0])
+    path0=CS.collections[0].get_paths()[0]
+    cont=path0.vertices
+    perimeter=0    
+    for i,(x,y) in enumerate(cont[:-1]):
+        perimeter+=math.sqrt((x-cont[i+1,0])**2+(y-cont[i+1,1])**2)
+    print "Perimeter=",perimeter
+    print "a=",perimeter/((dims[0]-2)*dims[1]*1.5e-3);
+    #pylab.plot(cont[:,0],cont[:,1],"+")
+
+
 def Get_Bubble(file_name,dir_name):
     
     #fig=pylab.figure()
@@ -202,7 +231,7 @@ def Get_Bubble(file_name,dir_name):
     bubble_reference=-numpy.fliplr(bubble_reference)
     phase=numpy.fliplr(phase)
     vely=numpy.fliplr(vely)
-    
+    Calculate_Perimeter(phase)
     #pylab.figure()
     #pylab.imshow(bubble_reference)
     
@@ -211,6 +240,7 @@ def Get_Bubble(file_name,dir_name):
     
     #pylab.figure()
     #pylab.plot(bubble_reference[:,0])
+    
     
     positive=numpy.where(phase>0.0)
     negative=numpy.where(phase<=0.0)
