@@ -252,21 +252,29 @@ can see the large deviation among them.\label{fig:mass:transfer:theoretical}}
 
 The volumetric mass transfer coefficient is calculated according to the work of
 \citet{vanbaten-circular}. The concentration flux is calculated as the difference between overall
-average concentration taken in the whole domain ($C_{overall}=\int_{V} C \mathrm{d}V /V$) at time
+average concentration taken in the whole domain ($C_{overall}=\int_{V} C \mathrm{d}V /V$) 
+{\color{red} (In this particular moment I don't know whether to take the Volume of whole domain or
+just the liquid phase. I will go for whole domain.)}
+at time
 $t_1$ and time $t_2$ divided on the time difference $t_2-t_1$. Then the volumetric mass transfer
 coefficient is calculated as:
 \begin{equation}
 \label{main:simulation:equation}
 k_L a=\frac{\text{Flux}}{C_s-C_{outlet}} \frac{\text{bubble surface area}}{\text{unit cell volume}},
 \end{equation}
-where $C_{outlet}=\int{C U_{outlet}\mathrm{d}A}/\int{U_{outlet}\mathrm{d}A}$. To properly do
+where $C_{outlet}=\int{C U_{outlet}\mathrm{d}A}/\int{U_{outlet}\mathrm{d}A}$. 
+{\color{red} Do not understand why we need this ratio bubble surface area/unit cell volume. In this
+case the dimensional units do not coincide. In the calculations I will avoid it until further
+clearance.}
+To properly do
 non-dimensioanalization one needs to insure the time conversion factor when the flux is calculated
 inside the lattice Botlzmann system. The time conversion can be easily obtained:
 \begin{equation}
 \begin{aligned}
-U_{LB}=U_{phys}\frac{\Delta t}{\Delta x}\\
-\Delta t=\frac{U_{LB}}{U_{phys}}\Delta x\\
-\Delta t=1.5\,\mathrm{mm} \frac{0.0559}{0.902\,\mathrm{m/s}}=9.3\times 10^{-5}\,\mathrm{s} 
+&U_{LB}=U_{phys}\frac{\Delta t}{\Delta x}\\
+&\Delta t=\frac{U_{LB}}{U_{phys}}\Delta x\\
+&\Delta t=\frac{1.5\,\mathrm{mm}}{200} \frac{0.0559}{0.902\,\mathrm{m/s}}=4.64\times
+10^{-7}\,\mathrm{s} 
 \end{aligned}
 \end{equation}
 
@@ -283,11 +291,16 @@ Table \ref{table:lengths}.
 
 
 \section{Simulation results}
-
-
-\subsection{Bubble velocity dependence}
-After calculation of the results and using Eq.\ref{main:simulation:equation} One can see the mass
-transfer coefficients indicated in Fig. \ref{}.
+\subsection{Steady-state}
+Using Eq.\ref{main:simulation:equation} we calculated the mass transfer coefficient. One can see
+the plots for the mass transfer coefficient versus time in Fig. \ref{fig:steady:state}. We state as
+a steady-state condition the average of  
+\begin{figure}
+\includegraphics[width=\textwidth]{Figures/steady_state.eps}
+\caption{The mass transfer coefficient vs. time iterations. One can see that the pseudo steady
+state can be reached after $500000$. The mass transfer coefficient is taken as the average from
+$500000$ to $1000000$.\label{fig:steady:state}}
+\end{figure}
 
 
 \section{To revise:}

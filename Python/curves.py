@@ -6,21 +6,27 @@ import os
 
 def Produce_Bunch():
     print os.getcwd()
-    capillary_str=["3","5","8","10","20","40","60","80"]
-
-
-    for dir_temp in capillary_str:
+    capillary_str=["3","5","8","10","20","40"] #,"60","80"]
+    bubble_velocities=numpy.array([0.023,0.043,0.073,0.059,0.202,0.437]) #,0.671,0.902])
+    styles=['kv','ks','ko','k^','k>','k<','kD','kp']
+    
+    fig=pylab.figure(99)
+    for counter,dir_temp in enumerate(capillary_str):
         dir_name="Results/"+dir_temp
         name=dir_name+"/concentration.dat"
         array=numpy.loadtxt(name)
         #print array
         new_conc=numpy.array(zip(array[1:,0]-array[:-1,0],array[1:,1]-array[:-1,1],array[1:,2]))
         print "Data=",new_conc
-        coefficient=new_conc[:,1]/(new_conc[:,0]*(1.0-new_conc[:,2]))
-        pylab.figure()
-        pylab.plot(coefficient)
-
-
+        coefficient=new_conc[:,1]/(200*3000)/(4.64e-7*new_conc[:,0]*(1.0-numpy.abs(new_conc[:,2])))
+        pylab.figure(99)
+        pylab.plot(array[1:,0],coefficient,styles[counter])
+    legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities]
+    pylab.xlabel('Iterations',fontsize=20)
+    pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
+    pylab.legend(legs,fancybox=True,labelspacing=0.1)
+    pylab.savefig("steady_state.eps",format="EPS",dpi=300)
+    
 if __name__=="__main__":
     capillaries=numpy.array([0.026,0.047,0.080,0.065,0.222,0.479,0.736,0.989])
     bubble_lengths_non=numpy.array([5.225,5.22,5.215,4.965,5.25,5.565,5.51,5.505])
@@ -42,7 +48,8 @@ if __name__=="__main__":
     print "Liquid superficial=",superficial_liquid
     print "Bubble_velocities=",bubble_velocities
     print "Gas_superficial=",superficial_gas
-    diffusion=1.118e-9    
+    diffusion=1.118e-9
+    deltat=9.3e-5
     
     yue=2.0/hydraulic*numpy.sqrt(diffusion*bubble_velocities/(bubble_lengths+slug_lengths))*numpy.power(bubble_lengths/(bubble_lengths+slug_lengths),0.3)
     bercic=0.111*numpy.power(superficial_gas+superficial_liquid,1.19)/numpy.power((1-holdups)*(bubble_lengths+slug_lengths),0.57)    
