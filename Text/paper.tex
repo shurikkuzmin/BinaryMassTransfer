@@ -7,17 +7,17 @@
 \usepackage{tabularx}
 \begin{document}
 \section{Motivation}
-The mass transfer is a very important characteristic for design of the microchannels. It allows to
-properly understand the properties of the channel length, channel length to microchannel ratios. In
+The mass transfer is a very important characteristic for microchannels  design. It allows to
+properly design a microchannel properties as the channel length, channel length to ensure best possible chemical reactions . In
 what follows the mass transfer associated with the bubble moving in the microchannel through liquid
-medium. 
+medium is studied. 
 
 A few questions need to be addressed:
 \begin{description}
  \item[I] The efficiency of the mass transfer depending on the capillary number. For small capillary
-numbers as $Ca<0.6$ for square microchannels there is a vortex in the moving with the bubble
-reference frame, which certainly will improve the corresponding mass transfer. Note that the flow
-patterns highly depend on the number of parameters as the slug length, the thickness of the
+numbers as $Ca<0.6$ for square microchannels there is a vortex in the reference frame moving with the bubble, which certainly influences and improves the corresponding mass transfer. 
+Note that the flow
+patterns strongly depend on the number of parameters as the slug length, the thickness of the
 thickness and the existence of the vortex in front of the bubble. There are some available
 correlations in literature \cite{bercic-mass,kreutzer-overview} and one of the particular goal of
 this study is to study mass transfer dependence on the number of parameters. As well to validate or
@@ -277,6 +277,8 @@ inside the lattice Botlzmann system. The time conversion can be easily obtained:
 10^{-7}\,\mathrm{s} 
 \end{aligned}
 \end{equation}
+We as well need to address the concentration being in a whole system non-dimensionalized towards the equilibrium:
+if the domain size is 
 
 The bubble surface length is the perimeter of the bubble in two-dimensional space and it is
 calculated with the extraction of the bubble countour and representing it with the polygon. After
@@ -287,19 +289,18 @@ P=\sum_i{\sqrt{(x2_i-x1_i)^2+(y2_i-y1_i)^2}},
 where the index $i$ represents the polyline consisting of two points $(x1,y1)$ and $(x2,y2)$.
 
 The corresponding volumetric mass transfer coefficients depending on the velocity are indicated in
-Table \ref{table:lengths}.
+Table \ref{table:volumetric:coefficients}.
 
 
 \section{Simulation results}
 \subsection{Steady-state}
 Using Eq.\ref{main:simulation:equation} we calculated the mass transfer coefficient. One can see
 the plots for the mass transfer coefficient versus time in Fig. \ref{fig:steady:state}. We state as
-a steady-state condition the average of  
+a steady-state condition the average of concentration values between $500000$ to $1000000$ time steps. The values are presented 
 \begin{figure}
 \includegraphics[width=\textwidth]{Figures/steady_state.eps}
 \caption{The mass transfer coefficient vs. time iterations. One can see that the pseudo steady
-state can be reached after $500000$. The mass transfer coefficient is taken as the average from
-$500000$ to $1000000$.\label{fig:steady:state}}
+state can be reached after $500000$. The mass transfer coefficient is taken as the average of concentration values between $500000$ to $1000000$ time steps..\label{fig:steady:state}}
 \end{figure}
 
 
