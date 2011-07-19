@@ -8,20 +8,22 @@
 \begin{document}
 \section{Motivation}
 The mass transfer is a very important characteristic for microchannels  design. It allows to
-properly design a microchannel properties as the channel length, channel length to ensure best possible chemical reactions . In
+properly manufacture a microchannel with necessary properties to ensure that chemical
+reactions are performed in the best manner. In
 what follows the mass transfer associated with the bubble moving in the microchannel through liquid
 medium is studied. 
 
 A few questions need to be addressed:
 \begin{description}
  \item[I] The efficiency of the mass transfer depending on the capillary number. For small capillary
-numbers as $Ca<0.6$ for square microchannels there is a vortex in the reference frame moving with the bubble, which certainly influences and improves the corresponding mass transfer. 
+numbers as $Ca<0.6$ for square microchannels there is a vortex in the reference frame moving with
+the bubble, which  influences and improves the corresponding mass transfer. 
 Note that the flow
 patterns strongly depend on the number of parameters as the slug length, the thickness of the
 thickness and the existence of the vortex in front of the bubble. There are some available
 correlations in literature \cite{bercic-mass,kreutzer-overview} and one of the particular goal of
-this study is to study mass transfer dependence on the number of parameters. As well to validate or
-to come up with another correlation describing the mass transfer.
+this work is to study mass transfer dependence on the number of parameters. Another goal is to
+validate and to come up with another correlation describing the mass transfer.
 
  \item[II] Another important quantity is to study the mixing processes inside the slug. One of the
 possible characteristics of the mixing is a residence time distribution. Once the step function
@@ -35,7 +37,8 @@ simulations.
 To address the questions arised we will utilize the results of numerical simulations of flow
 obtained
 before \cite{kuzmin-binary2d}. The numerical benchmark is presented in Fig. \ref{fig:benchmark}. In
-the same figure, one can see the proposed benchmark for the concentration profile. The physical
+the same figure, one can see the proposed benchmark for the tracer. The
+physical
 picture for the proposed numerical benchmark is  related to classical experiments conducted by
 \citet{bercic-mass}. In their work authors studied gas-liquid mass transfer coefficient by
 injecting methane as the gas bubble and measuring the dissolved concentration of methane in water
@@ -51,8 +54,8 @@ independency of results.
 are conducted in the moving
 reference frame with the bubble. Then the bubble stands still and the flow is coming around the
 bubble. We impose a steady concentration of solutant on the surface of the bubble.
-\item[Mass transfer] One needs not only perform a Galilean transformation to the moving reference
-frame of the bubble but also to
+\item[Mass transfer] One needs not only perform a Galilean transformation to the reference
+frame moving with the bubble but also to
 transfer the bubble to the inlet condition. This can insure that the studied phenomenon is a liquid
 slug. 
 \end{description}
@@ -66,8 +69,12 @@ slug.
 coefficient (bottom). \label{fig:benchmark}}
 \end{figure}
 
-\section{Parameters choice}
-In what follows we want to address the following empirical correlation addressed in the recent
+\section{Mass Transfer Correlations}
+We examine the following three characteristic correlations:
+\begin{description}
+\item[I]
+In what follows we want to address the following empirical correlation for the volumetric mass
+transfer coefficient addressed in the recent
 publication by \citet{yue-mass}:
 \begin{equation}
 k_L a=\frac{2}{d_h} \Bigl(\frac{D
@@ -75,11 +82,13 @@ U_{\mathrm{bubble}}}{L_{\mathrm{bubble}}+L_{\mathrm{slug}}}\Bigr)^{0.5}
 \Bigl(\frac{L_{\mathrm{bubble}}}{L_{\mathrm{bubble}}+L_{\mathrm{slug}}}\Bigr)^{0.3}.
 \end{equation}
 This correlation is within $10\%$ accuracy for experimental results within the following range of
-parameters: $0.4\,\mathrm{m/s}<U_{\mathrm{bubble}}<2\,\mathrm{m/s}$,
-$1.4<\frac{L_{\mathrm{bubble}}}{d_h}<6.3$, $1<\frac{L_{\mathrm{slug}}}{d_h}<3.2$, $d_h = 400
+parameters: bubble velocity $0.4\,\mathrm{m/s}<U_{\mathrm{bubble}}<2\,\mathrm{m/s}$, bubble length
+$1.4<\frac{L_{\mathrm{bubble}}}{d_h}<6.3$, slug length $1<\frac{L_{\mathrm{slug}}}{d_h}<3.2$,
+hydrodynamic diameter $d_h = 400
 \mathrm{\mu m}$.
 
-For long slug lengths in circular capillaries the folowing correlation is derived by
+For long slug lengths in circular capillaries, where the mass transfer from bubble caps is
+predominant, the folowing correlation is derived by
 \citet{bercic-mass}:
 \begin{equation}
 k_L a = \frac{0.111
@@ -98,21 +107,18 @@ holdup:
 \begin{equation}
 \begin{aligned}
 &\varepsilon_{\mathrm{gas}}=\frac{\text{bubble area}}{15 H^2}\\
-&U_{\mathrm{gas}}=\varepsilon_{\mathrm{gas}} U_{\mathrm{bubble}}
+&U_{\mathrm{gas}}=\varepsilon_{\mathrm{gas}} U_{\mathrm{bubble}}.
 \end{aligned}
 \end{equation}
- 
 
-In their experiments \citeauthor{bercic-mass} dealt with long slug lengths.
-Thus, they concluded that the mass transfer from bubble caps was predominant.
-
+\item[III]
 \citet{vanbaten-circular} performed numerical simulations for circular capillaries by assuming that
 there is a separate contribution of the liquid film and the bubble caps to mass transfer. Their
 correlation is as:
 \begin{equation}
 k_L a = \frac{2}{\sqrt{\pi}}\sqrt{\frac{D U_{\mathrm{bubble}}}{(L_{\mathrm{bubble}}-d_h)}}
 \frac{4(L_{\mathrm{bubble}}-d_h)}{d_h(L_{\mathrm{bubble}}+L_{\mathrm{slug}})}+2\frac{\sqrt{2}}{\pi}
- \sqrt{\frac{D U_{\mathrm{bubble}}}{d_h}} \frac{4}{(L_{\mathrm{bubble}}+L_{\mathrm{slug}})}
+ \sqrt{\frac{D U_{\mathrm{bubble}}}{d_h}} \frac{4}{(L_{\mathrm{bubble}}+L_{\mathrm{slug}})}.
 \end{equation}
 This correlation is valid for short contact times, when the mass transfer is important from bubble
 caps as well as from the film. Short contact times are defined through Fourier number as:
@@ -122,6 +128,7 @@ Fo=\frac{D t_{\mathrm{film}}}{\delta^2},
 where $t_{\mathrm{film}}=\frac{L_{\mathrm{film}}}{U_{\mathrm{bubble}}}$ is the time exposure of the
 bubble while it propagates through distance $L_{\mathrm{film}}$. 
 
+\end{description}
 Our goal is to compare numerical simulations with given correlations.
 
 \section{Mass transfer}
@@ -136,10 +143,12 @@ number (convection mass transfer over the diffusion mass transfer):
 \end{aligned}
 \end{equation}
 
-As far as parameters of the lattice Boltzmann system are not connected with real ones, one needs to
-match the non-dimensional parameters with physical one.  One of the particular examples is the
+As far as the lattice Boltzmann method operates only in the non-dimensional space, one needs to
+match the non-dimensional lattice Boltzmann parameters with non-dimensional physical parameters.
+Therefore, one needs to form non-dimensional numbers from the physical parameters. One of the
+particular experiment examples is the
 work by \citet{bercic-mass} who used the methane dissolution to characterize the mass transfer for
-bubble train flow. Thus, assumption for periodic boundary conditions stays. 
+bubble train flow. 
 
 In what follows we will perform the matching of obtained hydrodynamics results
 \cite{kuzmin-binary2d} with physical ones from experiment of \citet{bercic-mass}. The diffusion
