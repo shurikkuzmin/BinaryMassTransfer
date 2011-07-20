@@ -181,7 +181,7 @@ def Calculate_Perimeter(phase):
     for i,(x,y) in enumerate(cont[:-1]):
         perimeter+=math.sqrt((x-cont[i+1,0])**2+(y-cont[i+1,1])**2)
     print "Perimeter=",perimeter
-    print "a=",perimeter/((dims[0]-2)*dims[1]*1.5e-3);
+    print "a=",perimeter/(dims[1]*1.5e-3);
     #pylab.plot(cont[:,0],cont[:,1],"+")
 
 

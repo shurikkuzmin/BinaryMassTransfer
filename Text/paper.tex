@@ -70,6 +70,7 @@ coefficient (bottom). \label{fig:benchmark}}
 \end{figure}
 
 \section{Mass Transfer Correlations}
+\label{sec:correlations}
 We examine the following three characteristic correlations:
 \begin{description}
 \item[I]
@@ -81,12 +82,13 @@ k_L a=\frac{2}{d_h} \Bigl(\frac{D
 U_{\mathrm{bubble}}}{L_{\mathrm{bubble}}+L_{\mathrm{slug}}}\Bigr)^{0.5}
 \Bigl(\frac{L_{\mathrm{bubble}}}{L_{\mathrm{bubble}}+L_{\mathrm{slug}}}\Bigr)^{0.3}.
 \end{equation}
-This correlation is within $10\%$ accuracy for experimental results within the following range of
+This correlation is within $10\%$ accuracy for experimental results for the following range of
 parameters: bubble velocity $0.4\,\mathrm{m/s}<U_{\mathrm{bubble}}<2\,\mathrm{m/s}$, bubble length
 $1.4<\frac{L_{\mathrm{bubble}}}{d_h}<6.3$, slug length $1<\frac{L_{\mathrm{slug}}}{d_h}<3.2$,
 hydrodynamic diameter $d_h = 400
 \mathrm{\mu m}$.
 
+\item[II]
 For long slug lengths in circular capillaries, where the mass transfer from bubble caps is
 predominant, the folowing correlation is derived by
 \citet{bercic-mass}:
@@ -103,12 +105,20 @@ the middle of the slug as:
 U_{\mathrm{liq}}=\frac{\oint U \mathrm{d}A}{A}.
 \end{equation}
 The superficial liquid velocity can be calculated through the calculated bubble volume and gas
-holdup:
+holdup. For the two-dimensional case it is represented as:
 \begin{equation}
 \begin{aligned}
 &\varepsilon_{\mathrm{gas}}=\frac{\text{bubble area}}{15 H^2}\\
 &U_{\mathrm{gas}}=\varepsilon_{\mathrm{gas}} U_{\mathrm{bubble}}.
 \end{aligned}
+\end{equation}
+
+Since experiments done by \citeauthor{bercic-mass} were only for one diffusivity coefficient
+$D=2\times 10^{-9}\,\mathrm{m^2/s}$, the effective equation should be rescaled as:
+\begin{equation}
+k_L a = \sqrt{\frac{D}{2\times 10^{-9}\,\mathrm{m^2/s}}}\frac{0.111
+(U_{\mathrm{gas}}+U_{\mathrm{liq}})^{1.19}}{\bigl((1-\varepsilon_{\mathrm{gas}})(L_{\mathrm{bubble}}
++L_ {\mathrm{slug}} )\bigr)^{0.57} },
 \end{equation}
 
 \item[III]
@@ -126,15 +136,19 @@ caps as well as from the film. Short contact times are defined through Fourier n
 Fo=\frac{D t_{\mathrm{film}}}{\delta^2},
 \end{equation}
 where $t_{\mathrm{film}}=\frac{L_{\mathrm{film}}}{U_{\mathrm{bubble}}}$ is the time exposure of the
-bubble while it propagates through distance $L_{\mathrm{film}}$. 
+bubble while it propagates through distance $L_{\mathrm{film}}$. The Fourier number is assumed to
+be small if $Fo<0.1$. If $Fo>1$ then the liquid film is saturated and the mass transfer occurs from
+the bubble caps.
 
 \end{description}
-Our goal is to compare numerical simulations with given correlations.
+
+Overall work goal is to compare numerical simulations with given correlations and to establish a
+new one.
 
 \section{Mass transfer}
 The mass transfer is characterized by non-dimensional numbers as Schmidt number (viscous diffusion
-rate over the mass diffusion rate), the Peclet number (convection over diffusion) and the Sherwood
-number (convection mass transfer over the diffusion mass transfer):
+rate over mass diffusion rate), the Peclet number (convection over diffusion) and the Sherwood
+number (convection mass transfer over diffusion mass transfer):
 \begin{equation}
 \begin{aligned}
 &Pe=\frac{U L}{D}\\
@@ -153,18 +167,20 @@ bubble train flow.
 In what follows we will perform the matching of obtained hydrodynamics results
 \cite{kuzmin-binary2d} with physical ones from experiment of \citet{bercic-mass}. The diffusion
 coefficient of the methane under standard conditions \cite{methane-properties} is
-$1.84\times 10^{-5} \mathrm{cm}^2/\mathrm{s}$. The diameters of capillaries were as $1.5$, $2.5$ and
-$3.1$ $\mathrm{mm}$. For simplicity reasons we will choose the diameter of capillary as $1.5\,
+$1.84\times 10^{-5} \mathrm{cm}^2/\mathrm{s}$. The diameters of capillaries in the experiment were
+as $1.5$, $2.5$ and
+$3.1\,\mathrm{mm}$. For simplicity reasons we will choose the diameter of capillary as $1.5\,
 \mathrm{mm}$. 
-We will match parameters through given non-dimensional numbers. From the hydrodynamics
-simulations the following parameters supplied:
+The non-dimensional parameters obtained from the hydrodynamics lattice Boltzmann simulations are
+as:
 \begin{equation}
 \begin{aligned}
-Ca=\frac{U \mu_{\mathrm{liq}}}{\gamma}\\
-Re=\frac{\rho_{\mathrm{liq}} U L}{\mu_{\mathrm{liq}}}.
+&Ca=\frac{U \mu_{\mathrm{liq}}}{\gamma}\\
+&Re=\frac{\rho_{\mathrm{liq}} U L}{\mu_{\mathrm{liq}}}.
 \end{aligned}
 \end{equation}
-From these two equation one can obtain the physical velocity obtained from non-dimensional numbers:
+Given some physical characteristics as the liquid density and the channel length,
+one can obtain the physical velocity obtained from non-dimensional numbers:
 \begin{equation}
 \begin{aligned}
 Ca\cdot Re= \frac{\rho_{\mathrm{liq}} U^2 L}{\gamma}\\
@@ -172,17 +188,21 @@ U=\sqrt{\frac{Ca\,Re\,\gamma}{\rho_{\mathrm{liq}}L}}
 \end{aligned}
 \end{equation}
 
-Assuming that the surface tension of water is $0.0728\,\mathrm{N/m}$, the density is
-$1000\,\mathrm{kg/m^3}$,the hydraulic diameter of the channel to be $1.5\,\mathrm{mm}$ one can
+Assuming that the surface tension of water is $0.0728\,\mathrm{N/m}$ (methane exhibits the same
+trend \cite{schmidt-methane}), the density is       
+$1000\,\mathrm{kg/m^3}$, the hydraulic diameter of the channel to be $1.5\,\mathrm{mm}$ one can
 calculate the physical velocity of the bubble.
-Table \ref{table:twod:simulations} represents the number of simulations runs for the grid as
-$202\times 3002$ and its nondimensional parameters. One can see that velocity is quite reasonable
+Table \ref{table:twod:simulations} represents lattice Boltzmann simulations results and their
+physical equivalents for the grid $202\times 3002$. One can see
+that velocity is quite reasonable
 as \citet{bercic-mass} declared that experiments were conducted for velocities in the ranges of
-$0.01$ to $0.4\,\mathrm{m}/\mathrm{s}$ but for less capillary numbers. 
+$0.01$ to $0.4\,\mathrm{m}/\mathrm{s}$. 
 \begin{table}
 \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
+\hline
 $Ca$    &$Re$     &$U_{LB}$ &$\delta$&$\varepsilon_{\mathrm{gas}}$
-&$U_{\mathrm{phys}}\mathrm{m/s}$\\
+&$U_{\mathrm{phys}}, \mathrm{m/s}$\\
+\hline
 $0.026$ &$0.449$  &$0.0014$ &$0.040$ &$0.306$ &$0.023$   \\ 
 $0.047$ &$0.820$  &$0.0027$ &$0.058$ &$0.293$ &$0.043$   \\ 
 $0.080$ &$1.378$  &$0.0045$ &$0.085$ &$0.280$ &$0.073$ \\
@@ -191,6 +211,7 @@ $0.222$ &$3.807$  &$0.0125$ &$0.122$ &$0.253$ &$0.202$  \\
 $0.479$ &$8.222$  &$0.0271$ &$0.151$ &$0.249$ &$0.437$  \\
 $0.736$ &$12.617$ &$0.0416$ &$0.164$ &$0.236$ &$0.671$  \\ 
 $0.989$ &$16.960$ &$0.0559$ &$0.172$ &$0.230$ &$0.902$  \\
+\hline
 \end{tabularx}
 \caption{Two-dimensional simulations for different
 capillary numbers. \label{table:twod:simulations}}
@@ -205,7 +226,8 @@ lattice Boltzmann diffusivity parameter:
 &D=0.0008375
 \end{aligned}
 \end{equation}
-In terms of Schmidt number (taking the liquid viscosity in former simulations as $\frac{2}{3}$) that
+In terms of the Schmidt number (taking the lattice Boltzmann liquid viscosity in former simulations
+as $\frac{2}{3}$) that
 can result in:
 \begin{equation}
 \begin{aligned}
@@ -213,60 +235,72 @@ can result in:
 &Sc=796\\
 \end{aligned}
 \end{equation}
-Taking the water as $8.9 \times 10^{-4}\,\mathrm{Pa\cdot s}$ or kinematic viscosity as $8.9 \times
-10^{-7} \,\mathrm{m^2/s}$ and the Schmidt number as $796$ that results in the following quantity:
+Taking the water dynamic viscosity as $8.9 \times 10^{-4}\,\mathrm{Pa\cdot s}$ or kinematic
+viscosity as $8.9 \times
+10^{-7} \,\mathrm{m^2/s}$ and the Schmidt number as $796$ results in the following physical
+diffusion coefficient:
 \begin{equation}
 D=1.118\times 10^{-5}\,\mathrm{cm^2/s},
 \end{equation}
 which is less than the diffusivity of the methane $1.84\times 10^{-5}\,\mathrm{cm^2/s}$ but is
-physical. After calculation of physical parameters one can calculate characteristics for the mass
-theoretical mass transfer. Table \ref{table:lengths} gives nondimensional and physical lengths of a
-bubble and a slug.
+physical. After calculation of physical parameters one can calculate correlations indicated in
+Section \ref{sec:correlations} for mass transfer. Table \ref{table:lengths} presents extraction
+from the lattice Boltzmann simulation necessary to calculate mass transfer calculations.
+For the two-dimensional case parameter  $a$ is defined as:
+\begin{equation}
+a = \frac{\text{bubble perimeter}}{\text{cell area}}.
+\end{equation}
+For the height of the channel to be $H=1.5 \times 10^{-3}\,\mathrm{m}$, parameters $a$ are
+presented in Table \ref{table:lengths}. 
 \begin{table}
 \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
 \hline
 $Ca$&Bubble length& Slug Length&
-$U_{\mathrm{gas}}\,\mathrm{m/s}$&$U_{\mathrm{liq}}\,\mathrm{m/s}$&$a,\,\mathrm{m^{-1}}$\\
+$U_{\mathrm{gas}},\,\mathrm{m/s}$&$U_{\mathrm{liq}},\,\mathrm{m/s}$&$a,\,\mathrm{m^{-1}}$\\
 \hline
-$0.026$&$5.225$&$9.775$ &$0.0070$ &$0.0209$&$2.5538$\\
-$0.047$&$5.22$ &$9.78$  &$0.0126$ &$0.0379$&$2.5431$\\
-$0.080$&$5.215$&$9.785$ &$0.0204$ &$0.0615$&$2.5326$\\
-$0.065$&$4.965$&$10.035$&$0.0157$ &$0.0504$&$2.4142$\\
-$0.222$&$5.25$ &$9.75$  &$0.0511$ &$0.1560$&$2.5253$\\
-$0.479$&$5.565$&$9.435$ &$0.1089$ &$0.3155$&$2.6518$\\
-$0.736$&$5.51$ &$9.49$  &$0.1584$ &$0.4677$&$2.6269$\\
-$0.989$&$5.505$&$9.495$ &$0.2074$ &$0.6190$&$2.6340$\\
+$0.026$&$5.225$&$9.775$ &$0.0070$ &$0.0209$&$510.77$\\
+$0.047$&$5.22$ &$9.78$  &$0.0126$ &$0.0379$&$508.62$\\
+$0.080$&$5.215$&$9.785$ &$0.0204$ &$0.0615$&$506.53$\\
+$0.065$&$4.965$&$10.035$&$0.0157$ &$0.0504$&$482.84$\\
+$0.222$&$5.25$ &$9.75$  &$0.0511$ &$0.1560$&$505.06$\\
+$0.479$&$5.565$&$9.435$ &$0.1089$ &$0.3155$&$530.37$\\
+$0.736$&$5.51$ &$9.49$  &$0.1584$ &$0.4677$&$525.38$\\
+$0.989$&$5.505$&$9.495$ &$0.2074$ &$0.6190$&$526.80$\\
 \hline
 \end{tabularx}
-
 \caption{The nondimensional (scaled to the height of the channel) lengths for the same
 lattice Boltzmann simulations as in Table \ref{table:twod:simulations}. As well superficial
-gas-liquid velocities are presented.\label{table:lengths}}
+gas and liquid velocities are presented. \label{table:lengths}} 
 \end{table}
 
 The literature correlations of mass transfer dependence on the bubble velocities are presented in
 Fig. \ref{fig:mass:transfer:theoretical}. Note, that the correlations presented in
-Fig.\ref{fig:mass:transfer:theoretical} are used primarily for circular capillaries
+Fig. \ref{fig:mass:transfer:theoretical} are used primarily for circular capillaries
 (\citeauthor{vanbaten-circular,bercic-mass}) and for square capillaries (\citeauthor{yue-mass}). We
-adapt these results for flow between parallel plats by using hydraulic
+adapt these results for flow between parallel plates by using hydraulic
 diameter \cite{bercic-mass} which can be calculated as:
 \begin{equation}
 d_h = \lim_{W\to\infty}\frac{4A}{P}=\lim_{W\to\infty}\frac{4 W\,H}{2(W+H)}=2 H.
 \end{equation}
+For comparison reasons we as well present the correlation when the hydraulic diameter is taken as
+$d_h=H$, see Fig. \ref{fig:mass:transfer:theoretical}.
+
 \begin{figure}[htb!]
-\includegraphics[width=\textwidth]{Figures/theoretical_correlations.eps}
-\caption{The literature correlations by various authors. One
-can see the large deviation among them.\label{fig:mass:transfer:theoretical}}
+\includegraphics[width=\textwidth]{Figures/theoretical_correlations.eps}\\
+\includegraphics[width=\textwidth]{Figures/theoretical_correlations_without_hydraulic.eps}\\
+\caption{The literature correlations by various authors with hydraulic diameter taken as $2 H$
+(top) and $H$ (bottom). Correlations deviate a lot among each
+other.\label{fig:mass:transfer:theoretical}}
 \end{figure}
 
 The volumetric mass transfer coefficient is calculated according to the work of
 \citet{vanbaten-circular}. The concentration flux is calculated as the difference between overall
-average concentration taken in the whole domain ($C_{overall}=\int_{V} C \mathrm{d}V /V$) 
-{\color{red} (In this particular moment I don't know whether to take the Volume of whole domain or
-just the liquid phase. I will go for whole domain.)}
+average concentration taken in the whole domain ($C_{overall}=\int_{V} C \mathrm{d}V /V$)
 at time
-$t_1$ and time $t_2$ divided on the time difference $t_2-t_1$. Then the volumetric mass transfer
-coefficient is calculated as:
+$t_1$ and time $t_2$ divided on the time difference $t_2-t_1$ {\color{red} (In this particular
+moment I don't know whether to take the volume of the whole domain or
+just the liquid phase. I will go for whole domain.)}. Then the volumetric mass transfer
+coefficient is calculated as \cite{vanbaten-circular}:
 \begin{equation}
 \label{main:simulation:equation}
 k_L a=\frac{\text{Flux}}{C_s-C_{outlet}} \frac{\text{bubble surface area}}{\text{unit cell volume}},
@@ -274,7 +308,11 @@ k_L a=\frac{\text{Flux}}{C_s-C_{outlet}} \frac{\text{bubble surface area}}{\text
 where $C_{outlet}=\int{C U_{outlet}\mathrm{d}A}/\int{U_{outlet}\mathrm{d}A}$. 
 {\color{red} Do not understand why we need this ratio bubble surface area/unit cell volume. In this
 case the dimensional units do not coincide. In the calculations I will avoid it until further
-clearance.}
+clearance.} The overall concentration in the lattice Boltzmann system is prescribed as:
+\begin{equation}
+C_{overall}=\frac{\sum{c_i}}{N_x \, (N_y-2)}.
+\end{equation}
+
 To properly do
 non-dimensioanalization one needs to insure the time conversion factor when the flux is calculated
 inside the lattice Botlzmann system. The time conversion can be easily obtained:
@@ -286,81 +324,63 @@ inside the lattice Botlzmann system. The time conversion can be easily obtained:
 10^{-7}\,\mathrm{s} 
 \end{aligned}
 \end{equation}
-We as well need to address the concentration being in a whole system non-dimensionalized towards the equilibrium:
-if the domain size is 
 
 The bubble surface length is the perimeter of the bubble in two-dimensional space and it is
-calculated with the extraction of the bubble countour and representing it with the polygon. After
-that the calculated perimeter is the effective summation of line lengths and ca be represented as:
+calculated with the extraction of the bubble contour and representing it with the polygon. After
+that the calculated perimeter is the effective summation of line lengths and can be represented as:
 \begin{equation}
 P=\sum_i{\sqrt{(x2_i-x1_i)^2+(y2_i-y1_i)^2}},
 \end{equation}
 where the index $i$ represents the polyline consisting of two points $(x1,y1)$ and $(x2,y2)$.
-
-The corresponding volumetric mass transfer coefficients depending on the velocity are indicated in
-Table \ref{table:volumetric:coefficients}.
-
+%The corresponding volumetric mass transfer coefficients depending on the velocity are indicated in
+%Table \ref{table:volumetric:coefficients}.
 
 \section{Simulation results}
 \subsection{Steady-state}
 Using Eq.\ref{main:simulation:equation} we calculated the mass transfer coefficient. One can see
 the plots for the mass transfer coefficient versus time in Fig. \ref{fig:steady:state}. We state as
-a steady-state condition the average of concentration values between $500000$ to $1000000$ time steps. The values are presented 
-\begin{figure}
+a steady-state condition the average of concentration values between $500000$ to $1000000$ time
+steps.{\color{red} We need to put more time steps. As well it is probably connected with Fourier
+number.} The average calculated volumetric mass transfer coefficients values are presented in Table
+\ref{table:volumetric:coefficients}. For each of the measurements we as well provided the Fourier
+number (for the flow between plates is as follows):
+\begin{equation}
+Fo=\frac{D t_{\mathrm{film}}}{\delta^2}=\frac{D
+(L_{\mathrm{bubble}}-H)}{U_{\mathrm{bubble}}\delta^2}.
+\end{equation}
+\begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/steady_state.eps}
 \caption{The mass transfer coefficient vs. time iterations. One can see that the pseudo steady
-state can be reached after $500000$. The mass transfer coefficient is taken as the average of concentration values between $500000$ to $1000000$ time steps..\label{fig:steady:state}}
+state can be reached after $500000$. The mass transfer coefficient is taken as the average of
+concentration values between $500000$ to $1000000$ time steps.\label{fig:steady:state}}
 \end{figure}
+\begin{table}[htb!]
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+$Ca$&$Fo$&$k_L a,\,\mathrm{s}^{-1}$\\
+\hline
+$0.026$&$0.08493$&$0.2737$\\
+$0.047$&$0.02160$&$0.3664$\\
+$0.080$&$0.00588$&$0.4959$\\
+$0.065$&$0.00862$&$0.4734$\\
+$0.222$&$0.00103$&$0.8505$\\
+$0.479$&$0.00034$&$1.1541$\\
+$0.736$&$0.00018$&$1.1801$\\
+$0.989$&$0.00012$&$1.2215$\\
+\hline
+\end{tabularx}
+\caption{Simulation results for different capillary numbers. \label{table:volumetric:coefficients}}
+\end{table}
 
-
-\section{To revise:}
-Then the diffusion penetration length is:
-\begin{equation}
-\delta_{penetration}=\sqrt{D t_{film}}=\sqrt{\frac{D L_{bubble}}{U_{bubble}}}.
-\end{equation}
-The bubble length is $5$ of diameters. Thus, the bubble length is $7.5\,\mathrm{mm}$. Therefore:
-\begin{equation}
-\delta_{penetration}=\sqrt{\frac{1.84 10^{-9} \mathrm{m^2/s} 7.5 10^{-3} \mathrm{m}}{4.3 \time
-10^{-2}\mathrm{m/s}}}=1.8 \times 10^{-5}
-\end{equation}
-With the given value of $200$ nodes to resolve the diameter for the given simulation, that results
-in $2.4$ nodes, which is small but considerable number to conduct the simulation.
-Foirier number which is defined as:
-\begin{equation}
-Fo=\frac{D t_{film}}{\delta_{film}^2}=\frac{1.84\times 10^{-9} 0.1744}{\times
-(8.7\times10^{-5})^2}=0.0423
-\end{equation}
-As it is indicated by \citet{vanbaten-circular} the Fourier number $Fo<0.1$ stays for short
-contact, the film is unsaturated. 
-Thus, one can calculate the corresponding parameters:
-\begin{equation}
-Pe_{min}=\frac{10^{-2} 1.5 10^{-3}}{1.84  10^{-9}}=0.81 \times 10^{4}\gg 1
-Sc_{min}=\frac{10^{-6}}{1.84 10^{-9}}=543,
-\end{equation}
-which imply the Reynolds number to be as:
-\begin{equation}
-Pe=Re Sc,\,Re=Pe/Sc=14.91
-\end{equation}
-
-The Schmidt number $Sc \approx 500$ states for dye in the liquid and assumes the dominance of
-convection over diffusion. In terms of the lattice Boltzmann system, the liquid viscosity equals to
-$\frac{1}{3}(\tau_{liq}-\frac{1}{2})=\frac{2}{3}$. That means that the relaxation rate for the
-advection-diffusion equation should be as:
-\begin{equation}
-\frac{1}{3}\Bigl(\tau_{\phi}-\frac{1}{2}\Bigr)=\frac{\nu}{Sc}\\
-\tau_{\phi}=0.50368,
-\end{equation}
-which is hard to simulate with the lattice Boltzmann equation, but possible . As it was discussed
-\cite{giavedoni-numerical} the inertia can be neglected for the Reynolds number $Re<70$ for bubble
-configuration, but not for the hydrodynamics simulations.
-
-The easy way to do is not to match the Peclet number $Pe$ along with the Reynolds number, leaving
-only matching the Schmidt number. However, the thorough study needs to be conducted to perform the
-matching parameters as $Ca$, $Re$, $Sc$ and $Pe$ numbers. 
-
-If we match only the Peclet number then the Reynolds number can be changed as to adjust the
-velocity multiplied on coefficient, keeping Reynolds number small and anticipating results to see.
-
+Comparison between correlations and simulations one can find in Fig.
+\ref{fig:comparison:correlations}.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/comparison_correlations.eps}
+\caption{One can see the comparison between correlations and simulations. {\color{red} Last two
+points can be eliminated due to improper imposement of the concave structure of the bubble. The
+large deviation of the results can be probably explained by the flow between plates in comparison
+with the flow in circular and square microchannels.} \label{fig:comparison:correlations}}
+\end{figure}
 
 \appendix
 
