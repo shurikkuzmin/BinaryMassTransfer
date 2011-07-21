@@ -429,6 +429,150 @@ For the zero flux on the wall one can use another equation:
 \end{equation}
 \end{description}
 
+\section{Solution of the semi-infinite concentration problems}
+For short contact times the mass transfer can be decomposed into two parts: transfer from the wall
+to semi-infinite medium and transfer from the sphere to the infinite medium. In what follows we
+derive analytical solutions to these two situations:
+\begin{description}
+\item[Wall mass transfer] The problem by mathematically is stated as:
+\begin{equation}
+\begin{aligned}
+&\partial_t C =D \partial^2_{xx} C\\
+&C(x,0)=0\\
+&C(0,t)=C_0\\
+\end{aligned}
+\end{equation}
+As far as the problem is non-homogenious one needs to decompose the problem into the steady-state
+and homogenous transient problem:
+\begin{equation}
+C=C_h + C_s,
+\end{equation}
+where $C_h$ and $C_s$ satisfy the following equations:
+\begin{equation}
+\begin{aligned}
+&\frac{\mathrm{d^2} C_s}{\mathrm{d}x^2}=0 && \partial_t C_h=D\partial^2_{xx} C_h\\
+&C_s(0)=C_0 && C_h(x,0)=-C_0\\
+&C_s(\infty)=C_0 && C_h(0,t)=0\\
+\end{aligned}
+\end{equation}
+One can easily check that the solution and boundary conditions are satisfied. The solution of
+the steady-state problem is $C_s=C_0$. To find a solution of the semi-infinite medium we will use
+the method of separation of variables:
+\begin{equation}
+\begin{aligned}
+&C_h=\Theta(t)\Phi(x)\\
+&\frac{1}{\Theta(t)}\frac{\mathrm{d}\Theta(t)}{\mathrm{d}t}=D
+\frac{1}{\Phi(x)}\frac{\mathrm{d}^2\Phi(x)}{\mathrm{d}x}=-\alpha^2 D\\
+\end{aligned}
+\end{equation}
+The solution for the time-dependent part is as:
+\begin{equation}
+\Theta(t)=\exp(-\alpha^2 D t).
+\end{equation}
+The solution for the spatial dependence function is as:
+\begin{equation}
+\Phi(x)=A\cos(\alpha x)+ B\sin(\alpha x).
+\end{equation}
+The overall solution of the homogenious part is represented as:
+\begin{equation}
+C_h=(A\cos(\alpha x) + B\sin(\alpha x)) \exp(-\alpha^2 D t),
+\end{equation}
+where one needs to solve the eigenvalue problem to find the necessary $\alpha$ parameter. One can
+find it through the initial and boundary conditions:
+\begin{equation}
+\begin{aligned}
+&C_h(x,0)=-C_0\\
+&C_h(x,0)=A\cos(\alpha x)+B\sin(\alpha x)=-C_0\\
+&C_h(0,t)=0\\
+&C_h(0,t)=A\exp(-\alpha^2 D t)=0\\
+&A=0\\
+\end{aligned}
+\end{equation}
+Therefore one needs to decompose the constant $-C_0$ through the function $\sin(\alpha x)$. It can
+be done through a continuous Fourier transform:
+\begin{equation}
+\begin{aligned}
+&C_h=\int_{\alpha>0}{B(\alpha) \sin(\alpha x) \exp(-\alpha^2 D t) \mathrm{d}\alpha}\\
+&C_h(x,0)=-C_0=\int_{\alpha>0}{B(\alpha)\sin(\alpha x) \mathrm{d}\alpha}\\
+&\int_{0}^{\infty}{B(\alpha) \frac{e^{i\alpha x}-e^{-i\alpha x}}{2 i}\mathrm{d} \alpha}=-C_0\\
+\end{aligned}
+\end{equation}
+To get function $B(\alpha)$ one needs to proof the following Fourier relationship:
+\begin{equation}
+\begin{aligned}
+&F(x)=\frac{2}{\pi}\int_{\alpha=0}^{\infty}{\mathrm{d}\alpha \sin(\alpha x)
+\int_{x'=0}^{\infty}{\sin(\alpha x')F(x')\mathrm{d} x'}}\\
+&\frac{2}{\pi}\int_{\alpha=0}^{\infty}{\mathrm{d}\alpha \sin(\alpha x)\sin(\alpha x')}=\frac{2}{\pi}
+\int_{\alpha=0}^{\infty}{\mathrm{d}\alpha \frac{\cos(\alpha(x+x'))-\cos(\alpha(x-x'))}{2}}\\
+&=\frac{1}{\pi}\int_{\alpha=0}^{\infty}{\mathrm{d}\alpha\Bigl[\frac{e^{i\alpha
+(x+x')}+e^{-i\alpha(x+x')}}{2}-\frac{e^{i\alpha
+(x-x')}+e^{-i\alpha(x-x')}}{2}\Bigr]}\\
+&=\frac{1}{2\pi}\int_{\alpha=-\infty}^{\infty}{\mathrm{d}\alpha\Bigl[e^{i\alpha(x+x')}-e^{
+i\alpha(x-x')} \Bigr]}=\delta(x+x')-\delta(x-x')\\
+&F(x)=\int_{x'=0}^{\infty}{\mathrm{d} x' (\delta(x+x')-\delta(x-x')) F(x')}=F(x) 
+\end{aligned}
+\end{equation}
+Therefore the solution is as follows:
+\begin{equation}
+C_h(x,t)=-\frac{2 C_0}{\pi}\int_{\alpha>0} {\exp{-\alpha^2 t} \int_{x'>0}{\sin(\alpha x) \sin(\alpha
+x')}} 
+\end{equation}
+Integrals can be taken from \citet{ozisik}:
+\begin{equation}
+\begin{aligned}
+&\frac{2}{\pi}\int_{\alpha=0}^{\infty}{e^{-\alpha^2 D t} \sin(\alpha x) \sin(\alpha
+x')}\\
+&=\frac{1}{\sqrt{4\pi D t}}\biggl[\exp\Bigl(-\frac{(x-x')^2}{4 D
+t}\Bigr)-\exp\Bigl(-\frac{(x+x')^2}{4 D t}\Bigr)\biggr]
+\end{aligned}
+\end{equation}
+The final answer for homogenous part becomes \cite{ozisik}:
+\begin{equation}
+C_h(x,t)=-C_0\mathrm{erf}\Bigl(\frac{x}{\sqrt{4 D t}}\Bigr),
+\end{equation}
+where $\mathrm{erf}$ stands for the error function defined as:
+\begin{equation}
+\mathrm{erf(y)}=\frac{2}{\sqrt{\pi}}\int_{0}^{y}{e^{-\eta^2}\mathrm{d}\eta}.
+\end{equation}
+Overall solution then is defined as:
+\begin{equation}
+C(x,t)=C_0-C_0\mathrm{erf}\Bigl(\frac{x}{\sqrt{4 D t}}\Bigr),
+\end{equation}
+with the mass transfer coefficient is defined as the integral of absorbed gas upto time $t_e$
+divided by the time $t_e$. The accumulated  flux is the integral of the derivative
+$-D\frac{\mathrm{d} C(x,t)}{\mathrm{d}x}|_{x=0}$ by time $t$. The incoming flux is as follows:
+\begin{equation}
+\begin{aligned}
+&-D\frac{\mathrm{d} C(x,t)}{\mathrm{d}x}|_{x=0}=D \frac{1}{\sqrt{D t}}\\
+&k_L = \sqrt{\frac{D}{\pi t_{\mathrm{film}}}}.
+\end{aligned}
+\end{equation}
+
+\item[Cylinder mass transfer] For the cylinder mass transfer one needs to solve the heat conduction
+equation one needs to use cylindrical coordinates. The system is prescribed by the following set
+of equations:
+\begin{equation}
+\begin{aligned}
+&\frac{\partial C}{\partial t}=D\frac{\partial^2 C}{\partial r^2} + \frac{D}{r}\frac{\partial
+C}{\partial r}\\
+&C(a,t)=0\\
+&C(r,0)=0\\
+\end{aligned}
+\end{equation}
+The solution is given by \citet{ozisik} as:
+\begin{equation}
+\begin{aligned}
+&C(r,t)=C_0\\
+& - C_0\int_{\alpha=0}^{\infty}{\mathrm{d}\alpha \frac{\alpha}{J_0^2(\alpha
+a)+Y_0^2(\alpha a)}e^{-\alpha^2 D t}[J_0(\alpha r) Y_0(\alpha a)-Y_0(\alpha r) J_0(\alpha a)]}\\
+&\times \int_{r'=a}^{\infty}{r'[J_0(\alpha r')Y_0(\alpha a)-Y_0(\alpha r') J_0(\alpha
+a)]\mathrm{d}r'}
+\end{aligned}
+\end{equation}
+These integrals can be taken through the recurrent equations for Bessel functions. 
+
+\end{description}
+ 
 
 \section{TRT $D2Q9$ model. Equilibrium functions}
 One of the advantages of $D2Q9$ TRT model in comparison with $D2Q5$ usually used for simulations of
