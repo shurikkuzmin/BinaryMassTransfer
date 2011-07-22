@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       145,          7]
-NotebookDataLength[      6312,        178]
-NotebookOptionsPosition[      5810,        156]
-NotebookOutlinePosition[      6168,        172]
-CellTagsIndexPosition[      6125,        169]
+NotebookDataLength[      8972,        294]
+NotebookOptionsPosition[      7821,        248]
+NotebookOutlinePosition[      8178,        264]
+CellTagsIndexPosition[      8135,        261]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -68,8 +68,6 @@ Cell[BoxData[
   3.520278124640132*^9, 3.520278127220005*^9}, {3.520278186176258*^9, 
   3.520278186338047*^9}}],
 
-Cell[CellGroupData[{
-
 Cell[BoxData[
  TagBox[
   StyleBox[
@@ -98,7 +96,7 @@ Cell[BoxData[
         PlotRange -> {{0, 10}, {0, 1}}], 
       "Specifications" :> {{{$CellContext`t$$, 1}, 0, 5}}, "Options" :> {}, 
       "DefaultOptions" :> {}],
-     ImageSizeCache->{604., {250., 259.}},
+     ImageSizeCache->{604., {233., 242.}},
      SingleEvaluation->True],
     Deinitialization:>None,
     DynamicModuleValues:>{},
@@ -109,53 +107,147 @@ Cell[BoxData[
    StripOnInput->False],
   Manipulate`InterpretManipulate[1]]], "Input"],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[
- TagBox[
-  StyleBox[
-   DynamicModuleBox[{$CellContext`t$$ = 3, Typeset`show$$ = True, 
-    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
-    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
-    "\"untitled\"", Typeset`specs$$ = {{{
-       Hold[$CellContext`t$$], 3}, 0, 5}}, Typeset`size$$ = {
-    540., {169., 180.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
-    Typeset`skipInitDone$$ = True, $CellContext`t$565968$$ = 0}, 
-    DynamicBox[Manipulate`ManipulateBoxes[
-     1, StandardForm, "Variables" :> {$CellContext`t$$ = 3}, 
-      "ControllerVariables" :> {
-        Hold[$CellContext`t$$, $CellContext`t$565968$$, 0]}, 
-      "OtherVariables" :> {
-       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
-        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
-        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
-         Typeset`skipInitDone$$}, "Body" :> 
-      Plot[{1 - Erf[$CellContext`x/Sqrt[4 $CellContext`t$$]], (1/Sqrt[
-          Pi $CellContext`t$$]) Integrate[
-           
-           Exp[(-$CellContext`a^2)/(
-            4 $CellContext`t$$)], {$CellContext`a, $CellContext`x, 
-            Infinity}]}, {$CellContext`x, 0, 10}, 
-        PlotRange -> {{0, 10}, {0, 1}}], 
-      "Specifications" :> {{{$CellContext`t$$, 3}, 0, 5}}, "Options" :> {}, 
-      "DefaultOptions" :> {}],
-     ImageSizeCache->{604., {233., 242.}},
-     SingleEvaluation->True],
-    Deinitialization:>None,
-    DynamicModuleValues:>{},
-    SynchronousInitialization->True,
-    UnsavedVariables:>{Typeset`initDone$$},
-    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
-   Deployed->True,
-   StripOnInput->False],
-  Manipulate`InterpretManipulate[1]]], "Output",
- CellChangeTimes->{3.520278333445039*^9}]
+ RowBox[{"N", "[", 
+  RowBox[{"Erf", "[", "1", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.520277825554758*^9, 3.5202778266876183`*^9}, {
+  3.520278626620761*^9, 3.520278634078413*^9}}],
+
+Cell[BoxData["0.8427007929497149`"], "Output",
+ CellChangeTimes->{{3.520278629479227*^9, 3.520278634483008*^9}}]
 }, Open  ]],
 
-Cell[BoxData[""], "Input",
- CellChangeTimes->{{3.520277825554758*^9, 3.5202778266876183`*^9}}]
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Integrate", "[", 
+  RowBox[{
+   RowBox[{"c", "-", 
+    RowBox[{"c", "*", 
+     RowBox[{"Erf", "[", 
+      RowBox[{"x", "/", 
+       RowBox[{"Sqrt", "[", 
+        RowBox[{"4", "*", "alpha", "*", "t"}], "]"}]}], "]"}]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", "0", ",", "\[Infinity]"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", "0", ",", "t0"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.520278660647479*^9, 3.520278713091473*^9}}],
+
+Cell[BoxData["$Aborted"], "Output",
+ CellChangeTimes->{3.520278777526943*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Erf", "[", "\[Infinity]", "]"}]], "Input",
+ CellChangeTimes->{{3.520278829608132*^9, 3.5202788330227423`*^9}}],
+
+Cell[BoxData["1"], "Output",
+ CellChangeTimes->{3.520278834512721*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Integrate", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Erf", "[", "\[Infinity]", "]"}], "-", 
+    RowBox[{"Erf", "[", 
+     RowBox[{"x", "/", 
+      RowBox[{"Sqrt", "[", 
+       RowBox[{"4", "*", "alpha", "*", "t"}], "]"}]}], "]"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", "0", ",", "\[Infinity]"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.520278921814468*^9, 3.520278949088863*^9}}],
+
+Cell[BoxData[
+ RowBox[{"If", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"Re", "[", 
+      FractionBox["1", 
+       RowBox[{"alpha", " ", "t"}]], "]"}], "\[GreaterEqual]", "0"}], "&&", 
+    RowBox[{
+     RowBox[{"Re", "[", 
+      SqrtBox[
+       RowBox[{"alpha", " ", "t"}]], "]"}], ">", "0"}]}], ",", 
+   FractionBox[
+    RowBox[{"2", " ", 
+     SqrtBox[
+      RowBox[{"alpha", " ", "t"}]]}], 
+    SqrtBox["\[Pi]"]], ",", 
+   RowBox[{"Integrate", "[", 
+    RowBox[{
+     RowBox[{"1", "-", 
+      RowBox[{"Erf", "[", 
+       FractionBox["x", 
+        RowBox[{"2", " ", 
+         SqrtBox[
+          RowBox[{"alpha", " ", "t"}]]}]], "]"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", "0", ",", "\[Infinity]"}], "}"}], ",", 
+     RowBox[{"Assumptions", "\[Rule]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Re", "[", 
+         FractionBox["1", 
+          RowBox[{"alpha", " ", "t"}]], "]"}], "<", "0"}], "||", 
+       RowBox[{
+        RowBox[{"Re", "[", 
+         SqrtBox[
+          RowBox[{"alpha", " ", "t"}]], "]"}], "\[LessEqual]", "0"}]}]}]}], 
+    "]"}]}], "]"}]], "Output",
+ CellChangeTimes->{3.5202789623672123`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{"Erf", "[", 
+   RowBox[{"Sqrt", "[", "2", "]"}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.520355046221777*^9, 3.520355063118079*^9}, {
+  3.520355107027672*^9, 3.520355146156451*^9}, {3.520355244220339*^9, 
+  3.5203552641322803`*^9}}],
+
+Cell[BoxData["0.9544997361036416`"], "Output",
+ CellChangeTimes->{{3.520355055044242*^9, 3.520355063788826*^9}, {
+  3.520355108621779*^9, 3.520355146456098*^9}, {3.520355248056155*^9, 
+  3.5203552646423807`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{"2", "/", 
+   RowBox[{"Sqrt", "[", "2", "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.520355234416051*^9, 3.520355253224368*^9}}],
+
+Cell[BoxData["1.4142135623730951`"], "Output",
+ CellChangeTimes->{{3.5203552387667837`*^9, 3.520355253611075*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{"Erf", "[", "2", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.520355067654071*^9, 3.520355071196095*^9}}],
+
+Cell[BoxData["0.9953222650189527`"], "Output",
+ CellChangeTimes->{3.520355072245981*^9}]
+}, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1680, 1000},
-WindowMargins->{{0, Automatic}, {Automatic, 25}},
+WindowSize->{1670, 990},
+WindowMargins->{{Automatic, 4}, {Automatic, 30}},
 Magnification->1.5,
 FrontEndVersion->"7.0 for Linux x86 (64-bit) (February 25, 2009)",
 StyleDefinitions->"Default.nb"
@@ -174,11 +266,35 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[567, 22, 126, 1, 108, "Section"],
 Cell[696, 25, 1418, 43, 77, "Input"],
+Cell[2117, 70, 1749, 37, 499, "Input"],
 Cell[CellGroupData[{
-Cell[2139, 72, 1749, 37, 533, InheritFromParent],
-Cell[3891, 111, 1794, 38, 499, "Output"]
+Cell[3891, 111, 201, 4, 46, "Input"],
+Cell[4095, 117, 112, 1, 45, "Output"]
 }, Open  ]],
-Cell[5700, 152, 94, 1, 46, "Input"]
+Cell[CellGroupData[{
+Cell[4244, 123, 478, 13, 46, "Input"],
+Cell[4725, 138, 77, 1, 45, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4839, 144, 134, 2, 46, "Input"],
+Cell[4976, 148, 70, 1, 45, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5083, 154, 421, 11, 46, "Input"],
+Cell[5507, 167, 1145, 38, 137, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6689, 210, 282, 6, 46, "Input"],
+Cell[6974, 218, 212, 3, 45, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7223, 226, 175, 4, 46, "Input"],
+Cell[7401, 232, 114, 1, 45, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7552, 238, 150, 3, 46, "Input"],
+Cell[7705, 243, 88, 1, 45, "Output"]
+}, Open  ]]
 }, Open  ]]
 }
 ]

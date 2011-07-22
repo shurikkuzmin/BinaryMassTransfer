@@ -282,15 +282,14 @@ diameter \cite{bercic-mass} which can be calculated as:
 \begin{equation}
 d_h = \lim_{W\to\infty}\frac{4A}{P}=\lim_{W\to\infty}\frac{4 W\,H}{2(W+H)}=2 H.
 \end{equation}
-For comparison reasons we as well present the correlation when the hydraulic diameter is taken as
-$d_h=H$, see Fig. \ref{fig:mass:transfer:theoretical}.
+For comparison reasons we derived in Section \ref{mass:transfer:correlation} the correlation for the
+flow between plates, see Fig. \ref{fig:mass:transfer:theoretical}. One can see that the
+difference is negligible.
 
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/theoretical_correlations.eps}\\
-\includegraphics[width=\textwidth]{Figures/theoretical_correlations_without_hydraulic.eps}\\
-\caption{The literature correlations by various authors with hydraulic diameter taken as $2 H$
-(top) and $H$ (bottom). Correlations deviate a lot among each
-other.\label{fig:mass:transfer:theoretical}}
+%\includegraphics[width=\textwidth]{Figures/theoretical_correlations_without_hydraulic.eps}\\
+\caption{The literature correlations by various authors.\label{fig:mass:transfer:theoretical}}
 \end{figure}
 
 The volumetric mass transfer coefficient is calculated according to the work of
@@ -348,6 +347,12 @@ number (for the flow between plates is as follows):
 Fo=\frac{D t_{\mathrm{film}}}{\delta^2}=\frac{D
 (L_{\mathrm{bubble}}-H)}{U_{\mathrm{bubble}}\delta^2}.
 \end{equation}
+To understand the influence of the mass transfer in the film we provided the time needed for
+diffusion to reach the film thickness distance (95\% confidence interval of the film thickness):
+\begin{equation}
+\delta\approx 2\sqrt{2}\sqrt{D t};\ t \approx \frac{\delta^2}{8 D};\ N_{iter}=\frac{t}{\Delta t}.
+\end{equation}
+
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/steady_state.eps}
 \caption{The mass transfer coefficient vs. time iterations. One can see that the pseudo steady
@@ -355,25 +360,27 @@ state can be reached after $500000$. The mass transfer coefficient is taken as t
 concentration values between $500000$ to $1000000$ time steps.\label{fig:steady:state}}
 \end{figure}
 \begin{table}[htb!]
-\begin{tabularx}{\textwidth}{|X|X|X|}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
 \hline
-$Ca$&$Fo$&$k_L a,\,\mathrm{s}^{-1}$\\
+$Ca$&$Fo$&$k_L a,\,\mathrm{s}^{-1}$&$N_{iter}$\\
 \hline
-$0.026$&$0.08493$&$0.2737$\\
-$0.047$&$0.02160$&$0.3664$\\
-$0.080$&$0.00588$&$0.4959$\\
-$0.065$&$0.00862$&$0.4734$\\
-$0.222$&$0.00103$&$0.8505$\\
-$0.479$&$0.00034$&$1.1541$\\
-$0.736$&$0.00018$&$1.1801$\\
-$0.989$&$0.00012$&$1.2215$\\
+$0.026$&$0.08493$&$0.2737$&$873984$\\
+$0.047$&$0.02160$&$0.3664$&$1835817$\\
+$0.080$&$0.00588$&$0.4959$&$3965227$\\
+$0.065$&$0.00862$&$0.4734$&$3149710$\\
+$0.222$&$0.00103$&$0.8505$&$8195770$\\
+$0.479$&$0.00034$&$1.1541$&$12399627$\\
+$0.736$&$0.00018$&$1.1801$&$14683652$\\
+$0.989$&$0.00012$&$1.2215$&$16101062$\\
 \hline
 \end{tabularx}
 \caption{Simulation results for different capillary numbers. \label{table:volumetric:coefficients}}
 \end{table}
 
+\subsection{Comparison between correlations and results}
 Comparison between correlations and simulations one can find in Fig.
-\ref{fig:comparison:correlations}.
+\ref{fig:comparison:correlations}. The simulated results exhibit larger mass transfer in comparison
+with the given correlations. {\color{red} Need to recalculate and check the kinematic viscosities.}
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/comparison_correlations.eps}
 \caption{One can see the comparison between correlations and simulations. {\color{red} Last two
@@ -430,6 +437,7 @@ For the zero flux on the wall one can use another equation:
 \end{description}
 
 \section{Solution of the semi-infinite concentration problems}
+\label{mass:transfer:correlation}
 For short contact times the mass transfer can be decomposed into two parts: transfer from the wall
 to semi-infinite medium and transfer from the sphere to the infinite medium. In what follows we
 derive analytical solutions to these two situations:
@@ -543,8 +551,31 @@ divided by the time $t_e$. The accumulated  flux is the integral of the derivati
 $-D\frac{\mathrm{d} C(x,t)}{\mathrm{d}x}|_{x=0}$ by time $t$. The incoming flux is as follows:
 \begin{equation}
 \begin{aligned}
-&-D\frac{\mathrm{d} C(x,t)}{\mathrm{d}x}|_{x=0}=D \frac{1}{\sqrt{D t}}\\
-&k_L = \sqrt{\frac{D}{\pi t_{\mathrm{film}}}}.
+&-D\frac{\mathrm{d} C(x,t)}{\mathrm{d}x}|_{x=0}=D \frac{1}{\sqrt{\pi D t}}\\
+\end{aligned}
+\end{equation}
+The accumulated concentration and the mass transfer coefficients are:
+\begin{equation}
+\begin{aligned}
+&\int_{0}^{t_{\mathrm{film}}}{-D\frac{\mathrm{d} C(x,t)}{\mathrm{d}x}|_{x=0} \mathrm{d}t}=2
+\sqrt{ \frac{D t}{\pi}}\\
+&k_L = 2 \sqrt{\frac{D}{\pi t_{\mathrm{film}}}}.
+\end{aligned}
+\end{equation}
+If we account for the two surfaces for the bubble then one can obtain the following volumetric mass
+transfer coefficient:
+\begin{equation}
+\begin{aligned}
+&k_L a= 2\sqrt{\frac{D}{\pi t_{\mathrm{film}}}} 2
+\frac{L_{\mathrm{bubble}}-(H_{\mathrm{eff}}-2\delta)}{(L_{\mathrm{bubble}}+L_{
+\mathrm { slug } } )H_ { \mathrm { eff } } }\\
+&k_L a= 2\sqrt{\frac{D}{\pi
+\frac{L_{\mathrm{bubble}}-(H_{\mathrm{eff}}-2\delta)}{U_{\mathrm{bubble}}}}} 2
+\frac{L_{\mathrm{bubble}}-(H_{\mathrm{eff}}-2\delta)}{(L_{\mathrm{bubble}}+L_{
+\mathrm { slug } } )H_ { \mathrm { eff } } }\\
+&k_L a=4 \sqrt{\frac{D U_{\mathrm{bubble}}}{\pi}}
+\frac{\sqrt{L_{\mathrm{bubble}}-(H_{\mathrm{eff}-2\delta})}}{(L_{\mathrm{bubble}}+L_{\mathrm{slug}}
+)H_ { \mathrm { eff } } }
 \end{aligned}
 \end{equation}
 
@@ -569,9 +600,49 @@ a)+Y_0^2(\alpha a)}e^{-\alpha^2 D t}[J_0(\alpha r) Y_0(\alpha a)-Y_0(\alpha r) J
 a)]\mathrm{d}r'}
 \end{aligned}
 \end{equation}
-These integrals can be taken through the recurrent equations for Bessel functions. 
+These integrals can be taken through the recurrent equations for Bessel functions. However, the
+penetration of the concentrator comes not only from the diffusion but mainly from the advection
+part. According to the penetration theory one can use the following correlation for the mass
+transfer coefficient:
+\begin{equation}
+k_L=2\sqrt{\frac{D}{\pi t_{\mathrm{contact}}}},
+\end{equation}
+where $t_{\mathrm{contact}}$ for the bubble cap can be calculated from the following considerations
+\cite{vanbaten-circular}: the distance travelled by a fluid packet coming to the bubble equals to a
+half of semicircle perimeter until it is swept away by the vortex in the front of the bubble
+{\color{red} (working only for small capillary numbers where a vortex exists in the front of the
+bubble)}. Therefore for the case of the bubble arising with the velocity $U_{\mathrm{bubble}}$ one
+can estimate the mass transfer coefficient as follows:
+\begin{equation}
+k_L=2\sqrt{\frac{D}{\pi t_{\mathrm{contact}}}}=2\sqrt{\frac{D}{\pi \frac{ \pi
+(H_{\mathrm{eff}}-2\delta)/2}{U_{\mathrm{bubble}}}}}=\frac{2\sqrt{2}}{\pi}\sqrt{\frac{D
+U_{\mathrm{bubble}}}{H_{\mathrm{eff}}-2\delta}}
+\end{equation}
+The volumetric mass transfer coefficient is then as follows:
+\begin{equation}
+\begin{aligned}
+k_L a=\frac{2\sqrt{2}}{\pi}\sqrt{\frac{D
+U_{\mathrm{bubble}}}{H_{\mathrm{eff}}-2\delta}} \frac{\pi
+(H_{\mathrm{eff}}-2\delta)}{(L_{\mathrm{bubble}}+L_{\mathrm{slug}}) H_{\mathrm{eff}}}\\
+k_L a=2\sqrt{2}\sqrt{D
+U_{\mathrm{bubble}}}\frac{\sqrt{H_{\mathrm{eff}}-2\delta}}{(L_{\mathrm{bubble}}+L_{\mathrm{slug}})H_
+{\mathrm{eff}}}
+\end{aligned}
+\end{equation}
 
 \end{description}
+Therefore the overall adjusted for the flow between plates mass transfer coefficient is expressed as
+follows:
+\begin{equation}
+\begin{aligned}
+k_L a =&4 \sqrt{\frac{D U_{\mathrm{bubble}}}{\pi}}
+\frac{\sqrt{L_{\mathrm{bubble}}-(H_{\mathrm{eff}-2\delta})}}{(L_{\mathrm{bubble}}+L_{\mathrm{slug}}
+)H_ { \mathrm { eff } } }\\
+&+2\sqrt{2}\sqrt{D
+U_{\mathrm{bubble}}}\frac{\sqrt{H_{\mathrm{eff}}-2\delta}}{(L_{\mathrm{bubble}}+L_{\mathrm{slug}})H_
+{\mathrm{eff}}}.
+\end{aligned}
+\end{equation}
  
 
 \section{TRT $D2Q9$ model. Equilibrium functions}

@@ -3,6 +3,7 @@ import numpy
 import pylab
 import math
 import os
+import subprocess
 
 def Produce_Bunch():
     print os.getcwd()
@@ -34,7 +35,38 @@ def Produce_Bunch():
     
     print "Aver_coefficient=",aver_coefficient
     return aver_coefficient
-if __name__=="__main__":
+def Produce_Pictures():
+    print os.getcwd()
+    capillary_str=["3","5","8","10","20","40","60","80"]
+    capillaries=numpy.array([0.026,0.047,0.080,0.065,0.222,0.479,0.736,0.989])
+    
+    #capillary=capillaries[capillary_str.index(dir_name)]
+    for counter,dir_name in enumerate(capillary_str):
+        dir_name="Results/"+dir_name
+        os.chdir(dir_name)
+
+        capillary=capillaries[counter]
+        file_list=[]    
+        for root,dirs,files in os.walk(os.getcwd()):
+            for file in files:
+                if file[0:7]=="density":
+                    file_list.append(file)
+        #for file_name in sorted(file_list):
+        #    arr=numpy.loadtxt(file_name)
+        #    print file_name        
+        #    pylab.imshow(arr,origin="lower")
+        #    pylab.title(r'''$Ca='''+str(capillary)+r'''$''')
+        #    pylab.text(1500, 100, "Time="+file_name[7:-4])
+        #    pylab.savefig("map"+file_name[7:-4]+".png",format="PNG")
+        #    pylab.clf()
+        #subprocess.call(["mencoder","mf://*.png","-mf","fps=5:type=png","-ovc","lavc","-lavcopts","vcodec=mpeg4","-o","output.mp4"])
+        subprocess.call(["mencoder","mf://*.png","-mf","fps=5:type=png","-ovc","lavc","-lavcopts","vcodec=wmv1","-o","ca0"+str(capillary)[2:]+".avi"])
+        os.chdir("../..")
+    #   #print file
+    #    read_file=numpy.loadtxt(file)
+    #    flux.append(read_file[0].tolist())
+    
+def Produce_Curves():
     capillaries=numpy.array([0.026,0.047,0.080,0.065,0.222,0.479,0.736,0.989])
     bubble_lengths_non=numpy.array([5.225,5.22,5.215,4.965,5.25,5.565,5.51,5.505])
     slug_lengths_non=numpy.array([9.775,9.78,9.785,10.035,9.75,9.435,9.49,9.495])
@@ -48,16 +80,21 @@ if __name__=="__main__":
     diameter=1.5e-3
     hydraulic=2*diameter
     #hydraulic=diameter    
+    
     bubble_lengths=diameter*bubble_lengths_non
     slug_lengths=diameter*slug_lengths_non
+    bubble_diameters=diameter*(1.0-2.0*widths)
+
     superficial_gas=bubble_velocities*holdups    
-    print bubble_velocities/velocities_lbm    
     superficial_liquid=superficial_liq_lbm*bubble_velocities/velocities_lbm
+    
+    diffusion=1.118e-9
+    deltat=4.64e-7
+    print bubble_velocities/velocities_lbm    
     print "Liquid superficial=",superficial_liquid
     print "Bubble_velocities=",bubble_velocities
     print "Gas_superficial=",superficial_gas
-    diffusion=1.118e-9
-    deltat=9.3e-5
+    print "Iterations=",diameter*diameter*widths*widths/(8.0*diffusion*deltat)    
     fourier=diffusion*(bubble_lengths-diameter)/(bubble_velocities*widths*widths*diameter*diameter)
     aver_coeff=Produce_Bunch()
 
@@ -65,14 +102,18 @@ if __name__=="__main__":
     bercic=0.111*math.sqrt(diffusion/2e-9)*numpy.power(superficial_gas+superficial_liquid,1.19)/numpy.power((1-holdups)*(bubble_lengths+slug_lengths),0.57)    
     vanbaten=2.0/math.sqrt(math.pi)*numpy.sqrt(diffusion*bubble_velocities/(bubble_lengths-hydraulic))*4\
             *(bubble_lengths-hydraulic)/(hydraulic*(bubble_lengths+slug_lengths))\
-            +2.0*math.sqrt(2)/math.pi*numpy.sqrt(diffusion*bubble_velocities/hydraulic)*4/(bubble_lengths+slug_lengths)
+            +2.0*math.sqrt(2.0)/math.pi*numpy.sqrt(diffusion*bubble_velocities/hydraulic)*4/(bubble_lengths+slug_lengths)
+    
+    vanbaten_my=4.0*numpy.sqrt(diffusion*bubble_velocities/math.pi)*numpy.sqrt(bubble_lengths-bubble_diameters)/((bubble_lengths+slug_lengths)*diameter)\
+               +2.0*math.sqrt(2.0)*numpy.sqrt(diffusion*bubble_velocities)*numpy.sqrt(bubble_diameters)/((bubble_lengths+slug_lengths)*diameter)
     
     fig=pylab.figure()    
     pylab.plot(bubble_velocities,yue,'k^',markersize=8)
     pylab.plot(bubble_velocities,bercic,'ko',markersize=8)
     pylab.plot(bubble_velocities,vanbaten,'ks',markersize=8)
-    pylab.plot(bubble_velocities,aver_coeff,'kd',markersize=8)    
-    leg=["Yue","Bercic","Van Baten","Simulations"]
+    pylab.plot(bubble_velocities,aver_coeff,'kd',markersize=8)
+    pylab.plot(bubble_velocities,vanbaten_my,'kh',markersize=8)
+    leg=["Yue","Bercic","Van Baten","Simulations","Adjusted Van Baten"]
     pylab.legend(leg,loc=2)
     pylab.xlabel(r'''$U_{\mathrm{bubble}},\,\mathrm{m/s}$''',fontsize=30)
     pylab.ylabel(r'''$k_L a,\,\mathrm{s^{-1}}$''',fontsize=30)
@@ -83,3 +124,7 @@ if __name__=="__main__":
     print "Fourier=",fourier
     
     pylab.show() 
+    
+if __name__=="__main__":
+    #Produce_Pictures()
+    Produce_Curves()
