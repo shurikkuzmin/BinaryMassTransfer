@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 import numpy
 import pylab
 import math
@@ -59,8 +60,8 @@ def Produce_Pictures():
         #    pylab.text(1500, 100, "Time="+file_name[7:-4])
         #    pylab.savefig("map"+file_name[7:-4]+".png",format="PNG")
         #    pylab.clf()
-        #subprocess.call(["mencoder","mf://*.png","-mf","fps=5:type=png","-ovc","lavc","-lavcopts","vcodec=mpeg4","-o","output.mp4"])
-        subprocess.call(["mencoder","mf://*.png","-mf","fps=5:type=png","-ovc","lavc","-lavcopts","vcodec=wmv1","-o","ca0"+str(capillary)[2:]+".avi"])
+        subprocess.call(["mencoder","mf://*.png","-mf","fps=5:type=png","-ovc","lavc","-lavcopts","vcodec=mpeg4","-o","output.mp4"])
+        #subprocess.call(["mencoder","mf://*.png","-mf","fps=5:type=png","-ovc","lavc","-lavcopts","vcodec=wmv1","-o","ca0"+str(capillary)[2:]+".avi"])
         os.chdir("../..")
     #   #print file
     #    read_file=numpy.loadtxt(file)
