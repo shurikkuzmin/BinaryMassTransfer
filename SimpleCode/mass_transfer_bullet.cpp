@@ -19,8 +19,8 @@ int NUM;
 const int NPOP=9;
 
 //Time steps
-int N=1000000;
-int NOUTPUT=20000;
+int N=100000;
+int NOUTPUT=10000;
 
 //Fields and populations
 double *f;
@@ -37,7 +37,9 @@ double conc_wall=1.0;
 std::vector<int> bb_nodes;
 std::vector<char>* dirs;
 int *bottom;
+int *bottom_mid;
 int *top;
+int *top_mid;
 
 //BGK relaxation parameter
 double omega=1.99;
@@ -95,18 +97,15 @@ void init()
 			double ux_temp=ux[counter];
 			double uy_temp=uy[counter];
             
-            sum=0;
             for (int k=0; k<NPOP; k++)
 			{
 				feq=weights[k]*(dense_temp+3.0*dense_temp*(cx[k]*ux_temp+cy[k]*uy_temp)
 								+4.5*dense_temp*((cx[k]*cx[k]-1.0/3.0)*ux_temp*ux_temp
 								                +(cy[k]*cy[k]-1.0/3.0)*uy_temp*uy_temp
 								                +2.0*ux_temp*uy_temp*cx[k]*cy[k]));
-				sum+=feq;
 				f[counter*NPOP+k]=feq;
 			}
 			
-			//f[counter*NPOP]=dense_temp-sum;
 		}
 
 	for(int iY=0;iY<NY;iY++)
@@ -128,53 +127,6 @@ void init()
 	
 	writedensity("check_initial_density");
 
-
-	////BB nodes initialization
-    //for(int iX=0;iX<NX;iX++)
-	//{
-		//rho[iX][0]=1.0;
-		//ux[iX][0]=0.0;
-		//uy[iX][0]=0.0;
-
-		//double fluxx=3.0*ux[iX][0];
-		//double fluxy=3.0*uy[iX][0];
-
-		//double qxx=4.5*ux[iX][0]*ux[iX][0];
-		//double qxy=9.0*ux[iX][0]*uy[iX][0];
-		//double qyy=4.5*uy[iX][0]*uy[iX][0];
-
-
-		//for(int iPop=0;iPop<9;iPop++)
-		//{
-			//f[iX][0][iPop]=weights[iPop]*rho[iX][0]*(1.0+fluxx*cx[iPop]+fluxy*cy[iPop]+
-							//qxx*(cx[iPop]*cx[iPop]-1.0/3.0)+qxy*cx[iPop]*cy[iPop]+qyy*(cy[iPop]*cy[iPop]-1.0/3.0));
-			//g[iX][0][iPop]=weights[iPop]*phase[iX][0]*(1.0+fluxx*cx[iPop]+fluxy*cy[iPop]+
-														   //qxx*(cx[iPop]*cx[iPop]-1.0/3.0)+qxy*cx[iPop]*cy[iPop]+qyy*(cy[iPop]*cy[iPop]-1.0/3.0));
-
-		//}
-
-		//rho[iX][NY-1]=1.0;
-        //ux[iX][NY-1]=0.0;
-        //uy[iX][NY-1]=0.0;
-
-		//fluxx=3.0*ux[iX][NY-1];
-		//fluxy=3.0*uy[iX][NY-1];
-
-		//qxx=4.5*ux[iX][NY-1]*ux[iX][NY-1];
-		//qxy=9.0*ux[iX][NY-1]*uy[iX][NY-1];
-		//qyy=4.5*uy[iX][NY-1]*uy[iX][NY-1];
-
-
-		//for(int iPop=0;iPop<9;iPop++)
-		//{
-			//f[iX][NY-1][iPop]=weights[iPop]*rho[iX][NY-1]*(1.0+fluxx*cx[iPop]+fluxy*cy[iPop]+
-							//qxx*(cx[iPop]*cx[iPop]-1.0/3.0)+qxy*cx[iPop]*cy[iPop]+qyy*(cy[iPop]*cy[iPop]-1.0/3.0));
-			//g[iX][NY-1][iPop]=weights[iPop]*phase[iX][NY-1]*(1.0+fluxx*cx[iPop]+fluxy*cy[iPop]+
-														   //qxx*(cx[iPop]*cx[iPop]-1.0/3.0)+qxy*cx[iPop]*cy[iPop]+qyy*(cy[iPop]*cy[iPop]-1.0/3.0));
-
-		//}
-	//}
-
 }
 
 void collide_column_bgk(int coor_y,int coor_bottom,int coor_top)
@@ -185,7 +137,7 @@ void collide_column_bgk(int coor_y,int coor_bottom,int coor_top)
 		rho[counter]=0.0;
 
 		double sum=0;
-		for(int k=0;k<9;k++)
+		for(int k=0;k<NPOP;k++)
 			sum+=f[counter*NPOP+k];
 	
 		rho[counter]=sum;
@@ -194,15 +146,15 @@ void collide_column_bgk(int coor_y,int coor_bottom,int coor_top)
 		double ux_temp=ux[counter];
 		double uy_temp=uy[counter];
 
-		double feqeq[9];
+		double feqeq[NPOP];
 
-		for (int k=0; k<9; k++)
+		for (int k=0; k<NPOP; k++)
 			feqeq[k]=weights[k]*(dense_temp+3.0*dense_temp*(cx[k]*ux_temp+cy[k]*uy_temp)
             						         +4.5*dense_temp*((cx[k]*cx[k]-1.0/3.0)*ux_temp*ux_temp
 															+(cy[k]*cy[k]-1.0/3.0)*uy_temp*uy_temp
 					    			                         +2.0*ux_temp*uy_temp*cx[k]*cy[k]));
 
-		for(int k=0; k < 9; k++)
+		for(int k=0; k < NPOP; k++)
 			f2[counter*NPOP+k]=f[counter*NPOP+k]*(1.0-omega)+omega*feqeq[k];
 				
 	}
@@ -271,17 +223,8 @@ void collide_column(int coor_y,int coor_bottom,int coor_top)
         double u_sq=ux_temp*ux_temp+uy_temp*uy_temp;
 		double u_mn=ux_temp*ux_temp-uy_temp*uy_temp;
 		double u_cr=ux_temp*uy_temp;
-		 
-		//To check equivalence later on and change a weight which is not right       
-        //feq_plus[1]=weights_trt[1]*dense_temp*(ce+0.5*u_sq)+dense_temp*(0.25*u_mn*pxx[1]+0.25*u_cr*pxy[1]);
-        //feq_plus[2]=weights_trt[2]*dense_temp*(ce+0.5*u_sq)+dense_temp*(0.25*u_mn*pxx[2]+0.25*u_cr*pxy[2]);
-        //feq_plus[3]=feq_plus[1];
-        //feq_plus[4]=feq_plus[2];
-        //feq_plus[5]=weights_trt[5]*dense_temp*(ce+0.5*u_sq)+dense_temp*(0.25*u_mn*pxx[5]+0.25*u_cr*pxy[5]);
-        //feq_plus[6]=weights_trt[6]*dense_temp*(ce+0.5*u_sq)+dense_temp*(0.25*u_mn*pxx[6]+0.25*u_cr*pxy[6]);
-        //feq_plus[7]=feq_plus[5];
-        //feq_plus[8]=feq_plus[6];
-        
+		
+		//Check with Irina - need to correct t_q^{(u)}\neq t_q^{(a)}        
         feq_plus[1]=weights_trt[1]*dense_temp*(ce+0.5*(3.0*(cx[1]*ux_temp+cy[1]*uy_temp)*(cx[1]*ux_temp+cy[1]*uy_temp)-u_sq));
         feq_plus[2]=weights_trt[2]*dense_temp*(ce+0.5*(3.0*(cx[2]*ux_temp+cy[2]*uy_temp)*(cx[2]*ux_temp+cy[2]*uy_temp)-u_sq));
         feq_plus[3]=feq_plus[1];
@@ -333,8 +276,18 @@ void collide_bulk()
 			//collide_column_bgk(iY,1,NX-2);
 		else
 		{
-			collide_column(iY,1,bottom[iY]);
-			collide_column(iY,top[iY],NX-2);
+			if(bottom_mid[iY]==top_mid[iY])
+			{
+				collide_column(iY,1,bottom[iY]);
+				collide_column(iY,top[iY],NX-2);
+			}
+			else
+			{
+				collide_column(iY,1,bottom[iY]);
+				collide_column(iY,bottom_mid[iY],top_mid[iY]);
+				collide_column(iY,top[iY],NX-2);
+			}
+			
 			//collide_column_bgk(iY,1,bottom[iY]);
 			//collide_column_bgk(iY,top[iY],NX-2);
 		}
@@ -390,7 +343,9 @@ void initialize_geometry()
     ux=new double[NUM];
     uy=new double[NUM];
     bottom=new int[NY];
+    bottom_mid=new int[NY];
     top=new int[NY];
+    top_mid=new int[NY];
     
 	std::ifstream fin("geometry.dat");
 	std::ifstream fux("ux.dat");
@@ -443,12 +398,33 @@ void initialize_geometry()
 					iX++;
 					counter=iY*NX+iX;
 				}
-				top[iY]=iX;
+				if (iX<=NX/2)
+				{
+					bottom_mid[iY]=iX;
+					while(geometry[counter]==1)
+					{
+						iX++;
+						counter=iY*NX+iX;
+					}
+					top_mid[iY]=iX-1;
+					while((geometry[counter]==0) || (geometry[counter]==-1))
+					{
+						iX++;
+						counter=iY*NX+iX;
+					}
+				    top[iY]=iX;
+	
+				}
+				else
+				{
+					top[iY]=iX;
+					bottom_mid[iY]=top_mid[iY]=0;
+				}
 			}
 			iX++;
 		}
 		if (!flag)
-			bottom[iY]=top[iY]=0;
+			bottom[iY]=bottom_mid[iY]=top[iY]=top_mid[iY]=0;
 		iY++;
 	}
 	
@@ -461,6 +437,16 @@ void initialize_geometry()
 	for(int iY=0;iY<NY;iY++)
 	{
 		fcoor<<top[iY]<<" ";
+	}
+	fcoor<<"\n";
+	for(int iY=0;iY<NY;iY++)
+	{
+		fcoor<<bottom_mid[iY]<<" ";
+	}
+	fcoor<<"\n";
+	for(int iY=0;iY<NY;iY++)
+	{
+		fcoor<<top_mid[iY]<<" ";
 	}
 	
 	//Finding directions for BB nodes
@@ -486,6 +472,8 @@ void finish_simulation()
 	delete[] f;
 	delete[] f2;
 	delete[] bottom;
+	delete[] bottom_mid;
+	delete[] top_mid;
 	delete[] top;
 	delete[] dirs;
 }
@@ -515,8 +503,17 @@ void stream()
 			stream_column(iY,1,NX-2);
 		else
 		{
-			stream_column(iY,1,bottom[iY]);
-			stream_column(iY,top[iY],NX-2);
+			if(top_mid[iY]==bottom_mid[iY])
+			{
+				stream_column(iY,1,bottom[iY]);
+				stream_column(iY,top[iY],NX-2);
+			}
+			else
+			{
+				stream_column(iY,1,bottom[iY]);
+				stream_column(iY,bottom_mid[iY],top_mid[iY]);
+				stream_column(iY,top[iY],NX-2);
+			}
 		}
 
 	
@@ -534,10 +531,22 @@ void calculate_mass_transfer(int time_counter)
 				conc+=rho[iY*NX+iX];
 		else
 		{
-			for(int iX=1;iX<=bottom[iY];iX++)
-				conc+=rho[iY*NX+iX];
-			for(int iX=top[iY];iX<NX-1;iX++)
-				conc+=rho[iY*NX+iX];
+			if (top_mid[iY]==bottom_mid[iY])
+			{
+				for(int iX=1;iX<=bottom[iY];iX++)
+					conc+=rho[iY*NX+iX];
+				for(int iX=top[iY];iX<NX-1;iX++)
+					conc+=rho[iY*NX+iX];
+			}
+			else
+			{
+				for(int iX=1;iX<=bottom[iY];iX++)
+					conc+=rho[iY*NX+iX];
+				for(int iX=bottom_mid[iY];iX<=top_mid[iY];iX++)
+					conc+=rho[iY*NX+iX];
+				for(int iX=top[iY];iX<NX-1;iX++)
+					conc+=rho[iY*NX+iX];
+			}
 		}
 		
 	double conc_outlet=0.0;
