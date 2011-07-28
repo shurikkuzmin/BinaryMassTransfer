@@ -17,7 +17,7 @@ def run_simulations():
     capillary=numpy.linspace(0.03,0.9,30)
     capillary_str=[str(x) for x in range(3,93,3)]
     force_init=6e-6/16;
-    width=numpy.linspace(0.04,0.16,30)
+    width=numpy.linspace(0.04,0.17,30)
     for i in range(0, len(capillary)):
         dir_temp=capillary_str[i]
         os.mkdir(dir_temp)

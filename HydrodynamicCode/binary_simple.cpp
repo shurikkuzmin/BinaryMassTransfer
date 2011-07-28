@@ -8,14 +8,14 @@
 #include <vector>
 #include <limits>
 //Domain size
-const int NY=51;
-const int NX=751;
+const int NY=202;
+const int NX=3000;
 
 int width=10;
 //Time steps
-int N=40000;
-int NOUTPUT=1000;
-int NSIGNAL=50;
+int N=300000;
+int NOUTPUT=50000;
+int NSIGNAL=100;
 
 //Fields and populations
 double f[NX][NY][9], f2[NX][NY][9], g[NX][NY][9], g2[NX][NY][9];
@@ -86,7 +86,7 @@ void writephase(std::string const & fName)
 }
 
 
-void writevelocity(std::string const & fName)
+void writevelocityx(std::string const & fName)
 {
 	std::string fullName = "./tmp/" + fName+ ".dat";
 	std::ofstream fout(fullName.c_str());
@@ -101,6 +101,31 @@ void writevelocity(std::string const & fName)
 
 }
 
+void writevelocityy(std::string const & fName)
+{
+	std::string fullName = "./tmp/" + fName+ ".dat";
+	std::ofstream fout(fullName.c_str());
+	fout.precision(10);
+
+	for (int iY=NY-1; iY>=0; --iY)
+	{
+		for (int iX=0; iX<NX; ++iX)
+			fout<<uy[iX][iY]<<" ";
+		fout<<"\n";
+	}
+
+}
+
+double calculate_mass()
+{
+	double mass=0.0;
+	for (int iY=1; iY<NY-1;iY++)
+		for (int iX=0;iX<NX;iX++)
+			mass+=phase[iX][iY];
+	return mass;	
+}
+
+
 void init()
 {
 
@@ -108,13 +133,13 @@ void init()
     for(int iX=0;iX<NX;iX++)
 		for(int iY=0; iY<NY; iY++)
 		{
-			if ( (iX>=(NX-1)/4) && (iX<=3*(NX-1)/4) && (iY>=width) && (iY<=NY-width-1) )
+			if ( (iX>=(NX-1)/3) && (iX<=2*(NX-1)/3) && (iY>=width) && (iY<=NY-width-1) )
             {
-                phase[iX][iY]=1.0;
+                phase[iX][iY]=-1.0;
             }
             else
             {
-                phase[iX][iY]=-1.0;
+                phase[iX][iY]=1.0;
             }
 
 		}
@@ -412,8 +437,9 @@ int main(int argc, char* argv[])
                     g[iX][iY][iPop]=g2[iX2][iY2][iPop];
 				}
 		if (counter%NSIGNAL==0)
+		{
 			std::cout<<"Time is "<<counter<<"\n";
-
+		}
 		//Writing files
 		if (counter%NOUTPUT==0)
 		{
@@ -423,22 +449,28 @@ int main(int argc, char* argv[])
 				return 0;
 			}
 			std::cout<<counter<<"\n";
+			std::cout<<"Whole mass is"<<calculate_mass()<<"\n";
+
 
 			std::stringstream filewritedensity;
- 			std::stringstream filewritevelocity;
+ 			std::stringstream filewritevelocityx;
+ 			std::stringstream filewritevelocityy;
  			std::stringstream filewritephase;
  			std::stringstream counterconvert;
  			counterconvert<<counter;
  			filewritedensity<<std::fixed;
-			filewritevelocity<<std::fixed;
+			filewritevelocityx<<std::fixed;
+			filewritevelocityy<<std::fixed;
 			filewritephase<<std::fixed;
 
 			filewritedensity<<"density"<<std::string(6-counterconvert.str().size(),'0')<<counter;
-			filewritevelocity<<"velocity"<<std::string(6-counterconvert.str().size(),'0')<<counter;
+			filewritevelocityx<<"velocityx"<<std::string(6-counterconvert.str().size(),'0')<<counter;
+			filewritevelocityy<<"velocityy"<<std::string(6-counterconvert.str().size(),'0')<<counter;
             filewritephase<<"phase"<<std::string(6-counterconvert.str().size(),'0')<<counter;
 
  			writedensity(filewritedensity.str());
-			writevelocity(filewritevelocity.str());
+			writevelocityx(filewritevelocityx.str());
+			writevelocityy(filewritevelocityy.str());
             writephase(filewritephase.str());
 		}
 
