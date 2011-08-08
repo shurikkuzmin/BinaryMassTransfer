@@ -19,8 +19,8 @@ int NUM;
 const int NPOP=9;
 
 //Time steps
-int N=100000;
-int NOUTPUT=10000;
+int N=20000;
+int NOUTPUT=100;
 
 //Fields and populations
 double *f;
@@ -235,28 +235,6 @@ void collide_column(int coor_y,int coor_bottom,int coor_top)
         feq_plus[8]=feq_plus[6];
         feq_plus[0]=dense_temp-2.0*(feq_plus[1]+feq_plus[2]+feq_plus[5]+feq_plus[6]);
 
-
-		//for (int k=1; k<NPOP; k++)
-		//{
-			//double dot_product=cx[k]*ux_temp+cy[k]*uy_temp;
-			////feq[k]=weights_trt[k]*dense_temp*(1.0/3.0+dot_product)+
-			////					  dense_temp*(weights_trt[k]*0.5*u_sq+
-			////									0.25*u_mn*pxx[k]+0.25*u_cr*pxy[k]);
-			//feq[k]=weights_trt[k]*dense_temp*(1.0/3.0+dot_product+0.5*(3.0*dot_product*dot_product-u_sq));
-			//sum+=feq[k];
-		//}
-		
-        //for (int k=1; k<NPOP; k++)
-        //{
-        	//feq_plus[k]=0.5*(feq[k]+feq[compliment[k]]);
-            //feq_minus[k]=0.5*(feq[k]-feq[compliment[k]]);
-        //}
-
-		//feq[0]=dense_temp-sum;
-		
-
-        //feq_plus[0]=dense_temp-sum;
-        //feq_minus[0]=0.0;
  
 		//Collision operator
 		for(int k=0; k < NPOP; k++)
@@ -319,7 +297,7 @@ void update_bounce_back()
 		f2[counter*NPOP+5]=f2[(counter_top+1)*NPOP+7];
 		f2[counter*NPOP+8]=f2[(counter_bottom+1)*NPOP+6];
 
-		f2[(counter+NX-1)*NPOP+3]=f2[(counter+NX-2)*NPOP+3];
+		f2[(counter+NX-1)*NPOP+3]=f2[(counter+NX-2)*NPOP+1];
 		f2[(counter+NX-1)*NPOP+6]=f2[(counter_top+NX-2)*NPOP+8];
 		f2[(counter+NX-1)*NPOP+7]=f2[(counter_bottom+NX-2)*NPOP+5];
 
@@ -335,7 +313,7 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	NY=3001;
+	NY=3000;
 	NX=202;
 	NUM=NX*NY;
     geometry=new int[NUM];
@@ -365,8 +343,8 @@ void initialize_geometry()
 		if (geometry[counter]==0)
 		{
 		    rho[counter]=conc_bubble;
-			ux[counter]=0;
-			uy[counter]=0;
+			ux[counter]=0.0;
+			uy[counter]=0.0;
 			bb_nodes.push_back(counter);
 		}
 		else if(geometry[counter]==-1)
@@ -584,7 +562,7 @@ int main(int argc, char* argv[])
  			counterconvert<<counter;
  			filewritedensity<<std::fixed;
 
-			filewritedensity<<"density"<<std::string(6-counterconvert.str().size(),'0')<<counter;
+			filewritedensity<<"density"<<std::string(7-counterconvert.str().size(),'0')<<counter;
 			
  			writedensity(filewritedensity.str());
 		    calculate_mass_transfer(counter);
