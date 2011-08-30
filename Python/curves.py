@@ -125,7 +125,37 @@ def Produce_Curves():
     print "Fourier=",fourier
     
     pylab.show() 
+def Produce_Mass_Bunch_Sailfish():
+    print os.getcwd()
+ 
+    styles=['kv','ks','ko','k^','k>','k<']
+    aver_coefficient=[]
+    bubble_velocities=[]
+    dirs=[3,5,8,10,20,40]
+    fig=pylab.figure(99)
+
+    for counter,dir_name in enumerate(dirs):    
+        dir_name="SailfishMass/"+str(dir_name)+"/"
+        name=dir_name+"concentration.dat"
+        array=numpy.loadtxt(name)
+        #print array
+        new_conc=numpy.array(zip(array[1:,0]-array[:-1,0],array[1:,1]-array[:-1,1],array[1:,2]))
+        print "Data=",new_conc
+        coefficient=new_conc[:,1]/(200*3000)/(4.64e-7*new_conc[:,0]*(1.0-numpy.abs(new_conc[:,2])))
+        pylab.figure(99)
+        pylab.plot(array[1:,0],coefficient,styles[counter])
+        aver_coefficient.append(numpy.mean(coefficient[len(coefficient)/2:]))
+    legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities]
+    pylab.xlabel('Iterations',fontsize=20)
+    pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
+    #pylab.legend(legs,fancybox=True,labelspacing=0.1)
+    pylab.savefig("steady_state.eps",format="EPS",dpi=300)
+    
+    print "Aver_coefficient=",aver_coefficient
+    return aver_coefficient
     
 if __name__=="__main__":
     #Produce_Pictures()
-    Produce_Curves()
+    #Produce_Curves()
+    Produce_Mass_Bunch_Sailfish()
+    pylab.show()
