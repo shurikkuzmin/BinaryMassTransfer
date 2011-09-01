@@ -134,7 +134,8 @@ def Produce_Mass_Bunch_Sailfish():
     styles=['kv','ks','ko','k^','k>','k<']
     aver_coefficient=[]
     bubble_velocities=[]
-    dirs=[3,5,8,10,20,40]
+    #dirs=[3,5,8,10,20,40]
+    dirs=[3,5,8,10,20]    
     fig=pylab.figure(99)
 
     for counter,dir_name in enumerate(dirs):    
@@ -169,10 +170,10 @@ def Produce_Mass_Bunch_Sailfish():
         print "Capillary=",capillary
         print "Reynolds=",reynolds
   
-        dir_name="SailfishMass/"+str(dir_name)+"/"
+        #dir_name="SailfishMassBGK/"+str(dir_name)+"/"
+        dir_name="SailfishMassJos/"+str(dir_name)+"/"     
         name=dir_name+"concentration.dat"
         array=numpy.loadtxt(name)
-        #print array
         new_conc=numpy.array(zip(array[1:,0]-array[:-1,0],array[1:,1]-array[:-1,1],array[1:,2]))
         deltat=interface_velocity/phys_velocity*diam/(dims[0]-2)
             

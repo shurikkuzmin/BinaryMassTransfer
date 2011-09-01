@@ -23,13 +23,22 @@ def Analyze_Simulations():
     re=[]
     
     for i in range(3,93,3):
-        dir_name="HydroResults/"+str(i)
+        dir_name="HydroResultsRight/"+str(i)
         os.chdir(dir_name)
         
-        name_phi="phase300000.dat"
-        name_vel="velocityx300000.dat"       
+        name_phi="phase200000.dat"
+        name_velx="velocityx200000.dat"
+        name_vely="velocityy200000.dat"
         phase=numpy.loadtxt(name_phi)
-        vel=numpy.loadtxt(name_vel)        
+        velx=numpy.loadtxt(name_velx)
+        vely=numpy.loadtxt(name_vely)
+        grad_velx=numpy.gradient(velx)
+        grad_vely=numpy.gradient(vely)
+        divergence=grad_velx[0]+grad_vely[1]
+        
+        if numpy.max(divergence)>0.0001:
+            pylab.figure()            
+            pylab.imshow(divergence)
         dims=phase.shape
         
         center=phase[dims[0]/2,:]
@@ -42,12 +51,12 @@ def Analyze_Simulations():
         print z1,z2
         print "Bubble length=",(z2-z1)/200.0
         print "Slug length=",15.0-(z2-z1)/200.0
-        print "Liquid_velocity",numpy.sum(vel[1:-1,((z1+z2+dims[1])/2)%dims[1]])/(dims[0]-2)
+        print "Liquid_velocity",numpy.sum(velx[1:-1,((z1+z2+dims[1])/2)%dims[1]])/(dims[0]-2)
         #print "Gas holdup",float(len(numpy.where(array['phi']<0)[0]))/(dims[1]*(dims[0]-2))
         prof=phase[:,((z1+z2)/2)%dims[1]]
         widths.append(Get_Zero(prof))     
-        velocities.append(vel[dims[0]/2,z2%dims[1]])
-        re.append(vel[dims[0]/2,z2%dims[1]]*dims[0]/(2.0/3.0))
+        velocities.append(velx[dims[0]/2,z2%dims[1]])
+        re.append(velx[dims[0]/2,z2%dims[1]]*dims[0]/(2.0/3.0))
     
       
         os.chdir("../..")
@@ -58,9 +67,6 @@ def Analyze_Simulations():
     print "Capillaries=",capillaries
     print "Velocities=",velocities
     
-    
-    #pylab.loglog(giavedoni[:,0],giavedoni[:,1]/2.0,"bD-",linewidth=3,markersize=10)
-    #pylab.loglog(capillary_theor,width_theor,"ys--",linewidth=3,markersize=10)
     fig1=pylab.figure()  
     pylab.plot(capillaries,widths,"go-",linewidth=3,markersize=10)
     fig2=pylab.figure()
@@ -161,7 +167,9 @@ def Get_Bubble(dir_name):
 def Produce_Bunch():
     for counter in range(3,93,3):
         Get_Bubble(str(counter))
-
+        
+      
+        
 def Produce_Mass_Bunch():
     print os.getcwd()
  
@@ -226,6 +234,7 @@ def Produce_Mass_Bunch():
 
 
 if __name__=="__main__":
-    #Analyze_Simulations()
-    Produce_Mass_Bunch_Sailfish()
+    Analyze_Simulations()
+    #Produce_Hydro_Bunch()    
+    #Produce_Mass_Bunch()
     pylab.show()
