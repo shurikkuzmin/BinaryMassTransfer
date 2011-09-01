@@ -22,7 +22,7 @@ double f[NX][NY][9], f2[NX][NY][9], g[NX][NY][9], g2[NX][NY][9];
 double rho[NX][NY],ux[NX][NY],uy[NX][NY],phase[NX][NY];
 
 double force_x=0.000006;
-double force_y=0.000;
+double force_y=0.0;
 
 //Binary-liquid parameters
 double aconst=0.04;
@@ -289,6 +289,11 @@ void collide_bulk()
 			geqeq[0]=phase_temp-sum_phase;
 
             double tau_rho=tau_gas+(phase_temp+1.0)/2.0*(tau_liq-tau_gas);
+            if (phase_temp>1.0)
+            	tau_rho=tau_liq;
+            if (phase_temp<-1.0)
+            	tau_rho=tau_gas;
+            	
             omega_rho=1.0/tau_rho;
 
 			//Obtain force population
@@ -340,8 +345,6 @@ void update_bounce_back()
 
 		rho[iX][0]=1.0;
 		rho[iX][NY-1]=1.0;
-		//phase[iX][0]=0.5;
-		//phase[iX][NY-1]=0.5;
 		ux[iX][0]=0.0;ux[iX][NY-1]=0.0;
 		uy[iX][0]=0.0;uy[iX][NY-1]=0.0;
 	}

@@ -126,6 +126,9 @@ def Produce_Curves():
     
     pylab.show() 
 def Produce_Mass_Bunch_Sailfish():
+    #physical parameters
+    gamma=0.0728
+    diam=1.5e-3    
     print os.getcwd()
  
     styles=['kv','ks','ko','k^','k>','k<']
@@ -135,13 +138,46 @@ def Produce_Mass_Bunch_Sailfish():
     fig=pylab.figure(99)
 
     for counter,dir_name in enumerate(dirs):    
+        data_dir_name="SailfishData/"+str(dir_name)+"/"
+        file_name=data_dir_name+"capillary200000.npz"        
+        arr=numpy.load(file_name)        
+        phase=arr['phi']
+        velx=arr['v'][0]
+        vely=arr['v'][1]
+        dims=phase.shape
+
+        print "Dimensions=",dims
+
+        center=phase[dims[0]/2,:]
+        z1 = numpy.min(numpy.where(center < 0.0))
+        z2 = numpy.max(numpy.where(center < 0.0))
+        slug_length=dims[1]-z2+z1    
+        if z1==0:
+            z2=numpy.min(numpy.where(center>0.0))+dims[1]
+            z1=numpy.max(numpy.where(center>0.0))
+            slug_length=z1-z2%dims[1]
+        print z1,z2
+
+        interface_velocity=velx[dims[0]/2,z2%dims[1]]
+        capillary=interface_velocity*(2.0/3.0)/math.sqrt(8*0.04*0.04/9.0)
+        reynolds=interface_velocity*dims[0]/(2.0/3.0)        
+        phys_velocity=math.sqrt(capillary*reynolds*gamma/(1000*diam))        
+        
+        bubble_velocities.append(phys_velocity)
+        
+        print "Interface velocity=",interface_velocity
+        print "Capillary=",capillary
+        print "Reynolds=",reynolds
+  
         dir_name="SailfishMass/"+str(dir_name)+"/"
         name=dir_name+"concentration.dat"
         array=numpy.loadtxt(name)
         #print array
         new_conc=numpy.array(zip(array[1:,0]-array[:-1,0],array[1:,1]-array[:-1,1],array[1:,2]))
+        deltat=interface_velocity/phys_velocity*diam/(dims[0]-2)
+            
         print "Data=",new_conc
-        coefficient=new_conc[:,1]/(200*3000)/(4.64e-7*new_conc[:,0]*(1.0-numpy.abs(new_conc[:,2])))
+        coefficient=new_conc[:,1]/(200*3000)/(deltat*new_conc[:,0]*(1.0-numpy.abs(new_conc[:,2])))
         pylab.figure(99)
         pylab.plot(array[1:,0],coefficient,styles[counter])
         aver_coefficient.append(numpy.mean(coefficient[len(coefficient)/2:]))
@@ -152,8 +188,21 @@ def Produce_Mass_Bunch_Sailfish():
     pylab.savefig("steady_state.eps",format="EPS",dpi=300)
     
     print "Aver_coefficient=",aver_coefficient
-    return aver_coefficient
     
+    legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities]
+    pylab.xlabel('Iterations',fontsize=20)
+    pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
+    pylab.legend(legs,fancybox=True,labelspacing=0.1)
+    #pylab.savefig("steady_state.eps",format="EPS",dpi=300)
+    
+    pylab.figure()
+    print phys_velocity
+    pylab.plot(bubble_velocities,aver_coefficient,'ro')
+    print "Aver_coefficient=",aver_coefficient
+    return aver_coefficient
+
+
+
 if __name__=="__main__":
     #Produce_Pictures()
     #Produce_Curves()
