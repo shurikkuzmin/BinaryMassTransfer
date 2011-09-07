@@ -50,7 +50,7 @@ if __name__=="__main__":
     name_velx="tmp/velocityx150000.dat"
     name_vely="tmp/velocityy150000.dat"
     #CalculateDivergence(name_phase,name_velx,name_vely)
-    name="SailfishData/20/capillary200000.npz"    
+    name="SailfishData/80/capillary200000.npz"    
     CalculateDivergenceSailfish(name)    
     pylab.show()
     

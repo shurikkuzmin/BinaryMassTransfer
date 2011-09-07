@@ -400,6 +400,24 @@ large deviation of the results can be probably explained by the flow between pla
 with the flow in circular and square microchannels.} \label{fig:comparison:correlations}}
 \end{figure}
 
+
+\section{Other boundary conditions}
+We used the outflow boundary conditions for both boundaries and determined the coefficient
+according Eq. \ref{theor:continuous:mass:transfer}. One can see the calculated mass transfer
+coefficient in time in Fig. \ref{fig:steady:state:jos}.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/steady_state_jos.eps}
+\caption{The calculated mass transfer coefficient in time with open boundaries $\partial_x
+C_{inlet}=\partial_x C_{outlet}=0$. One can see some negative values for volumetric coefficients.
+This situation corresponds to the case, then the inlet concentration is greater than the outlet
+$C_{inlet}>C_{outlet}$. This corresponds to smaller capillary numbers due to vortex in front of the
+bubble. It is the indication that one needs to take more time steps to wait until the outlet
+concentration becomes larger than the inlet, which can take a relatively large time period to
+wait. Large numbers of the volumetric mass transfer coefficients means the insuffient number of
+the unit volumes simulated, as the large difference in the outlet and inlet numbers means the
+deviation from the continuous picture. \label{fig:steady:state:jos} }
+\end{figure}
+
 \appendix
 
 \section{Boundary conditions}
@@ -558,12 +576,15 @@ U_{bubble}\,t+L_{unit}}{U_{gas}+U_{liq}}\bigr)\Bigr)\\
 \frac{L_{unit}}{U_{gas}+U_{liq}}\bigr)\Bigr)
 \feqal
 Therefore the mass transfer coefficient can be calculated as follows:
-\beqal
+\begin{equation}
+\label{theor:continuous:mass:transfer}
+\begin{aligned}
 &-k_L a \frac{L_{unit}}{U_{gas}+U_{liq}}=\ln\Bigl(\frac{C^{*}-C_{outlet}}{C^{*}-C_{inlet}}\Bigr)\\
 &k_L a
 =\frac{U_{gas}+U_{liq}}{L_{unit}}\ln\Bigl(\frac{C^{*}-C_{inlet}}{C^{*}-C_{outlet}}
 \Bigr)
-\feqal 
+\end{aligned}
+\end{equation}
 If inlet and outlet concentrations are small in comparison with the saturation concentration $C^{*}$
 then the expression for the volumetric mass transfer coefficitent $k_L a$ can be simplified:
 \beq

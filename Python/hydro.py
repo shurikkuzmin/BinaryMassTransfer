@@ -26,9 +26,9 @@ def Analyze_Simulations():
         dir_name="HydroResultsRight/"+str(i)
         os.chdir(dir_name)
         
-        name_phi="phase200000.dat"
-        name_velx="velocityx200000.dat"
-        name_vely="velocityy200000.dat"
+        name_phi="phase300000.dat"
+        name_velx="velocityx300000.dat"
+        name_vely="velocityy300000.dat"
         phase=numpy.loadtxt(name_phi)
         velx=numpy.loadtxt(name_velx)
         vely=numpy.loadtxt(name_vely)
