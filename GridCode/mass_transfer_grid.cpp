@@ -8,8 +8,10 @@
 #include <stdlib.h>
 #include <cmath>
 #include <vector>
+#include <limits>
 //Factor
 const int factor=2;
+//const double reverse_factor=1.0/double(factor);
 //Domain size
 int NY;
 int NX;
@@ -19,8 +21,8 @@ int NUM;
 const int NPOP=9;
 
 //Time steps
-int N=20000;
-int NOUTPUT=100;
+int N=1000000;
+int NOUTPUT=10000;
 
 //Fields and populations
 double *f;
@@ -28,7 +30,7 @@ double *f2;
 double *rho;
 double *ux;
 double *uy;
-int * geometry;
+int *geometry;
 
 //Boundary conditions
 double conc_inlet=0.5;
@@ -42,7 +44,7 @@ int *top;
 int *top_mid;
 
 //BGK relaxation parameter
-double omega=1.99;
+double omega=1.0/(2.0/1.99-0.5);
 double omega_plus=2.0-omega;
 double omega_minus=omega;
 
@@ -313,19 +315,20 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	int NYLOCAL=3000;
+	int NYLOCAL=3001;
 	int NXLOCAL=202;
-	int NUMLOCAL=NX*NY;
+	int NUMLOCAL=NXLOCAL*NYLOCAL;
 	NX=(NXLOCAL-2)*factor+2;
 	NY=NYLOCAL*factor;
     NUM=NX*NY;
-    geometry_local=new int[NUMLOCAL];
+    int *geometry_local=new int[NUMLOCAL];
+    double *ux_local=new double[NUMLOCAL];
+    double *uy_local=new double[NUMLOCAL];
+   
     geometry=new int[NUM];
     rho=new double[NUM];
     ux=new double[NUM];
     uy=new double[NUM];
-    ux_local=new double[NUMLOCAL];
-    uy_local=new double[NUMLOCAL];
     
     bottom=new int[NY];
     bottom_mid=new int[NY];
@@ -337,31 +340,77 @@ void initialize_geometry()
 	std::ifstream fuy("uy.dat");
 	
 	//Reading files
-	for(int counter=0;counter<NUM;counter++)
+	for(int counter=0;counter<NUMLOCAL;counter++)
 	{
 		fin>>geometry_local[counter];
 		fux>>uy_local[counter];
 		fuy>>ux_local[counter];
 	}
-    
+   
     //Redistribution of fields
-    for(int conter=0;counter<NUMLOCAl;counter++)
+    for(int counter=0;counter<NUMLOCAL;counter++)
     {
         int iY=counter/NXLOCAL;
         int iX=counter%NXLOCAL;
-        if (iY==0)
+        if (iX==0)
         {
-            geometry[iX]=geometry_local[counter];
-            geometry[2*iX]=geometry_local[counter];
+            geometry[2*iY*NX]=geometry_local[counter];
+            geometry[(2*iY+1)*NX]=geometry_local[counter];
+            ux[2*iY*NX]=ux_local[counter];
+            ux[(2*iY+1)*NX]=ux_local[counter];
+            uy[2*iY*NX]=uy_local[counter];
+            uy[(2*iY+1)*NX]=uy_local[counter];
             continue; 
         }
-        if (iY==NY-1)
+        if (iX==NXLOCAL-1)
         {
-        	geometry[2*(NY-1)]
+        	geometry[2*iY*NX+NX-1]=geometry_local[counter];
+        	geometry[(2*iY+1)*NX+NX-1]=geometry_local[counter];
+        	ux[2*iY*NX+NX-1]=ux_local[counter];
+        	ux[(2*iY+1)*NX+NX-1]=ux_local[counter];
+        	uy[2*iY*NX+NX-1]=uy_local[counter];
+        	uy[(2*iY+1)*NX+NX-1]=uy_local[counter];
+        	
+        	continue;
         }
-        geometry[2*iY*NXLOCAL+iX]=geometry[counter];
-        geometry[(2*iY+1)*NXLOCAL+iX]=geometry[counter];
+        
+        geometry[2*iY*NX+2*iX-1]=geometry_local[counter];
+        geometry[2*iY*NX+2*iX]=geometry_local[counter];
+        geometry[(2*iY+1)*NX+2*iX-1]=geometry_local[counter];
+        geometry[(2*iY+1)*NX+2*iX]=geometry_local[counter];
+        ux[2*iY*NX+2*iX-1]=ux_local[counter];
+        ux[2*iY*NX+2*iX]=ux_local[counter];
+        ux[(2*iY+1)*NX+2*iX-1]=ux_local[counter];
+        ux[(2*iY+1)*NX+2*iX]=ux_local[counter];
+        uy[2*iY*NX+2*iX-1]=uy_local[counter];
+        uy[2*iY*NX+2*iX]=uy_local[counter];
+        uy[(2*iY+1)*NX+2*iX-1]=uy_local[counter];
+        uy[(2*iY+1)*NX+2*iX]=uy_local[counter];
+
     }
+	
+  
+	for(int iY=1;iY<NY-1;iY++)
+		for(int iX=1;iX<NX-1;iX++)
+		{
+			if (geometry[iY*NX+iX]==0)
+	        {
+				bool neighbours=false;
+				for(int k=0;k<NPOP;k++)
+				{
+					int iX2=iX+cx[k];
+					int iY2=iY+cy[k];
+					if (geometry[iY2*NX+iX2]==1)
+						neighbours=true;
+				}
+				if (!neighbours)
+					geometry[iY*NX+iX]=-1;
+			}
+		}   
+    //Free memory for unnecessary arrays
+    delete[] geometry_local;
+    delete[] ux_local;
+    delete[] uy_local; 
 
 	//Initialization
     for(int counter=0;counter<NUM;counter++)
@@ -381,6 +430,17 @@ void initialize_geometry()
 		}
 		else
 			rho[counter]=0.0;
+	}
+	
+	std::ofstream fgeometry("geometry_check.dat");
+	for (int iX=0; iX<NX; ++iX)
+	{
+		for (int iY=0; iY<NY; iY++)
+		{
+			int counter=iY*NX+iX;
+			fgeometry<<geometry[counter]<<" ";
+		}
+		fgeometry<<"\n";
 	}
 	
 	//Finding bulk nodes

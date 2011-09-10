@@ -12,7 +12,7 @@
 int NY;
 int NX;
 int NUM;
-
+int factor=2;
 //Other constants
 const int NPOP=9;
 
@@ -306,13 +306,21 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	NY=3001;
-	NX=202;
-	NUM=NX*NY;
+	int NYLOCAL=3001;
+	int NXLOCAL=202;
+	int NUMLOCAL=NXLOCAL*NYLOCAL;
+	NX=NXLOCAL;
+	NY=NYLOCAL*factor;
+    NUM=NX*NY;
+    int *geometry_local=new int[NUMLOCAL];
+    double *ux_local=new double[NUMLOCAL];
+    double *uy_local=new double[NUMLOCAL];
+
     geometry=new int[NUM];
     rho=new double[NUM];
     ux=new double[NUM];
     uy=new double[NUM];
+  
     bottom=new int[NY];
     bottom_mid=new int[NY];
     top=new int[NY];
@@ -323,12 +331,28 @@ void initialize_geometry()
 	std::ifstream fuy("uy.dat");
 	
 	//Reading files
-	for(int counter=0;counter<NUM;counter++)
+	for(int counter=0;counter<NUMLOCAL;counter++)
 	{
-		fin>>geometry[counter];
-		fux>>uy[counter];
-		fuy>>ux[counter];
+		fin>>geometry_local[counter];
+		fux>>uy_local[counter];
+		fuy>>ux_local[counter];
 	}
+    
+    for(int counter=0;counter<NUMLOCAL;counter++)
+    {
+    	geometry[counter]=geometry_local[counter];
+    	geometry[counter+NUMLOCAL]=geometry_local[counter];
+    	ux[counter]=ux_local[counter];
+    	ux[counter+NUMLOCAL]=ux_local[counter];
+    	uy[counter]=uy_local[counter];
+    	uy[counter+NUMLOCAL]=uy_local[counter];
+
+    }
+
+    //Freeing up memory
+    delete[] geometry_local;
+    delete[] ux_local;
+    delete[] uy_local;
 
 	//Initialization
     for(int counter=0;counter<NUM;counter++)
@@ -561,7 +585,7 @@ int main(int argc, char* argv[])
  			counterconvert<<counter;
  			filewritedensity<<std::fixed;
 
-			filewritedensity<<"density"<<std::string(7-counterconvert.str().size(),'0')<<counter;
+			filewritedensity<<"density_jos"<<std::string(7-counterconvert.str().size(),'0')<<counter;
 			
  			writedensity(filewritedensity.str());
 		    calculate_mass_transfer(counter);
