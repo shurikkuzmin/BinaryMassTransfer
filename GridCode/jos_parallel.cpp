@@ -633,48 +633,41 @@ void stream()
 
 void calculate_mass_transfer(int time_counter)
 {
-	static std::ofstream fconc("concentration.dat");
 	
-    double conc=0.0;
-    int counter; 	
-    for(int iY=0;iY<NY;iY++)
-		if (bottom[iY]==top[iY])
-			for(int iX=1;iX<NX-1;iX++)
-				conc+=rho[iY*NX+iX];
-		else
-		{
-			if (top_mid[iY]==bottom_mid[iY])
-			{
-				for(int iX=1;iX<=bottom[iY];iX++)
-					conc+=rho[iY*NX+iX];
-				for(int iX=top[iY];iX<NX-1;iX++)
-					conc+=rho[iY*NX+iX];
-			}
-			else
-			{
-				for(int iX=1;iX<=bottom[iY];iX++)
-					conc+=rho[iY*NX+iX];
-				for(int iX=bottom_mid[iY];iX<=top_mid[iY];iX++)
-					conc+=rho[iY*NX+iX];
-				for(int iX=top[iY];iX<NX-1;iX++)
-					conc+=rho[iY*NX+iX];
-			}
-		}
-		
-	double conc_inlet=0.0;
-	double conc_outlet=0.0;
-	double sum_vel_inlet=0.0;
-	double sum_vel_outlet=0.0;
-	for(int iX=1;iX<NX-1;iX++)
+	if (mpi_rank==0)
 	{
-		conc_inlet+=rho[iX]*uy[iX];
-		sum_vel_inlet+=uy[iX];
-		conc_outlet=rho[(NY-1)*NX+iX]*uy[(NY-1)*NX+iX];
-		sum_vel_outlet=uy[(NY-1)*NX+iX];
-	}
-	
+		static std::ofstream fconc("concentration.dat");
 
-	fconc<<time_counter<<" "<<conc<<" "<<conc_inlet/sum_vel_inlet<<" "<<conc_outlet/sum_vel_outlet<<"\n"<<std::flush;
+		double conc_inlet=0.0;
+		double sum_vel_inlet=0.0;
+		for(int iX=1;iX<NX-1;iX++)
+		{
+			conc_inlet+=rho[iX]*uy[iX];
+			sum_vel_inlet+=uy[iX];
+		}
+
+		conc_inlet=conc_inlet/sum_vel_inlet;
+		double conc_outlet;
+		MPI_Status status;
+		MPI_Recv(&conc_outlet,1,MPI_DOUBLE,mpi_size-1,1,MPI_COMM_WORLD,&status);	
+		fconc<<time_counter<<" "<<conc_inlet<<" "<<conc_outlet<<"\n"<<std::flush;
+
+	}
+	else if(mpi_rank=mpi_size-1)
+	{
+		double conc_outlet=0.0;
+		double sum_vel_outlet=0.0;
+	
+		for(int iX=1;iX<NX-1;iX++)
+		{
+			conc_outlet=rho[(NY-1)*NX+iX]*uy[(NY-1)*NX+iX];
+			sum_vel_outlet+=uy[(NY-1)*NX+iX];
+		}
+	    conc_outlet=conc_outlet/sum_vel_outlet;
+	    MPI_Send(&conc_outlet,1,MPI_DOUBLE,0,1,MPI_COMM_WORLD);
+	}	
+   
+
 }
 
 int main(int argc, char* argv[])
@@ -713,7 +706,7 @@ int main(int argc, char* argv[])
 			filewritedensity<<"density_jos_par"<<std::string(7-counterconvert.str().size(),'0')<<counter;
 			
  			writedensity(filewritedensity.str());
-		    //calculate_mass_transfer(counter);
+		    calculate_mass_transfer(counter);
 		}
 
 	}

@@ -400,6 +400,23 @@ large deviation of the results can be probably explained by the flow between pla
 with the flow in circular and square microchannels.} \label{fig:comparison:correlations}}
 \end{figure}
 
+\subsection{Average concentration}
+As far as we used the inlet/outlet concentration in the expression of the calculation of the
+volumetric mass transfer coefficient. However, the bubble in simulations located closely to the
+inlet and with periodic boundary conditions that can change the volumetric mass transfer
+coefficient significantly. As it will be discussed later in the appendix section, the assumption of
+the periodic boundary conditions requires the continuous picture. The continuous picture requires as
+well the average concentration to be of constant value. If the average concentration is used for
+the calculation of the volumetric mass transfer coefficient {\color{red} (which can be more
+adequate)}, then the volumetric mass transfer coefficient is more close to the correlation values,
+see Fig. \ref{fig:average:concentration}. 
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/steady_state_average.eps}
+\caption{The calculation of the volumetric mass transfer coefficient, if instead the inlet/outlet
+concentration the average concentration is used.\label{fig:average:concentration}}
+\end{figure}
+One can see that the average concentration requires more than 2 millions time iterations to come to
+the steady-state.
 
 \section{Other boundary conditions}
 We used the outflow boundary conditions for both boundaries and determined the coefficient
@@ -416,6 +433,18 @@ concentration becomes larger than the inlet, which can take a relatively large t
 wait. Large numbers of the volumetric mass transfer coefficients means the insuffient number of
 the unit volumes simulated, as the large difference in the outlet and inlet numbers means the
 deviation from the continuous picture. \label{fig:steady:state:jos} }
+\end{figure}
+
+\section{Grid Refinement}
+We performed a grid refinement study and compared it with the original data. For this purpose we
+doubled every fluid node and ran simulations. One can see {\color{red} That's what I have at the
+moment - need to write parallel version for the grid refinement} in Fig. \ref{fig:grid:comparison}
+the comparison between original size and refined grid simulations data. The results are close,
+especially it's important for larger velocities, where diffusion layer is underresolved.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/steady_state_comparison_grid.eps}
+\caption{Comparison between the usual and refined grid simulations. One
+can see that curves are close.\label{fig:grid:comparison}}
 \end{figure}
 
 \appendix

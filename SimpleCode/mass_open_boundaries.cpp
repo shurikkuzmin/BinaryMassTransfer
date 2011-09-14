@@ -529,7 +529,7 @@ void calculate_mass_transfer(int time_counter)
 		conc_inlet+=rho[iX]*uy[iX];
 		sum_vel_inlet+=uy[iX];
 		conc_outlet=rho[(NY-1)*NX+iX]*uy[(NY-1)*NX+iX];
-		sum_vel_outlet=uy[(NY-1)*NX+iX];
+		sum_vel_outlet+=uy[(NY-1)*NX+iX];
 	}
 	
 
