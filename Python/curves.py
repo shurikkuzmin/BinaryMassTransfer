@@ -426,19 +426,53 @@ def Produce_Mass_Bunch_Jos():
         print "Reynolds=",reynolds
   
         #dir_name="SailfishMassBGK/"+str(dir_name)+"/"
-        dir_name="SailfishMassJos/"+str(dir_name)+"/"     
-        name=dir_name+"concentration.dat"
-        array=numpy.loadtxt(name)
         
+        results_dir_name="SailfishMassJos/"+str(dir_name)+"/"     
+        
+        files_names=glob.glob(results_dir_name+"density*.dat")
+        vx=numpy.loadtxt("SailfishResults/"+str(dir_name)+"/ux.dat").transpose()
+        files_names=sorted(files_names)
+        coefficient=[]
+        time_iterations=[]
+        for file_example in files_names:
+            print file_example,
+            density=numpy.loadtxt(file_example)
+            inlet_conc=numpy.sum(density[1:-1,1]*vx[1:-1,1])/numpy.sum(vx[1:-1,1])
+            outlet_conc=numpy.sum(density[1:-1,-2]*vx[1:-1,-2])/numpy.sum(vx[1:-1,-2])
+            coefficient.append((superficial_liquid+gas_holdup*interface_velocity)*phys_velocity/interface_velocity\
+                   /(15*diam)*numpy.log((1-numpy.abs(inlet_conc))/(1-numpy.abs(outlet_conc))))
+            time_iterations.append(int(file_example[-11:-4]))
+        numpy.savetxt(results_dir_name+"coefficient.dat",zip(time_iterations,coefficient))
+
+            
+        #array=numpy.loadtxt(results_dir_name+"concentration.dat")        
         #new_conc=numpy.array(zip(array[1:,0]-array[:-1,0],array[1:,1]-array[:-1,1],array[1:,2]))
         #deltat=interface_velocity/phys_velocity*diam/(dims[0]-2)   
         #print "Data=",new_conc
         #coefficient=new_conc[:,1]/(200*3000)/(deltat*new_conc[:,0]*(1.0-numpy.abs(new_conc[:,2])))
-        coefficient=(superficial_liquid+gas_holdup*interface_velocity)*phys_velocity/interface_velocity\
-                   /(15*diam)*numpy.log((1-numpy.abs(array[:,2]))/(1-numpy.abs(array[:,3])))
+        
+        #Calculation of coefficients
+        #inlet_conc=numpy.sum(density[1:-1,1]*vx[1:-1,1])/numpy.sum(vx[1:-1,1])
+        #outlet_conc=numpy.sum(density[1:-1,-2]*vx[1:-1,-2])/numpy.sum(vx[1:-1,-2])
+        #print "Inlet conc=",inlet_conc
+        #print "Outlet conc=",outlet_conc
+        
+        #coefficient=(superficial_liquid+gas_holdup*interface_velocity)*phys_velocity/interface_velocity\
+        #           /(15*diam)*numpy.log((1-numpy.abs(inlet_conc))/(1-numpy.abs(outlet_conc)))
+
         pylab.figure(99)
-        pylab.plot(array[:,0],coefficient,styles[counter])
+        #pylab.plot(array[:,0],coefficient,styles[counter])
+        pylab.plot(time_iterations,coefficient,styles[counter])        
         aver_coefficient.append(numpy.mean(coefficient[len(coefficient)/2:]))
+        
+        
+        #coefficient=(superficial_liquid+gas_holdup*interface_velocity)*phys_velocity/interface_velocity\
+        #           /(15*diam)*numpy.log((1-numpy.abs(array[:,2]))/(1-numpy.abs(array[:,3])))
+        #pylab.figure(99)
+        #pylab.plot(array[:,0],coefficient,styles[counter])
+        #aver_coefficient.append(numpy.mean(coefficient[len(coefficient)/2:]))
+    
+            
     legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities]
     pylab.xlabel('Iterations',fontsize=20)
     pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
@@ -446,7 +480,7 @@ def Produce_Mass_Bunch_Jos():
     pylab.savefig("steady_state.eps",format="EPS",dpi=300)
     
     print "Aver_coefficient=",aver_coefficient
-    pylab.xlim(0,1000000)
+    #pylab.xlim(0,1000000)
     legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities]
     pylab.xlabel('Iterations',fontsize=20)
     pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
@@ -534,8 +568,9 @@ def Produce_Mass_Bunch_Jos_Grid():
                    /(30*diam)*numpy.log((1-numpy.abs(inlet_conc))/(1-numpy.abs(outlet_conc))))
             time_iterations.append(int(file_example[-11:-4]))
 
-            
-        array=numpy.loadtxt(results_dir_name+"concentration.dat")        
+        numpy.savetxt(results_dir_name+"coefficient.dat",zip(time_iterations,coefficient))           
+        
+        #array=numpy.loadtxt(results_dir_name+"concentration.dat")        
         #new_conc=numpy.array(zip(array[1:,0]-array[:-1,0],array[1:,1]-array[:-1,1],array[1:,2]))
         #deltat=interface_velocity/phys_velocity*diam/(dims[0]-2)   
         #print "Data=",new_conc
@@ -554,7 +589,6 @@ def Produce_Mass_Bunch_Jos_Grid():
         #pylab.plot(array[:,0],coefficient,styles[counter])
         pylab.plot(time_iterations,coefficient,styles[counter])        
         aver_coefficient.append(numpy.mean(coefficient[len(coefficient)/2:]))
-    numpy.savetxt("coefficient.dat",zip(time_iterations,coefficient))    
     legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities]
     pylab.xlabel('Iterations',fontsize=20)
     pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
@@ -582,6 +616,7 @@ if __name__=="__main__":
     #Produce_Curves()
     #Produce_Mass_Bunch_Sailfish()
     #Produce_Mass_Bunch_Grid()    
+    #Produce_Mass_Bunch_Jos()    
     Produce_Mass_Bunch_Jos_Grid()    
     #Produce_Mass_Bunch_Sailfish_Average()    
     pylab.show()
