@@ -164,11 +164,99 @@ def Get_Bubble(dir_name):
     numpy.savetxt(dir_name+"/ux.dat",bubble_reference.transpose())
     numpy.savetxt(dir_name+"/uy.dat",vely.transpose())
 
+def Get_Bubble_Sailfish(dir_name):
+    data_dir_name="SailfishData/"+dir_name+"/"
+    arr=numpy.load(data_dir_name+"capillary200000.npz")    
+    phase=arr['phi']
+    velx=arr['v'][0]
+    vely=arr['v'][1]
+    dims=phase.shape
+
+    print "Dimensions=",dims
+
+    center=phase[dims[0]/2,:]
+    z1 = numpy.min(numpy.where(center < 0.0))
+    z2 = numpy.max(numpy.where(center < 0.0))
+    slug_length=dims[1]-z2+z1    
+    if z1==0:
+        z2=numpy.min(numpy.where(center>0.0))+dims[1]
+        z1=numpy.max(numpy.where(center>0.0))
+        slug_length=z1-z2%dims[1]
+    print z1,z2
+    
+    ##Performing perturbations
+    
+    ##reference frame
+    interface_velocity=velx[dims[0]/2,z2%dims[1]]
+    print "Interface velocity=",interface_velocity
+    print "Capillary=",interface_velocity*2.0/3.0/math.sqrt(8*0.04*0.04/9.0)
+    bubble_reference=velx-interface_velocity
+ 
+    ##Rolling the bubble to the end with certain shift
+    shift=slug_length/2
+    print dims[1]-(z2%dims[1])
+    bubble_reference=numpy.roll(bubble_reference,dims[1]-(z2%dims[1])-shift,axis=1)
+    phase=numpy.roll(phase,dims[1]-(z2%dims[1])-shift,axis=1)    
+    vely=numpy.roll(vely,dims[1]-(z2%dims[1])-shift,axis=1)    
+ 
+    #pylab.figure()
+    #pylab.plot(velx[:,((z2-z1)/2)%dims[1]])
+    #pylab.figure()
+    #pylab.plot(bubble_reference[:,dims[1]/2])
+    ##pylab.figure()
+    ##pylab.imshow(phase)
+    
+    #Fliping array
+    bubble_reference=-numpy.fliplr(bubble_reference)
+    phase=numpy.fliplr(phase)
+    vely=numpy.fliplr(vely)
+    #Calculate_Perimeter(phase)
+    ##pylab.figure()
+    ##pylab.imshow(bubble_reference)
+    
+    ##pylab.figure()
+    ##pylab.plot(bubble_reference[(dims[0]-1)/2,:])
+    
+    ##pylab.figure()
+    ##pylab.plot(bubble_reference[:,0])
+    
+    
+    positive=numpy.where(phase>0.0)
+    negative=numpy.where(phase<=0.0)
+    geometry=numpy.zeros([dims[0],dims[1]],dtype="int")    
+    geometry[positive]=1
+    geometry[negative]=-1
+    
+    cx=[0,1,0,-1,0,1,-1,-1,1]
+    cy=[0,0,1,0,-1,1,1,-1,-1]
+    dirs=zip(cx,cy)
+    for x,y in zip(negative[0],negative[1]):
+        for dirx,diry in dirs:
+            posx=x+dirx
+            posy=y+diry
+            if geometry[posx,posy]==1:
+                geometry[x,y]=0
+                break
+            
+    #pylab.figure()
+    #pylab.imshow(geometry)
+    
+    ##numpy.savetxt("geometry.dat",geometry,fmt="%d")
+    ##numpy.savetxt("ux.dat",bubble_reference)
+    ##numpy.savetxt("uy.dat",vely)
+    results_dir_name="SailfishResultsCenter/"+dir_name+"/"    
+    numpy.savetxt(results_dir_name+"geometry.dat",geometry.transpose(),fmt="%d")
+    numpy.savetxt(results_dir_name+"ux.dat",bubble_reference.transpose())
+    numpy.savetxt(results_dir_name+"uy.dat",vely.transpose())    
+    
 def Produce_Bunch():
     for counter in range(3,93,3):
         Get_Bubble(str(counter))
         
-      
+def Produce_Sailfish_Bunch():
+    dirs=[3,5,8,10,20,40,60,80]
+    for counter in dirs:
+        Get_Bubble_Sailfish(str(counter))
         
 def Produce_Mass_Bunch():
     print os.getcwd()
@@ -237,5 +325,6 @@ if __name__=="__main__":
     #Analyze_Simulations()
     #Produce_Hydro_Bunch()    
     #Produce_Mass_Bunch()
-    Produce_Bunch()
+    #Produce_Bunch()
+    Produce_Sailfish_Bunch()    
     #pylab.show()
