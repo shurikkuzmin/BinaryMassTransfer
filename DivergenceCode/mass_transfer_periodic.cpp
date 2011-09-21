@@ -336,8 +336,8 @@ void initialize_geometry()
     top_mid=new int[NY];
     
 	std::ifstream fin("geometry.dat");
-	std::ifstream fux("ux.dat");
-	std::ifstream fuy("uy.dat");
+	std::ifstream fux("ux_non.dat");
+	std::ifstream fuy("uy_non.dat");
 	std::ifstream fdiv("divergence.dat");
 	
 	//Reading files

@@ -82,7 +82,7 @@ def Analyze_Simulations():
 
     
 def Get_Bubble(dir_name):
-    dir_name="HydroResultsRight/"+dir_name+"/"
+    dir_name="HydroResultsRightAcceleration/"+dir_name+"/"
     phase=numpy.loadtxt(dir_name+"phase300000.dat")
     velx=numpy.loadtxt(dir_name+"velocityx300000.dat")
     vely=numpy.loadtxt(dir_name+"velocityy300000.dat")
@@ -325,6 +325,6 @@ if __name__=="__main__":
     #Analyze_Simulations()
     #Produce_Hydro_Bunch()    
     #Produce_Mass_Bunch()
-    #Produce_Bunch()
-    Produce_Sailfish_Bunch()    
+    Produce_Bunch()
+    #Produce_Sailfish_Bunch()    
     #pylab.show()
