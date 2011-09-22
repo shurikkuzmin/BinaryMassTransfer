@@ -321,7 +321,7 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	NY=3000;
+	NY=3001;
 	NX=202;
 	NUM=NX*NY;
     geometry=new int[NUM];
@@ -334,10 +334,10 @@ void initialize_geometry()
     bottom_mid=new int[NY];
     top=new int[NY];
     top_mid=new int[NY];
-    
+   
 	std::ifstream fin("geometry.dat");
-	std::ifstream fux("ux_non.dat");
-	std::ifstream fuy("uy_non.dat");
+	std::ifstream fux("ux.dat");
+	std::ifstream fuy("uy.dat");
 	std::ifstream fdiv("divergence.dat");
 	
 	//Reading files

@@ -165,7 +165,7 @@ def Get_Bubble(dir_name):
     numpy.savetxt(dir_name+"/uy.dat",vely.transpose())
 
 def Get_Bubble_Sailfish(dir_name):
-    data_dir_name="SailfishData/"+dir_name+"/"
+    data_dir_name="SailfishMichal/"+dir_name+"/"
     arr=numpy.load(data_dir_name+"capillary200000.npz")    
     phase=arr['phi']
     velx=arr['v'][0]
@@ -244,7 +244,7 @@ def Get_Bubble_Sailfish(dir_name):
     ##numpy.savetxt("geometry.dat",geometry,fmt="%d")
     ##numpy.savetxt("ux.dat",bubble_reference)
     ##numpy.savetxt("uy.dat",vely)
-    results_dir_name="SailfishResultsCenter/"+dir_name+"/"    
+    results_dir_name="SailfishMichal/"+dir_name+"/"    
     numpy.savetxt(results_dir_name+"geometry.dat",geometry.transpose(),fmt="%d")
     numpy.savetxt(results_dir_name+"ux.dat",bubble_reference.transpose())
     numpy.savetxt(results_dir_name+"uy.dat",vely.transpose())    
@@ -325,6 +325,6 @@ if __name__=="__main__":
     #Analyze_Simulations()
     #Produce_Hydro_Bunch()    
     #Produce_Mass_Bunch()
-    Produce_Bunch()
-    #Produce_Sailfish_Bunch()    
+    #Produce_Bunch()
+    Produce_Sailfish_Bunch()    
     #pylab.show()

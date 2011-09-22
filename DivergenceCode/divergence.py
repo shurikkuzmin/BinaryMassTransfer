@@ -90,6 +90,9 @@ def calculate_center_fields():
     read_poisson(velx,vely)
 
 def calculate_untouched_fields():
+    import pyximport
+    pyximport.install()
+    import poisson
     phase=numpy.loadtxt("phase300000.dat")
     dims=phase.shape
     
@@ -145,20 +148,25 @@ def calculate_untouched_fields():
     gradx=numpy.gradient(velx)
     grady=numpy.gradient(vely)
     div=gradx[1]+grady[0]
+    div_cross=gradx[0]+grady[1]
+    pylab.figure()
+    pylab.imshow(div)
+    pylab.figure()
+    pylab.imshow(div_cross)
+    
     
     domain=numpy.where(geometry==1)
-    coors=zip(domain[0],domain[1])
+    coors=numpy.array(zip(domain[0],domain[1]))
     print domain
     
-    for counter in range(1,100):
-        for i,j in coors:
-            topj=(j+1+dims[1])%dims[1]
-            bottomj=(j-1+dims[1])%dims[1]
-            delta=0.25*(scalar[i,topj]+scalar[i,bottomj]+scalar[i+1,j]+scalar[i-1,j]-4*scalar[i,j]+4*div[i,j])
-            scalar2[i,j]=scalar[i,j]+delta
-        scalar=scalar2
-        print counter
-
+    scalar=poisson.poisson_iteration(scalar,coors,div)
+    pylab.figure()
+    pylab.imshow(scalar)
+    pylab.colorbar()
+    pylab.figure()
+    pylab.contour(scalar)
+    pylab.colorbar()
+     
     pylab.figure()
     pylab.imshow(scalar)
     pylab.colorbar()
@@ -177,14 +185,94 @@ def calculate_untouched_fields():
     pylab.colorbar()
     pylab.figure()
     pylab.imshow(gradx[1]+grady[0])
-    pylab.figure()
-    pylab.imshow(velx)
     pylab.colorbar()
+    #pylab.figure()
+    #pylab.imshow(velx)
+    #pylab.colorbar()
+    #pylab.figure()
+    #pylab.imshow(vely)
+    #pylab.colorbar()
+def show_divergence():
+    phase=numpy.loadtxt("phase300000.dat")
+    dims=phase.shape
+    
+    velx=numpy.loadtxt("velocityx300000.dat")
+    vely=numpy.loadtxt("velocityy300000.dat")
+    
+    center=phase[dims[0]/2,:]
+    z1 = numpy.min(numpy.where(center < 0.0))
+    z2 = numpy.max(numpy.where(center < 0.0))
+    slug_length=dims[1]-z2+z1    
+    if z1==0:
+        z2=numpy.min(numpy.where(center>0.0))+dims[1]
+        z1=numpy.max(numpy.where(center>0.0))
+        slug_length=z1-z2%dims[1]
+    print z1,z2
+    
+    interface_velocity=velx[dims[0]/2,z2%dims[1]]
+   
+    
+    positive=numpy.where(phase>0.0)
+    negative=numpy.where(phase<=0.0)
+    geometry=numpy.zeros([dims[0],dims[1]],dtype="int")    
+    geometry[positive]=1
+    geometry[negative]=-1
+    
+    cx=[0,1,0,-1,0,1,-1,-1,1]
+    cy=[0,0,1,0,-1,1,1,-1,-1]
+    dirs=zip(cx,cy)
+    for x,y in zip(negative[0],negative[1]):
+        for dirx,diry in dirs:
+            posx=x+dirx
+            posy=y+diry
+            if geometry[posx,posy]==1:
+                geometry[x,y]=0
+                break
+    #putting walls
+    geometry[0,:]=0
+    geometry[-1,:]=0
+    
     pylab.figure()
-    pylab.imshow(vely)
+    pylab.imshow(geometry)
+    pylab.title("Geometry")
+
+    zerolevel=numpy.where(geometry==0)
+    velx[negative]=interface_velocity
+    vely[negative]=0.0
+    velx[zerolevel]=interface_velocity
+    velx[0,:]=0.0
+    velx[-1,:]=0.0
+    vely[zerolevel]=0.0
+    
+    gradx=numpy.gradient(velx)
+    grady=numpy.gradient(vely)
+    div=gradx[1]+grady[0]
+    pylab.figure()
+    pylab.imshow(div)
+    pylab.colorbar()
+    pylab.title("Initial divergence")
+     
+    velx=velx-interface_velocity
+    velx[0,:]=0.0
+    velx[-1,:]=0.0
+    ux=velx.transpose()
+    uy=vely.transpose()
+
+    
+    pylab.savetxt("ux_non.dat",ux)
+    pylab.savetxt("uy_non.dat",uy)
+    pylab.savetxt("geometry_non.dat",geometry.transpose(),fmt="%d")
+    
+    gradux=numpy.gradient(ux)
+    graduy=numpy.gradient(uy)
+    pylab.figure()
+    div=gradux[0]+graduy[1]
+    pylab.imshow(div)
+    pylab.title("After shift divergence")
     pylab.colorbar()
 
 if __name__=="__main__":
-    calculate_untouched_fields()
+    #calculate_untouched_fields()
+    show_divergence()
     pylab.show()
 
