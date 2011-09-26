@@ -43,39 +43,30 @@ int *top;
 int *top_mid;
 
 //BGK relaxation parameter
-double omega=1.99;
-double omega_plus=2.0-omega;
-double omega_minus=omega;
-
-//Diffusion parameter
-double ce=1.0/3.0;
-//double diffusion=(1.0/omega_minus-0.5)*ce;
-//double ce=diffusion/(1.0/omega_minus-0.5);
-
+double omega=2.5;
 
 //Underlying lattice parameters
 double weights[]={4.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/36.0,1.0/36.0,1.0/36.0,1.0/36.0};
-double weights_trt[]={0.0,1.0/3.0,1.0/3.0,1.0/3.0,1.0/3.0,1.0/12.0,1.0/12.0,1.0/12.0,1.0/12.0};
 int cx[]={0,1,0,-1,0,1,-1,-1,1};
 int cy[]={0,0,1,0,-1,1,1,-1,-1};
 int compliment[]={0,3,4,1,2,7,8,5,6};
-int pxx[]={0, 1, -1, 1, -1, 0, 0, 0, 0};
-int pxy[]={0, 0, 0, 0, 0, 1, -1, 1, -1};
+
 void writedensity(std::string const & fname)
 {
 	std::string filename=fname+".dat";
 	std::ofstream fout(filename.c_str());
 	fout.precision(10);
 
-	for (int iX=0; iX<NX; ++iX)
+	for (int iY=0; iY<NY; iY++)
 	{
-		for (int iY=0; iY<NY; iY++)
+		for (int iX=0; iX<NX; ++iX)	
 		{
 			int counter=iY*NX+iX;
 			fout<<rho[counter]<<" ";
 		}
 		fout<<"\n";
 	}
+
 }
 
 
@@ -162,120 +153,25 @@ void collide_column_bgk(int coor_y,int coor_bottom,int coor_top)
 	
 }
 
-
-
-void collide_column(int coor_y,int coor_bottom,int coor_top)
-{
-	for(int iX=coor_bottom;iX<=coor_top;iX++)
-	{
-		int counter=coor_y*NX+iX;
-		rho[counter]=0.0;
-        int offset=counter*NPOP;
- 
-		double sum=0;
-		for(int k=0;k<NPOP;k++)
-			sum+=f[offset+k];
-	
-		rho[counter]=sum;
-		
-		//Shift due to mass
-		//rho[counter]=rho[counter]-0.5*rho[counter]*divergence[counter];
-
-		double dense_temp=rho[counter];
-		double ux_temp=ux[counter];
-		double uy_temp=uy[counter];
-
-		//BGK equilibrium
-		double feq[NPOP];
-	
-		//TRT equilibrium
-		double feq_plus[NPOP],feq_minus[NPOP];
-        double f_plus[NPOP],f_minus[NPOP];
-
-         //Speeding up the process
-        f_plus[0]=f[offset];
-        f_plus[1]=0.5*(f[offset+1]+f[offset+3]);
-        f_plus[2]=0.5*(f[offset+2]+f[offset+4]);
-        f_plus[3]=f_plus[1];
-        f_plus[4]=f_plus[2];
-        f_plus[5]=0.5*(f[offset+5]+f[offset+7]);
-        f_plus[6]=0.5*(f[offset+6]+f[offset+8]);
-        f_plus[7]=f_plus[5];
-        f_plus[8]=f_plus[6];
-
-        f_minus[0]=0.0;
-        f_minus[1]=0.5*(f[offset+1]-f[offset+3]);
-        f_minus[2]=0.5*(f[offset+2]-f[offset+4]);
-        f_minus[3]=-f_minus[1];
-        f_minus[4]=-f_minus[2];
-        f_minus[5]=0.5*(f[offset+5]-f[offset+7]);
-        f_minus[6]=0.5*(f[offset+6]-f[offset+8]);
-        f_minus[7]=-f_minus[5];
-        f_minus[8]=-f_minus[6];
-      
-        //The equilibrium populations are taken from Irina's bb_pressure and bb_examples
-        feq_minus[0]=0.0;
-        feq_minus[1]=weights_trt[1]*dense_temp*(cx[1]*ux_temp+cy[1]*uy_temp);
-        feq_minus[2]=weights_trt[2]*dense_temp*(cx[2]*ux_temp+cy[2]*uy_temp);
-        feq_minus[3]=-feq_minus[1];
-        feq_minus[4]=-feq_minus[2];
-        feq_minus[5]=weights_trt[5]*dense_temp*(cx[5]*ux_temp+cy[5]*uy_temp);
-        feq_minus[6]=weights_trt[6]*dense_temp*(cx[6]*ux_temp+cy[6]*uy_temp);
-        feq_minus[7]=-feq_minus[5];
-        feq_minus[8]=-feq_minus[6];
-        
-        double u_sq=ux_temp*ux_temp+uy_temp*uy_temp;
-		double u_mn=ux_temp*ux_temp-uy_temp*uy_temp;
-		double u_cr=ux_temp*uy_temp;
-		
-		//Check with Irina - need to correct t_q^{(u)}\neq t_q^{(a)}        
-        feq_plus[1]=weights_trt[1]*dense_temp*(ce+0.5*(3.0*(cx[1]*ux_temp+cy[1]*uy_temp)*(cx[1]*ux_temp+cy[1]*uy_temp)-u_sq));
-        feq_plus[2]=weights_trt[2]*dense_temp*(ce+0.5*(3.0*(cx[2]*ux_temp+cy[2]*uy_temp)*(cx[2]*ux_temp+cy[2]*uy_temp)-u_sq));
-        feq_plus[3]=feq_plus[1];
-        feq_plus[4]=feq_plus[2];
-        feq_plus[5]=weights_trt[5]*dense_temp*(ce+0.5*(3.0*(cx[5]*ux_temp+cy[5]*uy_temp)*(cx[5]*ux_temp+cy[5]*uy_temp)-u_sq));
-        feq_plus[6]=weights_trt[6]*dense_temp*(ce+0.5*(3.0*(cx[6]*ux_temp+cy[6]*uy_temp)*(cx[6]*ux_temp+cy[6]*uy_temp)-u_sq));
-        feq_plus[7]=feq_plus[5];
-        feq_plus[8]=feq_plus[6];
-        feq_plus[0]=dense_temp-2.0*(feq_plus[1]+feq_plus[2]+feq_plus[5]+feq_plus[6]);
-
-        //Mass population
-        double mass[NPOP];
-        for (int k=0; k<NPOP; k++)
-        	//mass[k]=weights[k]*(1.0-0.5*omega_minus)*dense_temp*divergence[counter];
-			mass[k]=weights[k]*dense_temp*divergence[counter];
-		//Collision operator
-		for(int k=0; k < NPOP; k++)
-			f2[offset+k]=f[offset+k]-omega_plus*(f_plus[k]-feq_plus[k])-omega_minus*(f_minus[k]-feq_minus[k]);//-mass[k];
-
-	}
-
-	
-}
-
 void collide_bulk()
 {
 
     for(int iY=0;iY<NY;iY++)
 		if (bottom[iY]==top[iY])
-			collide_column(iY,1,NX-2);
-			//collide_column_bgk(iY,1,NX-2);
+			collide_column_bgk(iY,1,NX-2);
 		else
 		{
 			if(bottom_mid[iY]==top_mid[iY])
 			{
-				collide_column(iY,1,bottom[iY]);
-				collide_column(iY,top[iY],NX-2);
+				collide_column_bgk(iY,1,bottom[iY]);
+				collide_column_bgk(iY,top[iY],NX-2);
 			}
 			else
 			{
-				collide_column(iY,1,bottom[iY]);
-				collide_column(iY,bottom_mid[iY],top_mid[iY]);
-				collide_column(iY,top[iY],NX-2);
+				collide_column_bgk(iY,1,bottom[iY]);
+				collide_column_bgk(iY,bottom_mid[iY],top_mid[iY]);
+				collide_column_bgk(iY,top[iY],NX-2);
 			}
-			
-			//collide_column_bgk(iY,1,bottom[iY]);
-			//collide_column_bgk(iY,top[iY],NX-2);
 		}
 			
 }
@@ -321,7 +217,7 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	NY=3001;
+	NY=3000;
 	NX=202;
 	NUM=NX*NY;
     geometry=new int[NUM];

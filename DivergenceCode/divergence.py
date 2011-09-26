@@ -271,8 +271,73 @@ def show_divergence():
     pylab.title("After shift divergence")
     pylab.colorbar()
 
+def show_files():
+    ux=numpy.loadtxt("ux_non.dat")
+    uy=numpy.loadtxt("uy_non.dat")
+    geom=numpy.loadtxt("geometry.dat")
+   
+    pylab.figure()
+    pylab.imshow(ux)
+    pylab.colorbar()
+    
+    pylab.figure()
+    pylab.plot(ux[:,100])
+    pylab.colorbar()
+    
+    pylab.figure()
+    pylab.plot(ux[1000,:])
+    pylab.colorbar()
+    
+
+    phase=numpy.loadtxt("phase300000.dat")
+    dims=phase.shape
+    
+    velx=numpy.loadtxt("velocityx300000.dat")
+    vely=numpy.loadtxt("velocityy300000.dat")
+  
+    center=phase[dims[0]/2,:]
+    z1 = numpy.min(numpy.where(center < 0.0))
+    z2 = numpy.max(numpy.where(center < 0.0))
+    slug_length=dims[1]-z2+z1    
+    if z1==0:
+        z2=numpy.min(numpy.where(center>0.0))+dims[1]
+        z1=numpy.max(numpy.where(center>0.0))
+        slug_length=z1-z2%dims[1]
+    print z1,z2
+    
+    interface_velocity=velx[dims[0]/2,z2%dims[1]]
+    print interface_velocity
+    pylab.figure()
+    pylab.plot(velx[:,((z1+z2)/2)%dims[1]])
+
+def show_normals():
+    ux=numpy.loadtxt("ux_non.dat")
+    uy=numpy.loadtxt("uy_non.dat")
+    geom=numpy.loadtxt("geometry.dat")
+
+    zerolevel=numpy.where(geom==0)
+    cx=[0,1,0,-1,0,1,-1,-1,1]
+    cy=[0,0,1,0,-1,1,1,-1,-1] 
+    dirs=zip(cx,cy)
+    
+    for x,y in zip(zerolevel[0],zerolevel[1]):
+        for dirx,diry in dirs:
+            posx=x+dirx
+            posy=y+diry
+            if geom[posx,posy]==1:
+                geom[posx,posy]=2
+                break
+    pylab.figure()
+    pylab.imshow(geom)
+    pylab.colorbar()
+    pylab.figure()
+    pylab.plot(geom[1980,:])
+    
+ 
 if __name__=="__main__":
     #calculate_untouched_fields()
-    show_divergence()
+    #show_divergence()
+    #show_files()
+    show_normals()
     pylab.show()
 
