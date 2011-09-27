@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import numpy
 import pylab
+from numpy import ma
 
 def poisson(div):
     dims=div.shape
@@ -326,14 +327,35 @@ def show_normals():
             posy=y+diry
             if geom[posx,posy]==1:
                 geom[posx,posy]=2
-                break
+                continue
     pylab.figure()
     pylab.imshow(geom)
     pylab.colorbar()
-    pylab.figure()
-    pylab.plot(geom[1980,:])
     
- 
+    #generating normals
+    interface=numpy.where(geom==2)
+    normx=numpy.zeros(geom.shape)
+    normy=numpy.zeros(geom.shape)
+    for x,y in zip(interface[0],interface[1]):
+        for dirx,diry in dirs:
+            posx=x+dirx
+            posy=y+diry
+            nx=0
+            ny=0
+            if geom[posx,posy]==1:
+			    nx=nx+dirx
+			    ny=ny+diry
+        normx[posx,posy]=nx
+        normy[posx,posy]=ny
+	
+    M = numpy.zeros(geom.shape, dtype='bool')
+    M[interface] = True
+    normx = ma.masked_array(normx, mask=M)
+    normy = ma.masked_array(normy, mask=M)
+	
+    pylab.figure()	
+    pylab.quiver(normx,normy)
+      
 if __name__=="__main__":
     #calculate_untouched_fields()
     #show_divergence()
