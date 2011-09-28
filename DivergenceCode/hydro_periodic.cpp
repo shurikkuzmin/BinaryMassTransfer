@@ -19,8 +19,8 @@ int NUM;
 const int NPOP=9;
 
 //Time steps
-int N=20000;
-int NOUTPUT=100;
+int N=100000;
+int NOUTPUT=1000;
 
 //Fields and populations
 double *f;
@@ -29,27 +29,27 @@ double *rho;
 double *ux;
 double *uy;
 int * geometry;
-double * divergence;
 
-//Boundary conditions
-double conc_inlet=0.5;
-double conc_bubble=1.0;
-double conc_wall=1.0;
 std::vector<int> bb_nodes;
 std::vector<char>* dirs;
+std::vector<char> main_dir;
 int *bottom;
 int *bottom_mid;
 int *top;
 int *top_mid;
 
 //BGK relaxation parameter
-double omega=2.5;
+double omega=1.0/2.5;
 
 //Underlying lattice parameters
 double weights[]={4.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/36.0,1.0/36.0,1.0/36.0,1.0/36.0};
 int cx[]={0,1,0,-1,0,1,-1,-1,1};
 int cy[]={0,0,1,0,-1,1,1,-1,-1};
 int compliment[]={0,3,4,1,2,7,8,5,6};
+int symmetricx[NPOP];
+int symmetricy[NPOP];
+int symmetricxy_left[NPOP];
+int symmetricxy_right[NPOP];
 
 void writedensity(std::string const & fname)
 {
@@ -68,6 +68,44 @@ void writedensity(std::string const & fname)
 	}
 
 }
+
+void writevelocityx(std::string const & fname)
+{
+	std::string filename=fname+".dat";
+	std::ofstream fout(filename.c_str());
+	fout.precision(10);
+
+	for (int iY=0; iY<NY; iY++)
+	{
+		for (int iX=0; iX<NX; ++iX)	
+		{
+			int counter=iY*NX+iX;
+			fout<<ux[counter]<<" ";
+		}
+		fout<<"\n";
+	}
+
+}
+
+void writevelocityy(std::string const & fname)
+{
+	std::string filename=fname+".dat";
+	std::ofstream fout(filename.c_str());
+	fout.precision(10);
+
+	for (int iY=0; iY<NY; iY++)
+	{
+		for (int iX=0; iX<NX; ++iX)	
+		{
+			int counter=iY*NX+iX;
+			fout<<uy[counter]<<" ";
+		}
+		fout<<"\n";
+	}
+
+}
+
+
 
 
 void init()
@@ -126,18 +164,25 @@ void collide_column_bgk(int coor_y,int coor_bottom,int coor_top)
 	for(int iX=coor_bottom;iX<=coor_top;iX++)
 	{
 		int counter=coor_y*NX+iX;
-		rho[counter]=0.0;
 
-		double sum=0;
+		double dense_temp=0.0;
+		double ux_temp=0.0;
+		double uy_temp=0.0;
+		
 		for(int k=0;k<NPOP;k++)
-			sum+=f[counter*NPOP+k];
+		{
+			dense_temp+=f[counter*NPOP+k];
+			ux_temp+=f[counter*NPOP+k]*cx[k];
+			uy_temp+=f[counter*NPOP+k]*cy[k];
+		}
 	
-		rho[counter]=sum;
-
-		double dense_temp=rho[counter];
-		double ux_temp=ux[counter];
-		double uy_temp=uy[counter];
-
+		ux_temp=ux_temp/dense_temp;
+		uy_temp=uy_temp/dense_temp;
+	
+		rho[counter]=dense_temp;
+		ux[counter]=ux_temp;
+		uy[counter]=uy_temp;
+        
 		double feqeq[NPOP];
 
 		for (int k=0; k<NPOP; k++)
@@ -180,13 +225,41 @@ void update_bounce_back()
 {
 	for(int counter=0;counter<bb_nodes.size();counter++)
 	{
-		for(int k=0;k<dirs[counter].size();k++)
-		{
-			int dir=dirs[counter][k];
-			int counter2=bb_nodes[counter]+cy[dir]*NX+cx[dir];
-			f2[bb_nodes[counter]*NPOP+dir]=-f2[counter2*NPOP+compliment[dir]]+2*weights[dir]*conc_bubble;
-		}
 		
+		int dir=main_dir[counter];
+		int counter2=bb_nodes[counter]+cy[main_dir[counter]]*NX+cx[main_dir[counter]];
+		
+		if ( (dir==1) || (dir==3))
+			for(int k=0;k<NPOP;k++)
+				f2[bb_nodes[counter]*NPOP+k]=f2[counter2*NPOP+symmetricx[k]];
+		else if ( (dir==2) || (dir==4))
+			for(int k=0;k<NPOP;k++)
+				f2[bb_nodes[counter]*NPOP+k]=f2[counter2*NPOP+symmetricy[k]];
+		else if ( (dir==5) || (dir==7))
+			for(int k=0;k<NPOP;k++)
+				f2[bb_nodes[counter]*NPOP+k]=f2[counter2*NPOP+symmetricxy_right[k]];
+		else 
+			for(int k=0;k<NPOP;k++)
+				f2[bb_nodes[counter]*NPOP+k]=f2[counter2*NPOP+symmetricxy_left[k]];
+
+		//density and velocity specification
+		
+		double dense_temp=0.0;
+		double ux_temp=0.0;
+		double uy_temp=0.0;
+		
+		for(int k=0;k<NPOP;k++)
+		{
+			dense_temp=dense_temp+f2[bb_nodes[counter]*NPOP+k];
+			ux_temp=ux_temp+f2[bb_nodes[counter]*NPOP+k]*cx[k];
+			uy_temp=uy_temp+f2[bb_nodes[counter]*NPOP+k]*cy[k];
+		}
+		ux_temp=ux_temp/dense_temp;
+		uy_temp=uy_temp/dense_temp;
+		
+		rho[bb_nodes[counter]]=dense_temp;
+		ux[bb_nodes[counter]]=ux_temp;
+		uy[bb_nodes[counter]]=uy_temp;
 	}
 	
 	//BB nodes density and velocity specification
@@ -197,20 +270,20 @@ void update_bounce_back()
 		int counter_bottom=((iY-1+NY)%NY)*NX;
 
 
-		f2[counter*NPOP+1]=f2[(counter+1)*NPOP+3];
-		f2[counter*NPOP+5]=f2[(counter_top+1)*NPOP+7];
-		f2[counter*NPOP+8]=f2[(counter_bottom+1)*NPOP+6];
+		f2[counter*NPOP+1]=f2[(counter+1)*NPOP+3]+2.0*weights[1]*3.0*(uy[counter]*cy[1]);
+		f2[counter*NPOP+5]=f2[(counter_top+1)*NPOP+7]+2.0*weights[5]*3.0*(uy[counter]*cy[5]);
+		f2[counter*NPOP+8]=f2[(counter_bottom+1)*NPOP+6]+2.0*weights[7]*3.0*(uy[counter]*cy[8]);
 
-		f2[(counter+NX-1)*NPOP+3]=f2[(counter+NX-2)*NPOP+1];
-		f2[(counter+NX-1)*NPOP+6]=f2[(counter_top+NX-2)*NPOP+8];
-		f2[(counter+NX-1)*NPOP+7]=f2[(counter_bottom+NX-2)*NPOP+5];
+		f2[(counter+NX-1)*NPOP+3]=f2[(counter+NX-2)*NPOP+1]+2.0*weights[3]*3.0*(uy[counter+NX-1]*cy[3]);
+		f2[(counter+NX-1)*NPOP+6]=f2[(counter_top+NX-2)*NPOP+8]+2.0*weights[6]*3.0*(uy[counter+NX-1]*cy[6]);
+		f2[(counter+NX-1)*NPOP+7]=f2[(counter_bottom+NX-2)*NPOP+5]+2.0*weights[7]*3.0*(uy[counter+NX-1]*cy[7]);
 
-		rho[counter]=conc_wall;
-		rho[counter+NX-1]=conc_wall;
+		rho[counter]=1.0;
+		rho[counter+NX-1]=1.0;
 		ux[counter]=0.0;
 		ux[counter+NX-1]=0.0;
-		uy[counter]=0.0;
-		uy[counter+NX-1]=0.0;
+		//uy[counter]=0.0;
+		//uy[counter+NX-1]=0.0;
 	}
 
 }
@@ -224,17 +297,15 @@ void initialize_geometry()
     rho=new double[NUM];
     ux=new double[NUM];
     uy=new double[NUM];
-    divergence=new double[NUM];
     
     bottom=new int[NY];
     bottom_mid=new int[NY];
     top=new int[NY];
     top_mid=new int[NY];
    
-	std::ifstream fin("geometry.dat");
-	std::ifstream fux("ux.dat");
-	std::ifstream fuy("uy.dat");
-	std::ifstream fdiv("divergence.dat");
+	std::ifstream fin("geometry_non.dat");
+	std::ifstream fux("ux_non.dat");
+	std::ifstream fuy("uy_non.dat");
 	
 	//Reading files
 	for(int counter=0;counter<NUM;counter++)
@@ -242,7 +313,6 @@ void initialize_geometry()
 		fin>>geometry[counter];
 		fux>>uy[counter];
 		fuy>>ux[counter];
-		fdiv>>divergence[counter];
 	}
 
 	//Initialization
@@ -250,7 +320,7 @@ void initialize_geometry()
     {
 		if (geometry[counter]==0)
 		{
-		    rho[counter]=conc_bubble;
+		    rho[counter]=1.0;
 			ux[counter]=0.0;
 			uy[counter]=0.0;
 			bb_nodes.push_back(counter);
@@ -335,6 +405,51 @@ void initialize_geometry()
 		fcoor<<top_mid[iY]<<" ";
 	}
 	
+	symmetricx[0]=0;
+    for(int k=1;k<NPOP;k++)
+    	for(int l=1;l<NPOP;l++)
+    	    if ((-cx[k]==cx[l])&&(cy[k]==cy[l]))
+            {
+                symmetricx[k]=l;
+                break;
+            }
+    
+     symmetricy[0]=0;
+     for(int k=1;k<NPOP;k++)
+        for(int l=1;l<NPOP;l++)
+            if ((cx[k]==cx[l])&&(cy[k]==-cy[l]))
+            {
+           		symmetricy[k]=l;
+                break;
+            }
+     
+     symmetricxy_left[0]=0;
+     symmetricxy_left[1]=2;
+     symmetricxy_left[2]=1;
+     symmetricxy_left[3]=4;
+     symmetricxy_left[4]=3;
+     symmetricxy_left[5]=5;
+     symmetricxy_left[6]=8;
+     symmetricxy_left[7]=7;
+     symmetricxy_left[8]=6;
+           
+     symmetricxy_right[0]=0;
+     symmetricxy_right[1]=4;
+     symmetricxy_right[2]=3;
+     symmetricxy_right[3]=2;
+     symmetricxy_right[4]=1;
+     symmetricxy_right[5]=7;
+     symmetricxy_right[6]=6;
+     symmetricxy_right[7]=5;
+     symmetricxy_right[8]=8;
+
+     
+
+	/*for(int k=0;k<NPOP;k++)
+	{
+		std::cout<<"Symmetricxy["<<k<<"]="<<symmetricxy[k]<<"\n";
+	}*/
+
 	//Finding directions for BB nodes
     dirs=new std::vector<char>[bb_nodes.size()];
     for(int counter=0;counter<bb_nodes.size();counter++)
@@ -346,6 +461,45 @@ void initialize_geometry()
 				dirs[counter].push_back(k);
 		}
 	}
+	
+
+	for(int counter=0;counter<bb_nodes.size();counter++)
+	{
+     	int nx=0;
+     	int ny=0;
+		bool flag=false;
+     	for(int k=1;k<5;k++)
+		{
+			int counter2=bb_nodes[counter]+cy[k]*NX+cx[k];
+			if (geometry[counter2]==1)
+			{
+				flag=true;
+				nx=nx+cx[k];
+				ny=ny+cy[k];
+			}
+			
+		}
+		if (!flag)
+			for(int k=5;k<NPOP;k++)
+			{
+				int counter2=bb_nodes[counter]+cy[k]*NX+cx[k];
+				if (geometry[counter2]==1)
+				{
+					flag=true;
+					nx=nx+cx[k];
+					ny=ny+cy[k];
+				}
+			}
+		
+		for(int k=1;k<NPOP;k++)
+			if ((nx==cx[k])&&(ny==cy[k]))
+			{
+				main_dir.push_back(k);
+			}
+			
+	}
+	std::cout<<"BB size="<<bb_nodes.size()<<"\n";
+	std::cout<<"Main size="<<main_dir.size()<<"\n";
 }
 
 
@@ -405,46 +559,6 @@ void stream()
 	
 }
 
-void calculate_mass_transfer(int time_counter)
-{
-	static std::ofstream fconc("concentration.dat");
-	
-    double conc=0.0;
-    int counter; 	
-    for(int iY=0;iY<NY;iY++)
-		if (bottom[iY]==top[iY])
-			for(int iX=1;iX<NX-1;iX++)
-				conc+=rho[iY*NX+iX];
-		else
-		{
-			if (top_mid[iY]==bottom_mid[iY])
-			{
-				for(int iX=1;iX<=bottom[iY];iX++)
-					conc+=rho[iY*NX+iX];
-				for(int iX=top[iY];iX<NX-1;iX++)
-					conc+=rho[iY*NX+iX];
-			}
-			else
-			{
-				for(int iX=1;iX<=bottom[iY];iX++)
-					conc+=rho[iY*NX+iX];
-				for(int iX=bottom_mid[iY];iX<=top_mid[iY];iX++)
-					conc+=rho[iY*NX+iX];
-				for(int iX=top[iY];iX<NX-1;iX++)
-					conc+=rho[iY*NX+iX];
-			}
-		}
-		
-	double conc_outlet=0.0;
-	double sum_vel=0.0;
-	for(int iX=1;iX<NX-1;iX++)
-	{
-		conc_outlet+=rho[iX]*uy[iX];
-		sum_vel+=uy[iX];
-	}	
-
-	fconc<<time_counter<<" "<<conc<<" "<<conc_outlet/sum_vel<<"\n"<<std::flush;
-}
 
 int main(int argc, char* argv[])
 {
@@ -465,15 +579,22 @@ int main(int argc, char* argv[])
 		{
 			std::cout<<"Counter="<<counter<<"\n";
   			std::stringstream filewritedensity;
+  			std::stringstream filewritevelocityx;
+  			std::stringstream filewritevelocityy;
  			
  			std::stringstream counterconvert;
  			counterconvert<<counter;
  			filewritedensity<<std::fixed;
+ 			filewritevelocityx<<std::fixed;
+ 			filewritevelocityy<<std::fixed;
 
 			filewritedensity<<"density"<<std::string(7-counterconvert.str().size(),'0')<<counter;
+			filewritevelocityx<<"velx"<<std::string(7-counterconvert.str().size(),'0')<<counter;
+			filewritevelocityy<<"vely"<<std::string(7-counterconvert.str().size(),'0')<<counter;
 			
  			writedensity(filewritedensity.str());
-		    calculate_mass_transfer(counter);
+ 			writevelocityx(filewritevelocityx.str());
+ 			writevelocityy(filewritevelocityy.str());
 		}
 
 	}

@@ -321,7 +321,7 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	NY=3001;
+	NY=3000;
 	NX=202;
 	NUM=NX*NY;
     geometry=new int[NUM];
@@ -336,8 +336,8 @@ void initialize_geometry()
     top_mid=new int[NY];
    
 	std::ifstream fin("geometry.dat");
-	std::ifstream fux("ux.dat");
-	std::ifstream fuy("uy.dat");
+	std::ifstream fux("velx9900.dat");
+	std::ifstream fuy("vely9900.dat");
 	std::ifstream fdiv("divergence.dat");
 	
 	//Reading files
@@ -574,7 +574,7 @@ int main(int argc, char* argv[])
  			counterconvert<<counter;
  			filewritedensity<<std::fixed;
 
-			filewritedensity<<"density"<<std::string(7-counterconvert.str().size(),'0')<<counter;
+			filewritedensity<<"density_mass"<<std::string(7-counterconvert.str().size(),'0')<<counter;
 			
  			writedensity(filewritedensity.str());
 		    calculate_mass_transfer(counter);

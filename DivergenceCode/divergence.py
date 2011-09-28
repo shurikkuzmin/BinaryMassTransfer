@@ -254,12 +254,15 @@ def show_divergence():
     pylab.title("Initial divergence")
      
     velx=velx-interface_velocity
-    velx[0,:]=0.0
-    velx[-1,:]=0.0
+    #velx[0,:]=0.0
+    #velx[-1,:]=0.0
     ux=velx.transpose()
     uy=vely.transpose()
 
     
+    #returning back geometry
+    geometry[0,:]=1
+    geometry[-1,:]=1
     pylab.savetxt("ux_non.dat",ux)
     pylab.savetxt("uy_non.dat",uy)
     pylab.savetxt("geometry_non.dat",geometry.transpose(),fmt="%d")
@@ -328,6 +331,7 @@ def show_normals():
             if geom[posx,posy]==1:
                 geom[posx,posy]=2
                 continue
+    numpy.savetxt("geometry_adjacent.dat",geom)
     pylab.figure()
     pylab.imshow(geom)
     pylab.colorbar()
@@ -337,29 +341,111 @@ def show_normals():
     normx=numpy.zeros(geom.shape)
     normy=numpy.zeros(geom.shape)
     for x,y in zip(interface[0],interface[1]):
+        nx=0
+        ny=0
         for dirx,diry in dirs:
             posx=x+dirx
             posy=y+diry
-            nx=0
-            ny=0
-            if geom[posx,posy]==1:
+            if geom[posx,posy]==0:
 			    nx=nx+dirx
 			    ny=ny+diry
         normx[posx,posy]=nx
         normy[posx,posy]=ny
 	
-    M = numpy.zeros(geom.shape, dtype='bool')
-    M[interface] = True
-    normx = ma.masked_array(normx, mask=M)
-    normy = ma.masked_array(normy, mask=M)
+	#bulk=numpy.where(geom==1)
+	#normx[bulk]=None
+	#normy[bulk]=None
 	
-    pylab.figure()	
-    pylab.quiver(normx,normy)
-      
+	#void=numpy.where(geom==-1)
+	#normx[void]=None
+	#normy[void]=None
+	
+	#normx[zerolevel]=None
+	#normy[zerolevel]=None	
+    #M = numpy.zeros(geom.shape, dtype='bool')
+    #M[bulk] = True
+    #normx2 = ma.masked_array(normx, mask=M)
+    #normy2 = ma.masked_array(normy, mask=M)
+    #print M
+	normx2=normx.transpose()
+	normy2=normy.transpose()
+	
+    pylab.figure(figsize=(30,5))	
+    Q=pylab.quiver(normx2,normy2,minlength=0.1,scale=100)
+    #qk=pylab.quiverkey(Q, 0.5, 0.92, 2, r'$2 \frac{m}{s}$', labelpos='W',fontproperties={'weight': 'bold'})  
+
+
+def show_hydro(name):
+    geom=numpy.loadtxt("geometry_non.dat")
+    ux_initial=numpy.loadtxt("ux_non.dat")
+    uy_initial=numpy.loadtxt("uy_non.dat")
+    
+    density=numpy.loadtxt("density"+name)
+    ux=numpy.loadtxt("velx"+name)
+    uy=numpy.loadtxt("vely"+name)
+    
+    pylab.figure()
+    pylab.imshow(geom)
+    
+    pylab.figure()
+    pylab.imshow(ux_initial)
+    pylab.colorbar()
+    
+    pylab.figure()
+    pylab.imshow(uy_initial)
+    pylab.colorbar()
+    
+    #pylab.figure()
+    #pylab.imshow(density)
+    #pylab.colorbar()
+    
+    pylab.figure()
+    pylab.imshow(uy)
+    pylab.colorbar()
+    
+    pylab.figure()
+    pylab.title("Center")
+    pylab.plot(uy[:,100])
+    pylab.plot(ux_initial[:,100])
+	
+    pylab.figure()
+    pylab.title("1000")
+    pylab.plot(uy[1000,:])
+    pylab.plot(ux_initial[1000,:])
+    
+    pylab.figure()
+    pylab.title("844")
+    pylab.plot(uy[844,:])
+    pylab.plot(ux_initial[844,:])
+    
+    pylab.figure()
+    pylab.imshow(ux)
+    pylab.colorbar()
+    
+    pylab.figure()
+    pylab.title("Center")
+    pylab.plot(ux[:,100])
+    pylab.plot(uy_initial[:,100])
+    
+    pylab.figure(figsize=(30,5))
+    pylab.quiver(uy.transpose(),ux.transpose(),minlength=0.001)
+
+def show_mass(name):
+    mass=numpy.loadtxt("density_mass"+name)
+    pylab.figure()
+    pylab.imshow(mass)
+    
+    pylab.figure()
+    pylab.plot(mass[100,:])   
+
 if __name__=="__main__":
     #calculate_untouched_fields()
     #show_divergence()
     #show_files()
-    show_normals()
+    #show_normals()
+    #show_fields()
+    name="0001300.dat"
+    #show_hydro(name)
+    show_mass(name)
     pylab.show()
 
