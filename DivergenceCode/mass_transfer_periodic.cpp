@@ -19,7 +19,7 @@ int NUM;
 const int NPOP=9;
 
 //Time steps
-int N=20000;
+int N=5000;
 int NOUTPUT=100;
 
 //Fields and populations
@@ -336,8 +336,8 @@ void initialize_geometry()
     top_mid=new int[NY];
    
 	std::ifstream fin("geometry.dat");
-	std::ifstream fux("velx9900.dat");
-	std::ifstream fuy("vely9900.dat");
+	std::ifstream fux("ux.dat");
+	std::ifstream fuy("uy.dat");
 	std::ifstream fdiv("divergence.dat");
 	
 	//Reading files

@@ -438,14 +438,129 @@ def show_mass(name):
     pylab.figure()
     pylab.plot(mass[100,:])   
 
+def show_streamlines(name):
+    from PyNGL import Ngl
+
+    phase=numpy.loadtxt("geometry_non.dat")
+    density=numpy.loadtxt("density"+name)
+    ux=numpy.loadtxt("velx"+name)
+    uy=numpy.loadtxt("vely"+name)
+    #ux=numpy.loadtxt("uy_non.dat")
+    #uy=numpy.loadtxt("ux_non.dat")
+    dims=ux.shape        
+ 
+    x,y=numpy.mgrid[0:dims[0],0:dims[1]]        
+
+        
+    positive=numpy.where(phase>0.0)
+    negative=numpy.where(phase<0.0)
+    
+    large=numpy.where(numpy.logical_or(x<20,x>dims[0]-20))
+    #print z1,z2 #,bounds
+        #print y<z1-30
+        #x_short=x[::3,::25]*deltay
+        #y_short=y[::3,::25]*deltax
+        #[numpy.where(phase_numpy>0.0)]
+        #ux[negative]=None
+        #ux[large]=None
+        #vz_diff_mask[bounds]=None
+        
+    #ux_mask=ux[::100,::5]
+    #uy_mask=uy[::100,::5]
+    #x_mask=x[::100,::5]
+    #y_mask=y[::100,::5]
+
+        
+        #pylab.figure(figsize=(20,10))
+        #pylab.quiver(y_mask,x_mask,ux_mask,uy_mask,headwidth=6,minlength=0.1)
+        #pylab.contour(array['phi'],[0.0],linewidths=[3])
+        
+    wks_type = "eps"
+    wks = Ngl.open_wks(wks_type,"test")
+    resources = Ngl.Resources()
+     
+        #uvar = file.variables["U_GRD_6_ISBL"]
+        #vvar = file.variables["V_GRD_6_ISBL"]
+        #if hasattr(uvar,"units"):
+        #  resources.tiMainString = "GRD_6_ISBL (u,v " + uvar.units + ")"
+        #else:
+        #resources.tiMainString = "GRD_6_ISBL"
+        #if hasattr(uvar,"_FillValue"):
+        #    resources.vfMissingUValueV = uvar._FillValue
+        # if hasattr(vvar,"_FillValue"):
+        #    resources.vfMissingVValueV = vvar._FillValue
+        
+        
+        #resources.tiMainFont    = "Times-Roman"
+        #resources.tiMainOn=True
+        #resources.tiMainString="Ca=0.22 "
+           
+        #resources.tiXAxisString = "streamlines"
+    resources.vpHeightF = 3*0.25 # Define height, width, and location of plot.
+    resources.vpWidthF  = 0.25
+    #resources.wkPaperSize="A5"
+    resources.nglFrame = False
+    #resources.vfXArray=numpy.linspace(0.0,1.0,len(ux[1,::50]))
+    #resources.vfYArray=numpy.linspace(0.0,15.0,len(ux[::5,1]))
+    
+       
+        #resources2=Ngl.Resources()
+        #resources2.tiMainFont    = "Times-Roman"
+        #resources2.tiXAxisString = "streamlines"
+        #resources2.tiMainOn=True
+        #resources2.tiMainString="Ca=0.22"
+        
+        #resources2.wkPaperSize="A5"
+        #resources2.vpHeightF = 0.25 # Define height, width, and location of plot.
+        #resources2.vpWidthF  = 3*0.25
+        #resources2.nglFrame = False
+        
+        #resources2.cnLineLabelsOn = False   # Turn off contour line labels.
+        #resources2.cnLinesOn      = False   # Turn off contour lines.
+        #resources2.cnFillOn       = False    # Turn on contour fill.
+        #resources2.cnInfoLabelOn   = False 
+  
+        
+        #resources2.cnLevelSelectionMode = "ExplicitLevels"  # Select contour levels. 
+        #resources2.cnMinLevelValF       = 0.0
+        #resources2.cnMaxLevelValF       = 0.001
+        
+        ##resources2.cnLevelSpacingF      = 0.0
+        #resources2.cnLevelCount=1
+        #resources2.cnLevels=[0.0]
+        ##resources2.cnLineThicknesses=[3]
+        #resources2.cnMonoLineThickness=True
+        #resources2.cnLineThicknessF=3.0
+        
+        #resources2.lbLabelBarOn=False
+        #resources2.lbLabelsOn=False
+        #resources2.sfXArray=numpy.linspace(0.0,15.0,len(ux[1,:]))
+        #resources2.sfYArray=numpy.linspace(0.0,1.0,len(ux[:,1]))
+        
+        #plot = Ngl.streamline(wks,uvar[0,::2,::2],vvar[0,::2,::2],resources) 
+        #print vz_diff.shape
+        #print vy.shape
+        #x,y=numpy.mgrid[0:dims[0],0:dims[1]]
+        #vx=numpy.sin(x)*numpy.sin(y)
+        #vy=numpy.cos(x)*numpy.cos(y)
+    plot=Ngl.streamline(wks,ux[::5,::2],uy[::5,::2],resources)
+        #Ngl.contour(wks,phase[::5,::50],resources2)        
+        #Ngl.contour(wks,phase,resources2)        
+        #plot=Ngl.streamline(wks,vx,vy,resources)
+    Ngl.end()
+        
+
+
 if __name__=="__main__":
     #calculate_untouched_fields()
     #show_divergence()
     #show_files()
     #show_normals()
     #show_fields()
-    name="0001300.dat"
+    name="0003900.dat"
+    
     #show_hydro(name)
+    #show_streamlines(name)
     show_mass(name)
     pylab.show()
 
