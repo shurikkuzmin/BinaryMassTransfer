@@ -18,8 +18,8 @@ def Produce_Single():
     aver_coefficient=[]
     bubble_velocities=[]
     #dirs=[3,5,8,10,20,40,60,80]
-    dirs=[3,5,8,10,20,40,60,80]
-    #dirs=[3,5,8,10,20]    
+    #dirs=[3,5,8,10,20,40,60,80]
+    dirs=[3,5,8,10]    
     
    
     for counter,dir_name in enumerate(dirs):    
@@ -77,6 +77,16 @@ def Produce_Single():
         ###Open boundaries options
         open_dir_name="SailfishMassCentralSingle/"+str(dir_name)+"/"     
         open_conc=numpy.loadtxt(open_dir_name+"concentration.dat")       
+         
+        coefficient_open=[]        
+        for file_number in numpy.arange(1160000,4000000,280000):
+            density_number=numpy.loadtxt(open_dir_name+"density"+str(file_number)+".dat")
+            inlet_conc=numpy.sum(density_number[1:-1,1]*ux[1:-1,1])/numpy.sum(ux[1:-1,1])
+            outlet_conc=numpy.sum(density_number[1:-1,-2]*ux[1:-1,-2])/numpy.sum(ux[1:-1,-2])
+            coefficient_open.append((superficial_liquid+gas_holdup*interface_velocity)*phys_velocity/interface_velocity\
+                   /(15*diam)*(1-abs(inlet_conc))/(1-abs(outlet_conc)))
+        open_time=numpy.arange(1160000,4000000,280000) 
+        print coefficient_open        
         #files_names=glob.glob(results_dir_name+"density*.dat")
         #vx=numpy.loadtxt("SailfishResults/"+str(dir_name)+"/ux.dat").transpose()
         #files_names=sorted(files_names)
@@ -90,8 +100,8 @@ def Produce_Single():
         #    time_iterations.append(int(file_example[-11:-4]))
         #numpy.savetxt(results_dir_name+"coefficient.dat",zip(time_iterations,coefficient))
 
-        coefficient_open=((superficial_liquid+gas_holdup*interface_velocity)*phys_velocity/interface_velocity\
-                   /(15*diam)*numpy.log((1-numpy.abs(open_conc[:,2]))/(1-numpy.abs(open_conc[:,3]))))        
+        #coefficient_open=((superficial_liquid+gas_holdup*interface_velocity)*phys_velocity/interface_velocity\
+        #           /(15*diam)*numpy.log((1-numpy.abs(open_conc[:,2]))/(1-numpy.abs(open_conc[:,3]))))        
 
         
         #coefficient=new_conc[:,1]/(200*3000)/(deltat*new_conc[:,0]*(1.0-numpy.abs(new_conc[:,2])))
@@ -100,7 +110,7 @@ def Produce_Single():
         coefficient_outlet=new_conc[:,1]/(200*3000)/(deltat*new_conc[:,0]*(1.0-numpy.abs(new_conc[:,2])))        
         coefficient_outlet_sim=new_conc[:,1]/(200*3000)/(deltat*new_conc[:,0]*(1.0-conc_outlet))
         pylab.figure(1)
-        pylab.plot(array[1:,0],coefficient_last,styles[counter])
+        pylab.plot(array[1:,0],coefficient_last,styles[counter])        
         pylab.figure(2)
         pylab.plot(array[1:,0],coefficient_aver,styles[counter])
         pylab.figure(3)
@@ -108,7 +118,9 @@ def Produce_Single():
         pylab.figure(4)
         pylab.plot(array[1:,0],coefficient_outlet_sim,styles[counter])
         pylab.figure(5)
-        pylab.plot(open_conc[:,0],coefficient_open,styles[counter])
+        #pylab.plot(open_conc[:,0],coefficient_open,styles[counter])        
+        pylab.plot(open_time,coefficient_open,styles[counter])        
+        #pylab.title("Open boundaries")
     #pylab.legend(legs,fancybox=True,labelspacing=0.1)
     #pylab.savefig("steady_state.eps",format="EPS",dpi=300)
     
@@ -141,7 +153,8 @@ def Produce_Single():
     pylab.ylim(ymax=3.0)
 
     pylab.figure(5)
-    pylab.ylim(ymax=3.0,ymin=-2.0)
+    pylab.xlim(xmin=0)    
+    #pylab.ylim(ymax=3.0,ymin=-2.0)
    #pylab.savefig("steady_state_average.eps",format="EPS",dpi=300)
     
     #pylab.figure()
