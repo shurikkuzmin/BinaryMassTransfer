@@ -20,7 +20,9 @@ def Produce_Single():
     #dirs=[3,5,8,10,20,40,60,80]
     #dirs=[3,5,8,10,20,40,60,80]
     dirs=[3,5,8,10]    
-    
+    coeffs_aver=[]
+    coeffs_outlet=[]
+    coeffs_open=[]
    
     for counter,dir_name in enumerate(dirs):    
         data_dir_name="SailfishData/"+str(dir_name)+"/"
@@ -109,6 +111,11 @@ def Produce_Single():
         coefficient_aver=new_conc[:,1]/(200*3000)/(deltat*new_conc[:,0]*(1.0-0.5*(array[1:,1]+array[0:-1,1])/((1-gas_holdup)*200*3000)))                
         coefficient_outlet=new_conc[:,1]/(200*3000)/(deltat*new_conc[:,0]*(1.0-numpy.abs(new_conc[:,2])))        
         coefficient_outlet_sim=new_conc[:,1]/(200*3000)/(deltat*new_conc[:,0]*(1.0-conc_outlet))
+        
+        coeffs_aver.append(numpy.mean(coefficient_aver[numpy.where(array[1:,0]>1500000)]))
+        coeffs_outlet.append(numpy.mean(coefficient_outlet[numpy.where(array[1:,0]>3500000)]))
+        coeffs_open.append(numpy.mean(coefficient_open))
+                
         pylab.figure(1)
         pylab.plot(array[1:,0],coefficient_last,styles[counter])        
         pylab.figure(2)
@@ -123,6 +130,9 @@ def Produce_Single():
         #pylab.title("Open boundaries")
     #pylab.legend(legs,fancybox=True,labelspacing=0.1)
     #pylab.savefig("steady_state.eps",format="EPS",dpi=300)
+    print "Coeffs_aver=",coeffs_aver
+    print "Coeffs_outlet=",coeffs_outlet
+    print "Coeffs_open=",coeffs_open
     
     #print "Aver_coefficient=",aver_coefficient
     pylab.figure(1)
@@ -131,11 +141,14 @@ def Produce_Single():
     pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
     pylab.legend(legs,fancybox=True,labelspacing=0.1)
     pylab.ylim(ymax=3.0)
+    pylab.savefig("steady_state_per_last.eps",dpi=300)
+    
     pylab.figure(2)
     legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities]
     pylab.xlabel('Iterations',fontsize=20)
     pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
     pylab.legend(legs,fancybox=True,labelspacing=0.1)   
+    pylab.savefig("steady_state_per_aver.eps",dpi=300)
     pylab.ylim(ymax=3.0)
 
     pylab.figure(3)
@@ -144,7 +157,9 @@ def Produce_Single():
     pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
     pylab.legend(legs,fancybox=True,labelspacing=0.1)   
     pylab.ylim(ymax=3.0)
+    pylab.savefig("steady_state_per_middle_outlet.eps",dpi=300)
 
+    
     pylab.figure(4)
     legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities]
     pylab.xlabel('Iterations',fontsize=20)
@@ -153,7 +168,13 @@ def Produce_Single():
     pylab.ylim(ymax=3.0)
 
     pylab.figure(5)
+    legs=[r'''$U_{\mathrm{bubble}}='''+str(vel)[:4]+r'''$''' for vel in bubble_velocities[0:4]]
+    pylab.xlabel('Iterations',fontsize=20)
+    pylab.ylabel(r'''$k_L a, \mathrm{s^{-1}}$''',fontsize=20)
+    pylab.legend(legs,fancybox=True,labelspacing=0.1)   
     pylab.xlim(xmin=0)    
+    pylab.savefig("steady_state_jos_inlet_outlet.eps",dpi=300)
+    
     #pylab.ylim(ymax=3.0,ymin=-2.0)
    #pylab.savefig("steady_state_average.eps",format="EPS",dpi=300)
     
