@@ -390,31 +390,37 @@ where the index $i$ represents the polyline consisting of two points $(x1,y1)$ a
 %The corresponding volumetric mass transfer coefficients depending on the velocity are indicated in
 %Table \ref{table:volumetric:coefficients}.
 
-\section{Comparison between different approaches}
+\section{Comparison between different approaches for one unit cell}
 We consequently will examine different approaches to the mass transfer definition, Fig.
 \ref{fig:comparison:one:unit:cell}:
 \begin{description}
 \item[I] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
 is located near the entrance of the computational domain, and the characteristic concentration is
 the inlet/outlet concentration, Fig \ref{fig:benchmark}. 
-\item[II] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a
+\item[II] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
+is located near the entrance of the computational domain, and the characteristic concentration is
+the average concentration, Fig \ref{fig:benchmark}.
+\item[III] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a
 bubble is located in the middle of the computational domain, and the characteristic concentration
 is the inlet/outlet concentration.
-\item[III] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
+\item[IV] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
 is located in the middle of the computational domain, and the characteristic concentration is the
 average concentration.
-\item[IV] Definition with the concentration jump between inlet and outlet over one unit cell.
+\item[V] Definition with the concentration jump between inlet and outlet over one unit cell.
 \end{description}
 \begin{figure}[htb!]
-\includegraphics[width=\textwidth]{Figures/benchmark_periodic.eps}
-\caption{The two-dimensional benchmarks for the hydrodynamics (top) and the mass transfer
-coefficient (bottom). \label{fig:benchmark}}
+\includegraphics[width=\textwidth]{Figures/benchmark_periodic.eps}\\
+\includegraphics[width=\textwidth]{Figures/benchmark_middle.eps}\\
+\caption{The two-dimensional benchmarks for the  the mass transfer
+coefficient (bottom) for the bubble located near the entrance (top) and at the middle of the domain
+(bottom). \label{fig:benchmark}}
 \end{figure}
 
 \begin{figure}[htb!]
 \includegraphics[width=0.5\textwidth]{Figures/steady_state_per_entrance.eps}
-\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_aver.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_middle_outlet.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_state_inlet_aver.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_aver.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_middle_outlet.eps}\\
 \includegraphics[width=0.5\textwidth]{Figures/steady_state_jos_inlet_outlet.eps}\\
 \caption{\label{fig:comparison:one:unit:cell}}
 \end{figure}
@@ -422,22 +428,48 @@ All the comparison is summarized in Table \ref{table:one_unit_comparison}.
 \begin{table}[htb!]
 \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
 \hline
-$Ca$&$Fo$&$\vol_{ent},\,\mathrm{s}^{-1}$&\\
+$Ca$&$Fo$&$\vol_{ent},\,\mathrm{s}^{-1}$&$\vol_{aver},\,\mathrm{s}^{-1}$&$\vol_{mid,
+aver},\,\mathrm{s} ^ { -1 }$&$\vol_{mid,out},\,\mathrm{s}^{-1}$&$\vol_{open},\,\mathrm{s}^{-1}$ \\
 \hline
-$0.026$&$0.08493$&$0.2737$&$0.1692$&$0.2631$&$3.6756$\\
-$0.047$&$0.02160$&$0.3664$&$0.2852$&$0.4553$&$11.4822$\\
-$0.080$&$0.00588$&$0.4959$&$0.4079$&$0.6920$&$15.1964$\\
-$0.065$&$0.00862$&$0.4734$&$0.4303$&$0.8923$&$21.4517$\\
-$0.222$&$0.00103$&$0.8505$&$0.6109$&$0.8679$&N/A\\
-$0.479$&$0.00034$&$1.1541$&$0.9884$&$1.2995$&N/A\\
-$0.736$&$0.00018$&$1.1801$&$1.2199$&$1.1555$&N/A\\
-$0.989$&$0.00012$&$1.2215$&$1.3400$&$1.0350$&N/A\\
+$0.026$&$0.08493$&$0.2737$&$0.1775$&$0.1692$&$0.2631$&$3.6756$\\
+$0.047$&$0.02160$&$0.3664$&$0.3431$&$0.2852$&$0.4553$&$11.4822$\\
+$0.080$&$0.00588$&$0.4959$&$0.4185$&$0.4079$&$0.6920$&$15.1964$\\
+$0.065$&$0.00862$&$0.4734$&$0.4517$&$0.4303$&$0.8923$&$21.4517$\\
+$0.222$&$0.00103$&$0.8505$&$0.6799$&$0.6109$&$0.8679$&N/A\\
+$0.479$&$0.00034$&$1.1541$&$1.0460$&$0.9884$&$1.2995$&N/A\\
+$0.736$&$0.00018$&$1.1801$&$1.2395$&$1.2199$&$1.1555$&N/A\\
+$0.989$&$0.00012$&$1.2215$&$1.3493$&$1.3400$&$1.0350$&N/A\\
 \hline
 \end{tabularx}
 \caption{Simulation results for different capillary numbers.
 \label{table:one_unit_comparison}}
 \end{table}
- 
+One can see that the only consistent result is for simulations which take into the account average
+concentration. The results come to the steady-state after $1,000,000$ iterations. However, to
+understand properly what is the real mass transfer coefficient one needs to perform a few units
+simultions.
+
+\section{Two unit cells results}
+As far as one needs to restore the continuous picture one needs to make a simulation of a few
+cells. This section provides results for two units. The results are summarized in Table
+\ref{table:two_units}. The results for two sections are presented in Fig. \ref{fig:results:double}.
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/steady_double_overall.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_double_first.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/steady_double_second.eps}
+\caption{Overall mass transfer coefficient (top left), first part (top
+right), second part (bottom left).\label{fig:results:double}}
+\end{figure}
+\begin{table}[htb!]
+\begin{tabularx}{\textwidth}{|X|X|X|}
+$0.7392$&$1.0564$&$0.4220$\\
+$1.8993$&$2.8301$&$0.9684$\\
+$3.3925$&$4.7522$&$2.0328$\\
+$3.7870$&$4.5615$&$3.0125$\\
+\end{tabularx}
+\caption{Simulation results. \label{table:two_units}}
+\end{table}
+
 \bibliographystyle{unsrtnat}
 \bibliography{paper}
 
