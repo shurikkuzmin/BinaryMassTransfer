@@ -462,10 +462,12 @@ right), second part (bottom left).\label{fig:results:double}}
 \end{figure}
 \begin{table}[htb!]
 \begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
 $0.7392$&$1.0564$&$0.4220$\\
 $1.8993$&$2.8301$&$0.9684$\\
 $3.3925$&$4.7522$&$2.0328$\\
 $3.7870$&$4.5615$&$3.0125$\\
+\hline
 \end{tabularx}
 \caption{Simulation results for two units. \label{table:two_units}}
 \end{table}
@@ -474,12 +476,22 @@ $3.7870$&$4.5615$&$3.0125$\\
 Three unit cells results are subdivided into three cells. We calculate the mass transfer
 coefficients over the each cell, Fig. \ref{fig:results:triple}. The averaged coefficients  after
 $3,300,000$ time steps are represented in Table. \ref{table:three_units}. The most important thing
-is to look at the third column of the Table \ref{table:three_units} or for at the Fig. \ref{fig:re} 
+is to look at the third column of the Table \ref{table:three_units} or for at the Fig.
+\ref{fig:results:triple} (bottom left). The coefficients for capillary numbers $0.026$ and $0.047$
+are almost zero which indicates that the concentration at the first part of the channel is almost
+the same as the second part. Thus, there is not enough time steps to transfer concentrate among
+whole the channel (plug flow). In comparison with the first two values for capillary number $0.080$
+the trend is different and concentrate is spread over the channel. However, the drop coefficients
+are still inconsistents. Though last part and the second part exhibit close values (needed to tell
+what is the real mass transfer coefficient). Overall, more time steps are needed.
+$0.080$
 \begin{table}[htb!]
 \begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline
 0.4928&1.0564&2.8472e-05&0.4219\\
 1.2662&2.8301&0.0146&0.9537\\
-2.3110&4.7532&1.0665&1.1133
+2.3110&4.7532&1.0665&1.1133\\
+\hline
 \end{tabularx}
 \caption{Simulation results for three units.\label{table:three_units}}
 \end{table}
@@ -492,6 +504,75 @@ is to look at the third column of the Table \ref{table:three_units} or for at th
 coefficient (top left), first part (top right), second part (bottom left), third part (bottom
 right). \label{fig:results:triple}}
 \end{figure}
+
+{\color{red} Probably we can consider that for capillary number less than $0.08$ the mass transfer
+is a plug flow mass transfer, keeping only the impact from caps.}
+
+\section{Four unit cells results}
+Four unit cells results are subdivided into four cells. The results are presented in Fig.
+\ref{fig:results:quadro}. While we expect certain deviations for the first and the last part, but
+surprisingly the concentration difference over the third segment tends to be zero. That means not
+enough time steps are performed. The results over segments are summarized in Table
+\ref{table:four_units}.
+\begin{table}[htb!]
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
+\hline
+$Ca$   &Overall  &I       &II      &III     &IV\\
+$0.080$&$1.7359$ &$4.7533$&$1.0665$&$0.1088$&$1.0150$\\
+$0.065$&$1.9260$ &$4.5620$&$0.9113$&$0.0619$&$2.1689$\\
+\hline
+\end{tabularx}
+\caption{Simulation results for mass transfer coefficients for 4 unit cells
+domain.\label{table:four_units}}
+\end{table}
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_overall.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_first.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_second.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_third.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_fourth.eps}\\
+\caption{The mass transfer coefficient over time in different locations: overall mass transfer
+coefficient (top left), first part (top right), second part (middle left), third part (middle
+right) and fourth part (bottom left). \label{fig:results:quadro}}
+\end{figure}
+
+From Figs. \ref{fig:results:triple} and \ref{fig:results:quadro} one can see that $4,000,000$ time
+steps are enough to saturate the second unit for $Ca=0.080$ number. Let us recall bubble velocities
+and see what are the characteristic lengths for them calculated as time steps multiplied on the
+bubble velocity. From the table one can see that each unit cell is saturated with the timesteps as
+$1.5 \frac{N_x}{U_{bubble}}$ {\color{red}(Pretty important result)}. It's inevitably needs the
+velocity increase.
+\begin{table}[htb!]
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+\hline
+$Ca$ &$U_{bubble}$ &$N_{iter_1}$ &$N_{iter_2}$ &$N_{iter_3}$ &$\frac{L_1}{N_x}$&$\frac{L_2}{N_x}$ 
+&$\frac{L_3}{N_x}$\\
+$0.026$&$0.0014$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$0.4666$ &$0.9333$ &$1.8666 $\\
+$0.047$&$0.0027$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$0.9$    &$1.8$    &$3.6    $\\
+$0.080$&$0.0045$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$1.5$    &$3.0$    &$6.0    $\\
+$0.065$&$0.0037$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$1.2333$ &$2.4666$ &$4.9333 $\\
+$0.222$&$0.0125$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$4.1666$ &$8.3333$ &$16.6666$\\
+$0.479$&$0.0271$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$9.0333$ &$18.0666$&$36.1333$\\
+$0.736$&$0.0416$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$13.8666$&$27.7333$&$55.4666$\\
+$0.989$&$0.0559$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$18.6333$&$37.2666$&$74.5333$\\
+\hline
+\end{tabularx}
+\caption{Table results to understand how many time steps are needed to be performed to reach the
+saturation.\label{table:time:steps}}
+\end{table}
+
+\section{Improving velocity}
+
+\section{Tweaking velocity}
+This section does the job of increasing velocity results. The ulimate goal is to increase velocity
+to about $20-50$ times for velocity while keeping dimensionless parameters the same. The
+nondimensional parameter Peclet number governs the advection-diffusion equation:
+\beq
+Pe=\frac{U_{\bubble} N_y}{D},
+\feq
+where $D$ is the diffusion coefficient to prescribe. As far as we want to increase velocity, that
+means one needs to increase the diffusion coefficient as well. We make a few runs with velocities
+$5,10,20,40$ times larger than original velocities. 
 
 
 \bibliographystyle{unsrtnat}
