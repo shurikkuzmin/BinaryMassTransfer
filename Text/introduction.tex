@@ -467,8 +467,32 @@ $1.8993$&$2.8301$&$0.9684$\\
 $3.3925$&$4.7522$&$2.0328$\\
 $3.7870$&$4.5615$&$3.0125$\\
 \end{tabularx}
-\caption{Simulation results. \label{table:two_units}}
+\caption{Simulation results for two units. \label{table:two_units}}
 \end{table}
+
+\section{Three unit cells results}
+Three unit cells results are subdivided into three cells. We calculate the mass transfer
+coefficients over the each cell, Fig. \ref{fig:results:triple}. The averaged coefficients  after
+$3,300,000$ time steps are represented in Table. \ref{table:three_units}. The most important thing
+is to look at the third column of the Table \ref{table:three_units} or for at the Fig. \ref{fig:re} 
+\begin{table}[htb!]
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+0.4928&1.0564&2.8472e-05&0.4219\\
+1.2662&2.8301&0.0146&0.9537\\
+2.3110&4.7532&1.0665&1.1133
+\end{tabularx}
+\caption{Simulation results for three units.\label{table:three_units}}
+\end{table}
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/steady_triple_overall.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_triple_first.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/steady_triple_second.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_triple_third.eps}\\
+\caption{The mass transfer coefficient over time in different locations: overall mass transfer
+coefficient (top left), first part (top right), second part (bottom left), third part (bottom
+right). \label{fig:results:triple}}
+\end{figure}
+
 
 \bibliographystyle{unsrtnat}
 \bibliography{paper}
