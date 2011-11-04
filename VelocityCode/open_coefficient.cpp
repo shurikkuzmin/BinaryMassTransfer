@@ -12,14 +12,14 @@
 int NY;
 int NX;
 int NUM;
-const int coefficient=1;
+const int coefficient=10;
 
 //Other constants
 const int NPOP=9;
 
 //Time steps
-int N=20000;
-int NOUTPUT=100;
+int N=200000;
+int NOUTPUT=1000;
 
 //Fields and populations
 double *f;
@@ -320,8 +320,11 @@ void initialize_geometry()
     top_mid=new int[NY];
     
 	std::ifstream fin("geometry.dat");
-	std::ifstream fux("ux.dat");
-	std::ifstream fuy("uy.dat");
+	//std::ifstream fux("ux.dat");
+	//std::ifstream fuy("uy.dat");
+	std::ifstream fux("vely008000.dat");
+	std::ifstream fuy("velx008000.dat");
+	
 	
 	//Reading files
 	for(int counter=0;counter<NUM;counter++)
