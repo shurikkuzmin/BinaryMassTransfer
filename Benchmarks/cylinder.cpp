@@ -12,7 +12,6 @@
 int NY;
 int NX;
 int NUM;
-const int coefficient=1;
 
 //Other constants
 const int NPOP=9;
@@ -30,18 +29,14 @@ double *uy;
 int * geometry;
 
 //Boundary conditions
-double conc_inlet=0.5;
-double conc_bubble=1.0;
 double conc_wall=1.0;
 std::vector<int> bb_nodes;
 std::vector<char>* dirs;
 int *bottom;
-int *bottom_mid;
 int *top;
-int *top_mid;
 
 //BGK relaxation parameter
-double omega=1.0/(coefficient*(1.0/1.99-0.5)+0.5);
+double omega=1.0/1.99;
 double omega_plus=2.0-omega;
 double omega_minus=omega;
 
@@ -227,24 +222,7 @@ void collide_bulk()
 {
 
     for(int iY=1;iY<NY-1;iY++)
-		if (bottom[iY]==top[iY])
-			collide_column(iY,1,NX-2);
-			//collide_column_bgk(iY,1,NX-2);
-		else
-		{
-			if(bottom_mid[iY]==top_mid[iY])
-			{
-				collide_column(iY,1,bottom[iY]);
-				collide_column(iY,top[iY],NX-2);
-			}
-			else
-			{
-				collide_column(iY,1,bottom[iY]);
-				collide_column(iY,bottom_mid[iY],top_mid[iY]);
-				collide_column(iY,top[iY],NX-2);
-			}
-			
-		}
+		collide_column(iY,bottom[iY],top[iY]);
 			
 }
 

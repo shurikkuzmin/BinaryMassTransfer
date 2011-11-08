@@ -16,8 +16,10 @@
 \newcommand{\feqalstar}{\end{aligned}\end{equation*}}
 \newcommand{\vol}{k_L\,a}
 
+\title{Lattice Boltzmann study of mass transfer for complicated geometries}
 
 \begin{document}
+\maketitle
 \section{Mass transfer definitions}
 By the definition the mass transfer coefficient is the following:
 \beq
@@ -561,14 +563,41 @@ $0.989$&$0.0559$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$18.6333$&$37.2666$&$74.5333$\
 saturation.\label{table:time:steps}}
 \end{table}
 
-\section{Improving velocity}
+\section{Lattice Boltzmann Benchmarks}
+\citet{vanbaten-circular} represented a bubble with two hemisperes and a thin film. We want to
+perform the benchmarking against these two representative cases.
+
+\subsection{The radial case}
+We want to examine the bounce-back conditions against the analytical solution. The system can be
+prescribed by the following system of equations:
+\beq
+\begin{aligned}
+&\partial_t C(r,t)=\frac{1}{r}\partial_r r \partial_r C(r,t)\\
+&C(a,t)=C_0,\,C(r,0)=C_{init}
+\end{aligned}
+\feq 
+The solution is represented as \cite{chemical-correlations}:
+\beq
+\frac{C(r,t)-C_{0}}{C_{init}-C_{0})}=\sum_{n=1}^{\infty}{\frac{2}{\mu_n
+J_1(\mu_n)}\exp\Bigl(-\mu_n^2 \frac{D t}{a^2} \Bigr)J_0(\mu_n \frac{r}{a})},
+\feq
+where $\mu_n$ is the $n$-th zero root of the $0$th order Bessel polynomial $J_0(\mu_n)=0$. Some of
+the corresponding roots are as follows: $\mu_1=2.4048$,$\mu_2=5.5201$,$\mu_3=8.6537$,
+$\mu_4=11.7915$,$\mu_5=14.9309$.
+By taking initial concentration to be $0$, one can obtain the following solution:
+\beq
+C(r,t)=C_0 \Biggl(1 - \sum_{n=1}^{\infty}{\frac{2}{\mu_n
+J_1(\mu_n)}\exp\Bigl(-\mu_n^2 \frac{D t}{a^2} \Bigr)J_0(\mu_n \frac{r}{a})}\Biggr).
+\feq
+
+Here some 
 
 \section{Tweaking velocity}
 This section does the job of increasing velocity results. The ulimate goal is to increase velocity
 to about $20-50$ times for velocity while keeping dimensionless parameters the same. The
 nondimensional parameter Peclet number governs the advection-diffusion equation:
 \beq
-Pe=\frac{U_{\bubble} N_y}{D},
+Pe=\frac{U_{bubble} N_y}{D},
 \feq
 where $D$ is the diffusion coefficient to prescribe. As far as we want to increase velocity, that
 means one needs to increase the diffusion coefficient as well. We make a few runs with velocities
