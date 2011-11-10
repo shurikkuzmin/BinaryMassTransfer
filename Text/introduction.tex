@@ -601,6 +601,15 @@ different diffusion coefficients are presented in Fig.\ref{fig:cylinder:benchmar
 accurately in non-dimensional space \label{fig:cylinder:benchmark}.}
 \end{figure}
 
+\subsection{Steady mass transfer}
+The problem we want to address can be formulated through the following PDE:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
+&C(0,y)=0,\, C(x,0)=C_s,\, \frac{\partial C}{\partial_y }(x,\delta)=0\\
+&U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
+\end{aligned}
+\feq
 
 
 \section{Tweaking velocity}
