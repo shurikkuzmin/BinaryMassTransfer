@@ -57,11 +57,29 @@ def show_bessel():
     x=numpy.arange(0.0,10.0,0.1)
     bessel=scipy.special.jn(0,x)
     pylab.plot(x,bessel)
+
+def read_film(file_dir):
+    concentration=numpy.loadtxt(file_dir+"conc_initial.dat")
+    ux=numpy.loadtxt(file_dir+"ux_initial.dat")
+    uy=numpy.loadtxt(file_dir+"uy_initial.dat")
+    print concentration.shape
+    pylab.figure()    
+    pylab.imshow(concentration)
+    pylab.figure()
+    pylab.plot(concentration[:,200])
+    pylab.figure()
+    pylab.plot(concentration[:,0])
+    pylab.figure()
+    pylab.imshow(uy)
+    pylab.colorbar()
+
 if __name__=="__main__":
-    file_name="../Benchmarks/density0001000.dat"
+    #file_name="../Benchmarks/density0001000.dat"
+    file_name="../Benchmarks/conc_initial.dat"    
     file_dir="../Benchmarks/"
     #read_file(file_name)
     
-    read_files(file_dir)
+    #read_files(file_dir)
     #show_bessel()    
+    read_film(file_dir)    
     pylab.show()
