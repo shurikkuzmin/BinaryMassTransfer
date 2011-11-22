@@ -30,7 +30,7 @@ int * geometry;
 
 //Boundary conditions
 double conc_wall=1.0;
-double conc_inlet=0.0;
+double conc_inlet=0.5;
 double u0=0.05;
 std::vector<int> bb_nodes_inlet;
 std::vector<char>* dirs_inlet;
@@ -171,6 +171,40 @@ void collide_column_bgk(int coor_y,int coor_bottom,int coor_top)
 }
 
 
+void collide_bgk()
+{
+	for (int iY=1;iY<NY-1;iY++)
+		for(int iX=1;iX<NX-1;iX++)
+		{
+			int counter=iY*NX+iX;
+			rho[counter]=0.0;
+		    
+		    int offset=counter*NPOP;
+	 
+			double sum=0;
+			for(int k=0;k<NPOP;k++)
+				sum+=f[offset+k];
+	
+			rho[counter]=sum;
+
+			double dense_temp=rho[counter];
+			double ux_temp=ux[counter];
+			double uy_temp=uy[counter];
+			
+			double feq[NPOP];
+	 
+			//Collision operator
+			for(int k=0; k < NPOP; k++)
+			{
+				feq[k]=weights[k]*dense_temp*(1.0+3.0*(cx[k]*ux_temp+cy[k]*uy_temp)+4.5*((cx[k]*cx[k]-1.0/3.0)*ux_temp*ux_temp+2.0*cx[k]*cy[k]*ux_temp*uy_temp+(cy[k]*cy[k]-1.0/3.0)*uy_temp*uy_temp));
+				f2[offset+k]=f[offset+k]-omega*(f[offset+k]-feq[k]);
+			}
+	}
+			
+}
+
+
+
 
 
 void collide()
@@ -306,7 +340,7 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	NY=20*40;
+	NY=10*40;
 	NX=40;
 	NUM=NX*NY;
     geometry=new int[NUM];
@@ -380,7 +414,7 @@ int main(int argc, char* argv[])
 	for(int counter=0;counter<=N;counter++)
 	{
 
-        collide();
+        collide_bgk();
         update_bounce_back();
 		stream();
         
