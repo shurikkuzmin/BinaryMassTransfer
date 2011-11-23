@@ -81,7 +81,7 @@ def film_analytical():
     y,x=0.01*numpy.mgrid[1:101,1:501]
     
     c=numpy.zeros_like(x)
-    diffusion=1.0/9.0*(1-0.5)
+    diffusion=1.0/3.0*(1-0.5)
     
     sign=-1
     for i in range(0,num_terms):
@@ -95,7 +95,9 @@ def film_analytical():
     pylab.colorbar()
 
 def compare_film(file_dir):
-    concentration=numpy.loadtxt(file_dir+"film0010000.dat")
+    concentration=numpy.loadtxt(file_dir+"film0030000.dat")
+    uy=numpy.loadtxt(file_dir+"uy_initial.dat")
+    
     dims=concentration.shape    
     print dims
     pylab.figure()    
@@ -110,26 +112,31 @@ def compare_film(file_dir):
     num_terms=30
     c0=0.5
     cs=1.0
-    u_bubble=0.05*40.0
-    y,x=0.01*numpy.mgrid[1:101,1:10001]
+    u_bubble=0.05*20   
+    y,x=0.01*numpy.mgrid[1:101,1:1001]
     
     c=numpy.zeros_like(x)
-    diffusion=1.0/3.0*(1.0-0.5)
+    diffusion=1.0/3.0*(1.0/1.4-0.5)
     
+    res=y/numpy.sqrt(4*x*diffusion/u_bubble)
+    print res.shape
     sign=-1
     for i in range(0,num_terms):
-        sign=-sign        
-        c=c+sign*(scipy.special.erfc((y+2*i)/numpy.sqrt(4*x*diffusion/u_bubble))+scipy.special.erfc((2*(i+1)-y)/numpy.sqrt(4*x*diffusion/u_bubble)))
-    print "X=",x
-    print "Y=",y
-    print "C=",c
+        sign=-sign
+        c=c+sign*(scipy.special.erfc((y+2.0*i)/numpy.sqrt(4.0*x*diffusion/u_bubble))+scipy.special.erfc((2.0*(i+1)-y)/numpy.sqrt(4.0*x*diffusion/u_bubble)))
+        
+    #print "X=",x
+    #print "Y=",y
+    #print "C=",c
     c=c0-(c0-cs)*c
     pylab.figure()    
     pylab.imshow(c,extent=(0,10,0,1))
     pylab.colorbar()
     pylab.title("Analytics")
 
-    
+    pylab.figure()
+    pylab.imshow(uy)
+    pylab.colorbar()
 
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"

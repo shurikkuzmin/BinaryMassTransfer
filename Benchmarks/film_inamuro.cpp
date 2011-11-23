@@ -138,38 +138,6 @@ void init()
 
 }
 
-void collide_column_bgk(int coor_y,int coor_bottom,int coor_top)
-{
-	for(int iX=coor_bottom;iX<=coor_top;iX++)
-	{
-		int counter=coor_y*NX+iX;
-		rho[counter]=0.0;
-
-		double sum=0;
-		for(int k=0;k<NPOP;k++)
-			sum+=f[counter*NPOP+k];
-	
-		rho[counter]=sum;
-
-		double dense_temp=rho[counter];
-		double ux_temp=ux[counter];
-		double uy_temp=uy[counter];
-
-		double feqeq[NPOP];
-
-		for (int k=0; k<NPOP; k++)
-			feqeq[k]=weights[k]*(dense_temp+3.0*dense_temp*(cx[k]*ux_temp+cy[k]*uy_temp)
-            						         +4.5*dense_temp*((cx[k]*cx[k]-1.0/3.0)*ux_temp*ux_temp
-															+(cy[k]*cy[k]-1.0/3.0)*uy_temp*uy_temp
-					    			                         +2.0*ux_temp*uy_temp*cx[k]*cy[k]));
-
-		for(int k=0; k < NPOP; k++)
-			f2[counter*NPOP+k]=f[counter*NPOP+k]*(1.0-omega)+omega*feqeq[k];
-				
-	}
-	
-}
-
 
 void collide_bgk()
 {
@@ -202,9 +170,6 @@ void collide_bgk()
 	}
 			
 }
-
-
-
 
 
 void collide()
@@ -289,12 +254,10 @@ void collide()
 void update_bounce_back()
 {
 	//Updating the inlet populations through the anti bounce back
-	for(int iX=2;iX<NX-2;iX++)
+	for(int iX=1;iX<NX-1;iX++)
 	{
-		
-		f2[iX*NPOP+2]=-f2[(NX+iX)*NPOP+4]+2*weights[2]*conc_inlet*(1.0+3.0*(ux[iX]*cx[2]+uy[iX]*cy[2]));
-		f2[iX*NPOP+5]=-f2[(NX+iX+1)*NPOP+7]+2*weights[5]*conc_inlet*(1.0+3.0*(ux[iX]*cx[5]+uy[iX]*cy[5]));
-		f2[iX*NPOP+6]=-f2[(NX+iX-1)*NPOP+8]+2*weights[6]*conc_inlet*(1.0+3.0*(ux[iX]*cx[6]+uy[iX]*cy[6]));
+		int offset=iX*NPOP;
+		f2[iX*NPOP+2]=conc_inlet-(f2[ix]);	
 	}
 	
 	//Corners
@@ -351,7 +314,7 @@ void initialize_geometry()
  
 	//Initialization
     for(int iY=0;iY<NY;iY++)
-    	for(int iX=0;iX<NX-1;iX++)
+    	for(int iX=0;iX<NX;iX++)
     	{
     		int counter=iY*NX+iX;
     		rho[counter]=0.0;
@@ -362,16 +325,13 @@ void initialize_geometry()
     for(int iX=1;iX<NX-1;iX++)
     { 
     	rho[iX]=conc_inlet;
-    	rho[(NY-1)*NX+iX]=rho[(NY-2)*NX+iX];
     }
     
     for(int iY=0;iY<NY;iY++)
     {
     	rho[iY*NX]=conc_wall;
-        rho[iY*NX+NX-1]=rho[iY*NX+NX-2];
-        ux[iY*NX+NX-1]=ux[iY*NX+NX-2];
-        uy[iY*NX+NX-1]=ux[iY*NX+NX-2];
     }
+
 	writedensity("conc_initial");
 	writevelocityx("ux_initial");
 	writevelocityy("uy_initial");    
@@ -391,14 +351,16 @@ void finish_simulation()
 
 void stream()
 {
-	for (int iY=1;iY<NY-1;iY++)
-		for(int iX=1;iX<NX-1;iX++)
+	for (int iY=0;iY<NY;iY++)
+		for(int iX=0;iX<NX;iX++)
 		{
 			int counter=iY*NX+iX;
 			for(int iPop=0;iPop<NPOP;iPop++)
 			{
-				int counter2=counter-cy[iPop]*NX-cx[iPop];
-				f[counter*NPOP+iPop]=f2[counter2*NPOP+iPop];
+				int iX2=(iX+cx[iPop]+NX)%NX;
+				int iY2=(iY+cy[iPop]+NY)%NY;
+				int counter2=iY2*NX+iX2;
+				f[counter2*NPOP+iPop]=f2[counter*NPOP+iPop];
 			}
 		}
 }
