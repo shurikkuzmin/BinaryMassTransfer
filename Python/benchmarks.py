@@ -137,6 +137,14 @@ def compare_film(file_dir):
     pylab.figure()
     pylab.imshow(uy)
     pylab.colorbar()
+    
+    pylab.figure()
+    pylab.plot(concentration[0,:])
+    pylab.figure()
+    pylab.plot(concentration[:,0])
+    pylab.figure()
+    pylab.plot(concentration[:,dims[1]-1])
+    print numpy.where(concentration>1.8)
 
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"
