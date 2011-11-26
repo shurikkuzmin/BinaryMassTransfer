@@ -43,9 +43,6 @@ double omega=1.4; ///1.99;
 double omega_plus=2.0-omega;
 double omega_minus=omega;
 
-//Diffusion parameter
-double ce=1.0/3.0;
-
 //Underlying lattice parameters
 double weights[]={4.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/36.0,1.0/36.0,1.0/36.0,1.0/36.0};
 double weights_trt[]={0.0,1.0/3.0,1.0/3.0,1.0/3.0,1.0/3.0,1.0/12.0,1.0/12.0,1.0/12.0,1.0/12.0};
