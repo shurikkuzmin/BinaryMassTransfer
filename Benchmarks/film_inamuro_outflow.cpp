@@ -143,67 +143,27 @@ void collide_bgk()
 }
 
 
-void update_bounce_back()
+void update_free()
 {
-	//Updating inlet populations
-	for(int iX=1;iX<NX-1;iX++)
-	{
-		int offset=iX*NPOP;
-		double dense_temp;
-		
-		dense_temp=(conc_inlet-(f[offset+1]+f[offset+3]+f[offset+4]+f[offset+7]+f[offset+8]))/(weights[2]+weights[5]+weights[6]);	
-		f2[offset+2]=weights[2]*dense_temp;
-		f2[offset+5]=weights[5]*dense_temp;
-		f2[offset+6]=weights[6]*dense_temp;
-	}
 
     //Updating outlet populations
 	for(int iX=1;iX<NX-1;iX++)
 	{
-		int offset=((NY-1)*NX+iX)*NPOP;
-		double dense_temp;
-		
-		dense_temp=(f[offset+2]+f[offset+5]+f[offset+6])/(weights[4]+weights[7]+weights[8]);	
-		f2[offset+4]=weights[4]*dense_temp;
-		f2[offset+7]=weights[7]*dense_temp;
-		f2[offset+8]=weights[8]*dense_temp;
+		int offset1=((NY-1)*NX+iX)*NPOP;
+		int offset2=((NY-2)*NX+iX)*NPOP;
+		for(int iPop=0;iPop<NPOP;iPop++)
+			f2[offset1+iPop]=f2[offset2+iPop];
 	}
 	
-	//Updating wall populations
-	for(int iY=1;iY<NY-1;iY++)
-	{
-		int offset=iY*NX*NPOP;
-		double dense_temp;
-		
-		dense_temp=(conc_wall-(f[offset+2]+f[offset+3]+f[offset+4]+f[offset+6]+f[offset+7]))/(weights[1]+weights[5]+weights[8]);	
-		f2[offset+1]=weights[1]*dense_temp;
-		f2[offset+5]=weights[5]*dense_temp;
-		f2[offset+8]=weights[8]*dense_temp;
-	}
-
     //Updating free-wall populations
 	for(int iY=1;iY<NY-1;iY++)
 	{
-		int offset=(iY*NX+NX-1)*NPOP;
-		double dense_temp;
-		
-		dense_temp=(f[offset+1]+f[offset+5]+f[offset+8])/(weights[6]+weights[3]+weights[7]);	
-		f2[offset+6]=weights[6]*dense_temp;
-		f2[offset+3]=weights[3]*dense_temp;
-		f2[offset+7]=weights[7]*dense_temp;
+		int offset1=(iY*NX+NX-1)*NPOP;
+		int offset2=(iY*NX+NX-2)*NPOP;
+		for(int iPop=0;iPop<NPOP;iPop++)
+			f2[offset1+iPop]=f2[offset2+iPop];
 	}
 
-    
-
-	//Corners (averaging procedure)
-	for(int iPop=0;iPop<NPOP;iPop++)
-	{
-		f2[iPop]            =0.5*(f2[NPOP+iPop]+f2[NX*NPOP+iPop]);
-		f2[(NX-1)*NPOP+iPop]=0.5*(f2[(NX-2)*NPOP+iPop]+f2[(2*NX-1)*NPOP+iPop]);
-		f2[NX*(NY-1)*NPOP+iPop]=0.5*(f2[NX*(NY-2)*NPOP+iPop]+f2[(NX*(NY-1)+1)*NPOP+iPop]);
-		f2[(NX*(NY-1)+NX-1)*NPOP+iPop]=0.5*(f2[(NX*(NY-2)+NX-1)*NPOP+iPop]+f2[(NX*(NY-1)+NX-2)*NPOP+iPop]);
-	}
-		
 }
 
 
@@ -221,18 +181,6 @@ void update_bounce_back_after_stream()
 		f[offset+6]=weights[6]*dense_temp;
 	}
 
-    //Updating outlet populations
-	for(int iX=1;iX<NX-1;iX++)
-	{
-		int offset=((NY-1)*NX+iX)*NPOP;
-		double dense_temp;
-		
-		dense_temp=(f[offset+2]+f[offset+5]+f[offset+6])/(weights[4]+weights[7]+weights[8]);	
-		f[offset+4]=weights[4]*dense_temp;
-		f[offset+7]=weights[7]*dense_temp;
-		f[offset+8]=weights[8]*dense_temp;
-	}
-	
 	//Updating wall populations
 	for(int iY=1;iY<NY-1;iY++)
 	{
@@ -245,19 +193,6 @@ void update_bounce_back_after_stream()
 		f[offset+8]=weights[8]*dense_temp;
 	}
 
-    //Updating free-wall populations
-	for(int iY=1;iY<NY-1;iY++)
-	{
-		int offset=(iY*NX+NX-1)*NPOP;
-		double dense_temp;
-		
-		dense_temp=(f[offset+1]+f[offset+5]+f[offset+8])/(weights[6]+weights[3]+weights[7]);	
-		f[offset+6]=weights[6]*dense_temp;
-		f[offset+3]=weights[3]*dense_temp;
-		f[offset+7]=weights[7]*dense_temp;
-	}
-
-    
 
 	//Corners (averaging procedure)
 	for(int iPop=0;iPop<NPOP;iPop++)
@@ -380,7 +315,7 @@ int main(int argc, char* argv[])
 
         //collide(); 
         collide_bgk();
-        //update_bounce_back();
+        update_free();
 		stream();
 		update_bounce_back_after_stream();
         
@@ -394,7 +329,7 @@ int main(int argc, char* argv[])
  			counterconvert<<counter;
  			filewritedensity<<std::fixed;
 
-			filewritedensity<<"film_inamuro"<<std::string(7-counterconvert.str().size(),'0')<<counter;
+			filewritedensity<<"film_outflow"<<std::string(7-counterconvert.str().size(),'0')<<counter;
 			
  			writedensity(filewritedensity.str());
 		}

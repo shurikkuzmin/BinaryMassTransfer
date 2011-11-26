@@ -17,7 +17,7 @@ int NUM;
 const int NPOP=9;
 
 //Time steps
-int N=30000;
+int N=50000;
 int NOUTPUT=100;
 
 //Fields and populations

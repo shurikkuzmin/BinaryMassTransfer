@@ -95,13 +95,13 @@ def film_analytical():
     pylab.colorbar()
 
 def compare_film(file_dir):
-    concentration=numpy.loadtxt(file_dir+"film0030000.dat")
+    concentration=numpy.loadtxt(file_dir+"film0050000.dat")
     uy=numpy.loadtxt(file_dir+"uy_initial.dat")
     
     dims=concentration.shape    
     print dims
     pylab.figure()    
-    pylab.imshow(concentration,extent=(0,10,0,1))
+    pylab.imshow(concentration[:,:-4],extent=(0,10,0,1))
     pylab.title("Simulations")
     pylab.colorbar()    
     #pylab.figure()
@@ -144,7 +144,75 @@ def compare_film(file_dir):
     pylab.plot(concentration[:,0])
     pylab.figure()
     pylab.plot(concentration[:,dims[1]-1])
+    
+    c_levels=numpy.arange(0.0,1.0,0.1)
+    print c_levels
+    pylab.figure(figsize=(10,1))
+    c1=pylab.contour(concentration[:,:-4],levels=c_levels,extent=(0.0,10.0,0.0,1.0))
+    pylab.clabel(c1,fontsize=9, inline=1)    
+    #pylab.figure(figsize=(10,1))
+    c2=pylab.contour(c,levels=c_levels,extent=(0.0,10.0,0.0,1.0))
+    pylab.clabel(c2,fontsize=9, inline=1)    
+    
     print numpy.where(concentration>1.8)
+
+def compare_three_films(file_dir):
+    conc_antibb =numpy.loadtxt(file_dir+"film0050000.dat")
+    conc_inamuro=numpy.loadtxt(file_dir+"film_inamuro0050000.dat")
+    conc_outflow=numpy.loadtxt(file_dir+"film_outflow0050000.dat")    
+    
+    pylab.figure()    
+    pylab.imshow(conc_antibb[:,:-20],extent=(0,10,0,1))
+    pylab.title("AntiBB simulations")
+    pylab.colorbar()    
+    pylab.figure()
+    pylab.imshow(conc_inamuro[:,:-20],extent=(0,10,0,1))
+    pylab.title("Inamuro simulations")
+    pylab.colorbar()    
+    pylab.figure()
+    pylab.imshow(conc_outflow[:,:-20],extent=(0,10,0,1))
+    pylab.title("Partial Inamuro simulations")
+    pylab.colorbar()
+
+    c_levels=numpy.arange(0.6,1.0,0.1)
+    print c_levels
+    pylab.figure(99,figsize=(10,1))
+    c1=pylab.contour(conc_antibb[:,:-20],levels=c_levels,extent=(0.0,10.0,0.0,1.0))
+    pylab.clabel(c1,fontsize=9, inline=1)    
+    #pylab.figure(figsize=(10,1))
+    c2=pylab.contour(conc_inamuro[:,:-20],levels=c_levels,extent=(0.0,10.0,0.0,1.0))
+    pylab.clabel(c2,fontsize=9, inline=1)
+    c3=pylab.contour(conc_outflow[:,:-20],levels=c_levels,extent=(0.0,10.0,0.0,1.0))
+
+
+
+    num_terms=30
+    c0=0.5
+    cs=1.0
+    u_bubble=0.05*20   
+    y,x=0.01*numpy.mgrid[1:101,1:1001]
+    
+    c=numpy.zeros_like(x)
+    diffusion=1.0/3.0*(1.0/1.4-0.5)
+    
+    res=y/numpy.sqrt(4*x*diffusion/u_bubble)
+    print res.shape
+    sign=-1
+    for i in range(0,num_terms):
+        sign=-sign
+        c=c+sign*(scipy.special.erfc((y+2.0*i)/numpy.sqrt(4.0*x*diffusion/u_bubble))+scipy.special.erfc((2.0*(i+1)-y)/numpy.sqrt(4.0*x*diffusion/u_bubble)))
+        
+    c=c0-(c0-cs)*c
+    pylab.figure()    
+    pylab.imshow(c,extent=(0,10,0,1))
+    pylab.colorbar()
+    pylab.title("Analytics")
+
+    pylab.figure(99,)
+    c_anal=pylab.contour(c[:,:-20],levels=c_levels,extent=(0.0,10.0,0.0,1.0))
+    pylab.clabel(c_anal,fontsize=9, inline=1)    
+
+
 
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"
@@ -156,5 +224,6 @@ if __name__=="__main__":
     #show_bessel()    
     #read_film(file_dir)    
     #film_analytical()    
-    compare_film(file_dir)    
+    #compare_film(file_dir)
+    compare_three_films(file_dir)
     pylab.show()
