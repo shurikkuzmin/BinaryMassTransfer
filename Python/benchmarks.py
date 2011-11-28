@@ -213,6 +213,60 @@ def compare_three_films(file_dir):
     pylab.clabel(c_anal,fontsize=9, inline=1)    
 
 
+def compare_full_profiles(file_dir):
+    conc_antibb =numpy.loadtxt(file_dir+"FullProfile/"+"film_antibb0050000.dat")
+    conc_inamuro=numpy.loadtxt(file_dir+"FullProfile/"+"film_outflow0050000.dat")
+    
+    pylab.figure()    
+    pylab.imshow(conc_antibb,extent=(0,10,0,1))
+    pylab.title("AntiBB simulations")
+    pylab.colorbar()    
+    pylab.figure()
+    pylab.imshow(conc_inamuro,extent=(0,10,0,1))
+    pylab.title("Inamuro simulations")
+    pylab.colorbar()    
+
+    c_levels=numpy.arange(0.6,1.0,0.1)
+    print c_levels
+    pylab.figure(99,figsize=(10,1))
+    c1=pylab.contour(conc_antibb,levels=c_levels,extent=(0.0,10.0,0.0,1.0))
+    pylab.clabel(c1,fontsize=9, inline=1)    
+    #pylab.figure(figsize=(10,1))
+    c2=pylab.contour(conc_inamuro,levels=c_levels,extent=(0.0,10.0,0.0,1.0))
+    pylab.clabel(c2,fontsize=9, inline=1)
+
+
+
+    num_terms=100
+    c0=0.0
+    cs=1.0
+    ny=20
+    omega=1.9
+    u_bubble=0.05
+    diffusion=1.0/3.0*(1.0/omega-0.5)
+    pe=u_bubble*ny/diffusion
+    print "Pe=",pe
+    y,x=0.01*numpy.mgrid[1:101,1:2001]
+    #pe=pe/2
+    c=numpy.zeros_like(x)
+    
+    sign=-1
+    for i in range(0,num_terms):
+        sign=-sign
+        c=c+sign*(scipy.special.erfc((y+2.0*i)/numpy.sqrt(4.0*x/pe))+scipy.special.erfc((2.0*(i+1)-y)/numpy.sqrt(4.0*x/pe)))
+    c=c0-(c0-cs)*c
+    #c=scipy.special.erfc(y/numpy.sqrt(4.0*x/pe))    
+    print c    
+    pylab.figure()    
+    pylab.imshow(c,extent=(0,10,0,0.5))
+    pylab.colorbar()
+    pylab.title("Analytics")
+
+    pylab.figure(99)
+    #pylab.figure(figsize=(10,1))
+    c_anal=pylab.contour(c,levels=c_levels,linestyles="dashed",extent=(0.0,10.0,0.0,0.5))
+    #pylab.clabel(c_anal,fontsize=9, inline=1)
+
 
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"
@@ -225,5 +279,6 @@ if __name__=="__main__":
     #read_film(file_dir)    
     #film_analytical()    
     #compare_film(file_dir)
-    compare_three_films(file_dir)
+    #compare_three_films(file_dir)
+    compare_full_profiles(file_dir)    
     pylab.show()

@@ -17,7 +17,7 @@ const int NPOP=9;
 
 //Time steps
 int N=50000;
-int NOUTPUT=100;
+int NOUTPUT=1000;
 
 //Fields and populations
 double *f;
@@ -29,7 +29,7 @@ int * geometry;
 
 //Boundary conditions
 double conc_wall=1.0;
-double conc_inlet=0.5;
+double conc_inlet=0.0;
 double u0=0.05;
 std::vector<int> bb_nodes_inlet;
 std::vector<char>* dirs_inlet;
@@ -38,7 +38,7 @@ std::vector<int> bb_nodes_wall;
 std::vector<int> dirs_wall;
 
 //BGK relaxation parameter
-double omega=1.4; ///1.99;
+double omega=1.9; ///1.99;
 double omega_plus=2.0-omega;
 double omega_minus=omega;
 

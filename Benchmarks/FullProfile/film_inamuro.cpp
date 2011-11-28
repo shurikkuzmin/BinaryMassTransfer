@@ -18,7 +18,7 @@ const int NPOP=9;
 
 //Time steps
 int N=50000;
-int NOUTPUT=100;
+int NOUTPUT=1000;
 
 //Fields and populations
 double *f;
@@ -30,7 +30,7 @@ int * geometry;
 
 //Boundary conditions
 double conc_wall=1.0;
-double conc_inlet=0.5;
+double conc_inlet=0.0;
 double u0=0.05;
 std::vector<int> bb_nodes_inlet;
 std::vector<char>* dirs_inlet;
@@ -39,7 +39,7 @@ std::vector<int> bb_nodes_wall;
 std::vector<int> dirs_wall;
 
 //BGK relaxation parameter
-double omega=1.4; ///1.99;
+double omega=1.9; ///1.99;
 double omega_plus=2.0-omega;
 double omega_minus=omega;
 
@@ -150,21 +150,13 @@ void update_free()
 		int offset2=((NY-2)*NX+iX)*NPOP;
 		for(int iPop=0;iPop<NPOP;iPop++)
 			f2[offset1+iPop]=f2[offset2+iPop];
-	}
-	
-    //Updating free-wall populations
-	for(int iY=1;iY<NY-1;iY++)
-	{
-		int offset1=(iY*NX+NX-1)*NPOP;
-		int offset2=(iY*NX+NX-2)*NPOP;
-		for(int iPop=0;iPop<NPOP;iPop++)
-			f2[offset1+iPop]=f2[offset2+iPop];
+		rho[(NY-1)*NX+iX]=rho[(NY-2)*NX+iX];
 	}
 
 }
 
 
-void update_bounce_back_after_stream()
+void update_bounce_back()
 {
 	//Updating inlet populations
 	for(int iX=1;iX<NX-1;iX++)
@@ -179,7 +171,7 @@ void update_bounce_back_after_stream()
 	}
 
 	//Updating wall populations
-	for(int iY=1;iY<NY-1;iY++)
+	for(int iY=1;iY<NY;iY++)
 	{
 		int offset=iY*NX*NPOP;
 		double dense_temp;
@@ -188,16 +180,21 @@ void update_bounce_back_after_stream()
 		f[offset+1]=weights[1]*dense_temp;
 		f[offset+5]=weights[5]*dense_temp;
 		f[offset+8]=weights[8]*dense_temp;
+		
+		offset=(iY*NX+NX-1)*NPOP;
+		dense_temp=(conc_wall-(f[offset+0]+f[offset+2]+f[offset+1]+f[offset+4]+f[offset+5]+f[offset+8]))/(weights[3]+weights[6]+weights[7]);	
+		f[offset+3]=weights[3]*dense_temp;
+		f[offset+6]=weights[6]*dense_temp;
+		f[offset+7]=weights[7]*dense_temp;
 	}
-
-
+	
 	//Corners (averaging procedure)
 	for(int iPop=0;iPop<NPOP;iPop++)
 	{
 		f[iPop]            =0.5*(f[NPOP+iPop]+f[NX*NPOP+iPop]);
 		f[(NX-1)*NPOP+iPop]=0.5*(f[(NX-2)*NPOP+iPop]+f[(2*NX-1)*NPOP+iPop]);
-		f[NX*(NY-1)*NPOP+iPop]=0.5*(f[NX*(NY-2)*NPOP+iPop]+f[(NX*(NY-1)+1)*NPOP+iPop]);
-		f[(NX*(NY-1)+NX-1)*NPOP+iPop]=0.5*(f[(NX*(NY-2)+NX-1)*NPOP+iPop]+f[(NX*(NY-1)+NX-2)*NPOP+iPop]);
+		//f[NX*(NY-1)*NPOP+iPop]=0.5*(f[NX*(NY-2)*NPOP+iPop]+f[(NX*(NY-1)+1)*NPOP+iPop]);
+		//f[(NX*(NY-1)+NX-1)*NPOP+iPop]=0.5*(f[(NX*(NY-2)+NX-1)*NPOP+iPop]+f[(NX*(NY-1)+NX-2)*NPOP+iPop]);
 	}
 		
 }
@@ -221,23 +218,22 @@ void initialize_geometry()
     	{
     		int counter=iY*NX+iX;
     		rho[counter]=0.0;
-    		uy[counter]=u0*(1.0-double(iX*iX)/((NX-1.5)*(NX-1.5)));
     		ux[counter]=0.0;
+    		double factor=double(iX-0.5)/double(NX-2);
+    		uy[counter]=4.0*u0*(1.0-factor)*factor;
+    		if ((iX==0) || (iX==NX-1))
+    			uy[counter]=0.0;
     	}
  
-    for(int iX=1;iX<NX-1;iX++)
-    { 
-    	rho[iX]=conc_inlet;
-    }
-    
     for(int iY=0;iY<NY;iY++)
     {
     	rho[iY*NX]=conc_wall;
+        rho[iY*NX+NX-1]=conc_wall;
     }
-
 	writedensity("conc_initial");
 	writevelocityx("ux_initial");
 	writevelocityy("uy_initial");    
+	 
 }
 
 void init()
@@ -310,11 +306,10 @@ int main(int argc, char* argv[])
 	for(int counter=0;counter<=N;counter++)
 	{
 
-        //collide(); 
         collide_bgk();
         update_free();
 		stream();
-		update_bounce_back_after_stream();
+		update_bounce_back();
         
 		//Writing files
 		if (counter%NOUTPUT==0)
