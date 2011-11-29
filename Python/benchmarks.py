@@ -218,17 +218,17 @@ def compare_full_profiles(file_dir):
     conc_inamuro=numpy.loadtxt(file_dir+"FullProfile/"+"film_outflow0050000.dat")
     
     pylab.figure()    
-    pylab.imshow(conc_antibb,extent=(0,10,0,1))
+    pylab.imshow(conc_antibb,extent=(0,20,0,1))
     pylab.title("AntiBB simulations")
     pylab.colorbar()    
     pylab.figure()
-    pylab.imshow(conc_inamuro,extent=(0,10,0,1))
+    pylab.imshow(conc_inamuro,extent=(0,20,0,1))
     pylab.title("Inamuro simulations")
     pylab.colorbar()    
 
-    c_levels=numpy.arange(0.6,1.0,0.1)
+    c_levels=numpy.arange(0.2,1.0,0.1)
     print c_levels
-    pylab.figure(99,figsize=(10,1))
+    pylab.figure(99,figsize=(20,1))
     c1=pylab.contour(conc_antibb,levels=c_levels,extent=(0.0,10.0,0.0,1.0))
     pylab.clabel(c1,fontsize=9, inline=1)    
     #pylab.figure(figsize=(10,1))
@@ -240,13 +240,13 @@ def compare_full_profiles(file_dir):
     num_terms=100
     c0=0.0
     cs=1.0
-    ny=20
-    omega=1.9
+    ny=40
+    omega=1.8
     u_bubble=0.05
     diffusion=1.0/3.0*(1.0/omega-0.5)
     pe=u_bubble*ny/diffusion
     print "Pe=",pe
-    y,x=0.01*numpy.mgrid[1:101,1:2001]
+    y,x=0.005*numpy.mgrid[1:201,1:8001]
     #pe=pe/2
     c=numpy.zeros_like(x)
     
@@ -258,7 +258,7 @@ def compare_full_profiles(file_dir):
     #c=scipy.special.erfc(y/numpy.sqrt(4.0*x/pe))    
     print c    
     pylab.figure()    
-    pylab.imshow(c,extent=(0,10,0,0.5))
+    pylab.imshow(c,extent=(0,20,0,0.5))
     pylab.colorbar()
     pylab.title("Analytics")
 

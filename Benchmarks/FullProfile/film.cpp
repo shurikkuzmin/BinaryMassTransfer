@@ -38,7 +38,7 @@ std::vector<int> bb_nodes_wall;
 std::vector<int> dirs_wall;
 
 //BGK relaxation parameter
-double omega=1.9; ///1.99;
+double omega=1.8; ///1.99;
 double omega_plus=2.0-omega;
 double omega_minus=omega;
 
@@ -107,8 +107,8 @@ void writevelocityy(std::string const & fname)
 
 void initialize_geometry()
 {
-	NY=10*40;
-	NX=40;
+	NY=20*80;
+	NX=80;
 	NUM=NX*NY;
     geometry=new int[NUM];
     rho=new double[NUM];
