@@ -290,8 +290,10 @@ def film_reconstruction():
                   23.16086744, 23.29611511, 23.43058210, 23.56428178, 23.69722713, \
                   23.82943078, 23.96090501, 24.09166175, 24.22171263, 24.35106896, \
                   24.47974174, 24.60774171, 24.73507930, 24.86176469, 24.98780781])
-    print scipy.special.jv(-3.0/4.0,bessel_zeros*bessel_zeros/2.0)
-
+    y,x=0.01*numpy.mgrid[1:101,1:1001]
+    num_terms=10
+    for i in range(0,num_terms):
+        
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"
     file_name="../Benchmarks/conc_initial.dat"    
