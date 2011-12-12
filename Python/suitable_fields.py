@@ -234,6 +234,6 @@ if __name__=="__main__":
     #produce_bunch("HydroMichal")    
     #produce_bunch("HydroGinzburg")
     #show_streamlines("HydroResultsRightAcceleration/12/")    
-    show_streamlines("HydroMichal/30/")
+    show_streamlines("HydroResultsRight/12/")
     #show_streamlines("HydroGinzburg/9/")
     pylab.show()

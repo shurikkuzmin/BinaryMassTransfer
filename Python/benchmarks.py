@@ -274,11 +274,19 @@ def film_reconstruction(file_dir):
     wmfivetwo=numpy.array([0.209965, 0.0181809, 0.0069193, 0.00373185, 0.00236737, 0.00165045, \
                            0.00122407, 0.000948389, 0.000759097, 0.000623069, 0.000521773, \
                            0.000444147, 0.000383242, 0.000334505, 0.000294845, 0.000262104, \
-                           0.000234734, 0.000211602, 0.000191861, 0.000174867])
+                           0.000234734, 0.000211602, 0.000191861, 0.000174867, 0.000160124, \
+                           0.000147245, 0.000135921, 0.000125909, 0.000117008, 0.000109058, \
+                           0.000101925, 0.0000954983, 0.0000896863, 0.0000844115, 0.0000796084, \
+                           0.0000752211, 0.0000712022, 0.0000675107, 0.0000641113, 0.0000609733, \
+                        0.0000580702, 0.0000553784, 0.0000528777, 0.00005055])
     wmcubic=numpy.array([0.137974, 0.0368546, 0.0213316, 0.0150107, 0.0115796, 0.00942524, \
                          0.00794677, 0.00686924, 0.00604903, 0.0054038, 0.00488295, \
                          0.00445368, 0.00409379, 0.00378771, 0.00352422, 0.003295, 0.00309378, \
-                        0.00291572, 0.00275704, 0.00261474])
+                         0.00291572, 0.00275704, 0.00261474, 0.00248641, 0.00237009, \
+                         0.00226416, 0.0021673, 0.00207838, 0.00199648, 0.00192078, \
+                         0.00185062, 0.0017854, 0.00172462, 0.00166784, 0.00161468, \
+                         0.00156481, 0.00151792, 0.00147376, 0.0014321, 0.00139273, \
+                         0.00135547, 0.00132015, 0.00128662])
     
     bessel_zeros=numpy.array([1.454997085, 2.927133004, 3.857578101, 4.601777732, 5.240824067, \
                   5.809787864, 6.327694301, 6.806248002, 7.253261690, 7.674259300, \
@@ -302,7 +310,9 @@ def film_reconstruction(file_dir):
                   24.47974174, 24.60774171, 24.73507930, 24.86176469, 24.98780781])
     y,x=0.01*numpy.mgrid[1:101,1:2001]
     c=numpy.zeros_like(x)
-    num_terms=20
+    cerf=numpy.zeros_like(x)
+    
+    num_terms=40
     cwall=1
     c0=0
     coeffm=wmfivetwo/wmcubic*(c0-cwall)
@@ -310,12 +320,19 @@ def film_reconstruction(file_dir):
     u_bubble=0.05*40
     diffusion=1.0/3.0*(1.0/omega-0.5)
 
-        
+    pe=u_bubble/diffusion
+    
+    sign=-1
+    for i in range(0,num_terms):
+        sign=-sign
+        cerf=cerf+sign*(scipy.special.erfc((y+2.0*i)/numpy.sqrt(4.0*x/pe))+scipy.special.erfc((2.0*(i+1)-y)/numpy.sqrt(4.0*x/pe)))
+    cerf=c0-(c0-cwall)*cerf
+    
     for i in range(0,num_terms):
         c=c+coeffm[i]*scipy.special.jv(0.25,bessel_zeros[i]*bessel_zeros[i]*0.5*y*y)*numpy.sqrt(y)*numpy.exp(-(bessel_zeros[i]**4)*x*diffusion/u_bubble)
     c=c+cwall    
     pylab.figure()
-    pylab.imshow(c,extent=(0,20,0,0.5))
+    pylab.imshow(c,extent=(0,10,0,0.5))
     pylab.colorbar()
  
     c_levels=numpy.arange(0.2,1.0,0.1)
@@ -323,6 +340,8 @@ def film_reconstruction(file_dir):
     conc_antibb =numpy.loadtxt(file_dir+"FullProfile/"+"film_antibb0050000.dat")
     conc_inamuro=numpy.loadtxt(file_dir+"FullProfile/"+"film_outflow0050000.dat")
     dims=conc_antibb.shape    
+    print "Dims=",dims
+    print "Pe=",pe
     
     pylab.figure()    
     pylab.imshow(conc_antibb[0:dims[0]/2,:],extent=(0,20,0,0.5))
@@ -340,7 +359,8 @@ def film_reconstruction(file_dir):
     c2=pylab.contour(conc_inamuro,levels=c_levels,extent=(0.0,20.0,0.0,1.0))
     pylab.clabel(c2,fontsize=9, inline=1)
     
-    c_anal=pylab.contour(c,levels=c_levels,linestyles="dashed",extent=(0.0,20.0,0.0,0.5))
+    c_anal=pylab.contour(c,levels=c_levels,linestyles="dashed",extent=(0.0,10.0,0.0,0.5))
+    c_anal_erf=pylab.contour(cerf,levels=c_levels,linestyles="dotted",extent=(0.0,10.0,0.0,0.5))
 
 
 if __name__=="__main__":

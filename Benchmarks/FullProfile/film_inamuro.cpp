@@ -31,7 +31,7 @@ int * geometry;
 //Boundary conditions
 double conc_wall=1.0;
 double conc_inlet=0.0;
-double u0=0.05;
+double u0=0.025;
 std::vector<int> bb_nodes_inlet;
 std::vector<char>* dirs_inlet;
 
@@ -203,8 +203,8 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	NY=20*80;
-	NX=80;
+	NY=20*160;
+	NX=160;
 	NUM=NX*NY;
     geometry=new int[NUM];
     rho=new double[NUM];
