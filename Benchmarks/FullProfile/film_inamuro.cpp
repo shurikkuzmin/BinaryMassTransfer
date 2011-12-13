@@ -203,8 +203,8 @@ void update_bounce_back()
 
 void initialize_geometry()
 {
-	NY=20*160;
-	NX=160;
+	NY=20*80;
+	NX=80;
 	NUM=NX*NY;
     geometry=new int[NUM];
     rho=new double[NUM];
@@ -219,7 +219,7 @@ void initialize_geometry()
     		int counter=iY*NX+iX;
     		rho[counter]=0.0;
     		ux[counter]=0.0;
-    		double factor=double(iX-0.5)/double(NX-2);
+    		double factor=double(iX-0.5)/double(NX-1.5);
     		uy[counter]=4.0*u0*(1.0-factor)*factor;
     		if ((iX==0) || (iX==NX-1))
     			uy[counter]=0.0;

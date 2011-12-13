@@ -317,7 +317,7 @@ def film_reconstruction(file_dir):
     c0=0
     coeffm=wmfivetwo/wmcubic*(c0-cwall)
     omega=1.8
-    u_bubble=0.05*40
+    u_bubble=0.1*20
     diffusion=1.0/3.0*(1.0/omega-0.5)
 
     pe=u_bubble/diffusion
@@ -360,7 +360,7 @@ def film_reconstruction(file_dir):
     pylab.clabel(c2,fontsize=9, inline=1)
     
     c_anal=pylab.contour(c,levels=c_levels,linestyles="dashed",extent=(0.0,10.0,0.0,0.5))
-    c_anal_erf=pylab.contour(cerf,levels=c_levels,linestyles="dotted",extent=(0.0,10.0,0.0,0.5))
+    #c_anal_erf=pylab.contour(cerf,levels=c_levels,linestyles="dotted",extent=(0.0,10.0,0.0,0.5))
 
 
 if __name__=="__main__":
