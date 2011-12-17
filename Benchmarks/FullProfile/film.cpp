@@ -30,7 +30,7 @@ int * geometry;
 //Boundary conditions
 double conc_wall=1.0;
 double conc_inlet=0.0;
-double u0=0.5;
+double u0=0.05;
 std::vector<int> bb_nodes_inlet;
 std::vector<char>* dirs_inlet;
 
