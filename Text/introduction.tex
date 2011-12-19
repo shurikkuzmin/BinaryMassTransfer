@@ -606,12 +606,57 @@ The problem we want to address can be formulated through the following PDE:
 \beq
 \begin{aligned}
 &\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
-&C(0,y)=0,\, C(x,0)=C_s,\, \frac{\partial C}{\partial_y }(x,\delta)=0\\
+&C(0,y)=0,\, C(x,0)=C_s,\, \frac{\partial C}{\partial y }(x,\delta)=0\\
 &U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
 \end{aligned}
 \feq
+{\color{red} This problem is different from what I solved on computer.} 
 
-
+In any case here is what we want to solve as the system for :
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
+&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,\delta)=0\\
+&U(y)=U_0 \Bigl(\frac{y}{\delta}\Bigr)^2
+\end{aligned}
+\feq
+The system after non-dimensionalization becomes as follows:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial \frac{x}{H}} \frac{U_0}{H} \Bigl(\frac{y}{H}\Bigr)^2=\frac{D}{H^2}\frac{\partial^2 C}{\partial \frac{y^2}{H^2}}\\
+&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,H)=0\\
+\end{aligned}
+\feq
+After a change of variables:
+\beq
+\begin{aligned}
+&\zeta=\frac{x}{H} \frac{D}{U_0 H}=\frac{1}{Pe}\frac{x}{H}\\
+&\xi=\frac{y}{H}
+\end{aligned}
+\feq
+, the equation with boundary conditions becomes as follows:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial \zeta}\xi^2=\frac{\partial^2 C}{\partial \xi^2}\\
+&C(0,\xi)=C_0\\
+&C(\zeta,0)=C_{wall}\\
+&\frac{\partial C}{\partial \xi}(\zeta,1)=0\\
+\end{aligned}
+\feq 
+Still the equation cannot be solved with the separation of variables as it requires the homogenuos boundary conditions. Thus, let us introduce the new variable to be $\Theta=C-C_{wall}$. The system will be changed but not considerably:
+\beq
+\begin{aligned}
+&\frac{\partial \Theta}{\partial \zeta}=\frac{1}{\xi^2}\frac{\partial^2 \Theta}{\partial \xi^2}\\
+&\Theta(0,\xi)=C_0-C_{wall}\\
+&\Theta(\zeta,0)=0,\, \Theta(\zeta,1)=0\\
+\end{aligned}
+\feq 
+This equation can be solved by separation of variables if the solutions is represented as the multiplication of two functions $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$. The differential equation will become as follows:
+\beq
+\begin{aligned}
+&\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}Y(\xi)=\frac{X(\zeta)}{\xi^2}\frac{\mathrm{d^2} Y(\xi)}{\mathrm{d}\xi^2}
+\end{aligned}
+\feq
 \section{Tweaking velocity}
 This section does the job of increasing velocity results. The ulimate goal is to increase velocity
 to about $20-50$ times for velocity while keeping dimensionless parameters the same. The
