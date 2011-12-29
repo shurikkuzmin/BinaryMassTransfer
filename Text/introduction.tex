@@ -648,16 +648,93 @@ Still the equation cannot be solved with the separation of variables as it requi
 \begin{aligned}
 &\frac{\partial \Theta}{\partial \zeta}=\frac{1}{\xi^2}\frac{\partial^2 \Theta}{\partial \xi^2}\\
 &\Theta(0,\xi)=C_0-C_{wall}\\
-&\Theta(\zeta,0)=0,\, \Theta(\zeta,1)=0\\
+&\Theta(\zeta,0)=0,\, \partial_{\xi}\Theta(\zeta,1)=0\\
 \end{aligned}
 \feq 
 This equation can be solved by separation of variables if the solutions is represented as the multiplication of two functions $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$. The differential equation will become as follows:
 \beq
 \begin{aligned}
-&\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}Y(\xi)=\frac{X(\zeta)}{\xi^2}\frac{\mathrm{d^2} Y(\xi)}{\mathrm{d}\xi^2}
+&\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}Y(\xi)=\frac{X(\zeta)}{\xi^2}\frac{\mathrm{d^2}
+Y(\xi)}{\mathrm{d}\xi^2}\\
+&\frac{1}{X(\zeta)}\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}=\frac{1}{\xi^{2} Y(\xi)}
+\frac{\mathrm{d^2} Y(\xi)}{\mathrm{d}\xi^2}
+\end{aligned}
+\feq
+The left and right parts depend on different variables. Therefore to be equal to each other both
+parts equal to constant, say $-m^4$. Thus, the separation of the variables leads to two ODE
+equations:
+\begin{equation*}
+\begin{aligned}
+&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}=-m^4 X(\zeta)\\
+&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 \xi^2 Y(\xi)=0\\ 
+\end{aligned}
+\end{equation*}
+The solution of the first equation is the exponential function:
+\beq
+X(\zeta)=\exp(-m^4 \zeta)\\
+\feq
+The solutions of the second equation are two hypergeometric function which can be expressed through
+the Bessel functions \cite{abramowitz}:
+\beq
+\begin{aligned}
+&Y_1=\sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y_2=\sqrt{\xi}J_{-\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y'_1=m^2 \xi^{3/2} J_{-\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y'_2=m^2 \xi^{3/2} J_{\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+\end{aligned}
+\feq
+The solution is the summation of two functions:
+\begin{equation*}
+Y(x)=C_1 Y_1(x)+C_2 Y_2(x). 
+\end{equation*}
+One can find coefficients from the boundary conditions:
+\beq
+\begin{aligned}
+&Y(0)=0=C_1 Y_1(0)+C_2 Y_2(0)\\
+&Y_1(0)=0,\,Y_2(0)=\frac{\sqrt{2}}{\sqrt{m} \Gamma(3/4)}\, C_2=0\\
+&Y'(1)=0=C_1 Y'_1(1)+C_2 Y'_2(1)=C_1 Y'_1(1)\\
+&J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)=0
+\end{aligned}
+\feq
+Therefore one needs to find zeros of $J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)$. To give some
+numerical values:
+$m_1=1.454997085$, $m_2=2.927133004$, $m_3=3.857578101$, $m_4=4.601777732$, $m_5=5.240824067$.
+Therefore a solution in a general form is represented as:
+\beq
+\Theta(\zeta,\xi)=\sum_m{C_m \sqrt{\xi} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\exp(-m^4 \zeta)}
+\feq
+To find unknown coefficients $C_m$ one needs to substitute the expression above to the initial
+condition:
+\beq
+\Theta(0,\xi)=C_0-C_{wall}=\sum_m{C_m \sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)}\\
+\feq
+Using the Stourm-Liouville theorem one can multiply by $\xi^{5/2}
+J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)$ and integrate left and right parts of the equation:
+\beq
+\begin{aligned}
+&\bigl(C_0-C_{wall}\bigr) \int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}=C_m\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}\\
+&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}
+\end{aligned}
+\feq
+Therefore, the overall solution is specified as:
+\beq
+\begin{aligned}
+&C(x,y)=C_{wall}+\sum_{m}{C_m
+\sqrt{\frac{y}{H}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{H^2}\Bigr)\exp\Bigl(-\frac{m^4}{Pe}
+\frac { x }{H}\Bigr)}\\
+&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}
 \end{aligned}
 \feq
 \section{Tweaking velocity}
+
 This section does the job of increasing velocity results. The ulimate goal is to increase velocity
 to about $20-50$ times for velocity while keeping dimensionless parameters the same. The
 nondimensional parameter Peclet number governs the advection-diffusion equation:
