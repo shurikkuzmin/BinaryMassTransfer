@@ -707,6 +707,129 @@ def check_analytics():
     pylab.figure()
     pylab.plot(c[:,0])
     pylab.title("Inlet")
+
+def check_irandoust(file_dir):
+    concentration=numpy.loadtxt(file_dir+"FullProfile/film_iran_antibb0100000.dat")
+    dims=concentration.shape    
+    print dims
+ 
+    pylab.figure()    
+    pylab.imshow(concentration,extent=(0,20,0,1))
+    pylab.title("Simulations")
+    pylab.colorbar()    
+    #pylab.figure()
+    #pylab.plot(concentration[:,dims[1]/2])
+    #pylab.figure()
+    #pylab.plot(concentration[:,0])
+
+    num_terms=50
+    c0=0.0
+    cs=1.0
+    u_bubble=0.05*20
+    omega=1.8
+    diffusion=1.0/3.0*(1.0/omega-0.5)
+
+    y,x=0.01*numpy.mgrid[1:101,1:2001]
+    
+    c=numpy.zeros_like(x)
+    
+    sign=-1
+    for i in range(0,num_terms):
+        sign=-sign
+        c=c+sign*(scipy.special.erfc((y+2.0*i)/numpy.sqrt(4.0*x*diffusion/u_bubble))+scipy.special.erfc((2.0*(i+1)-y)/numpy.sqrt(4.0*x*diffusion/u_bubble)))
+        
+    c=c0-(c0-cs)*c
+    pylab.figure()    
+    pylab.imshow(c,extent=(0,10,0,0.5))
+    pylab.colorbar()
+    pylab.title("Analytics")
+    
+    pylab.figure()
+    pylab.plot(concentration[0,:])
+    pylab.figure()
+    pylab.plot(concentration[:,0])
+    pylab.figure()
+    pylab.plot(concentration[:,dims[1]-1])
+    
+    c_levels=numpy.arange(0.2,1.0,0.2)
+    #print c_levels
+    pylab.figure(figsize=(10,1))
+    c1=pylab.contour(concentration,levels=c_levels,extent=(0.0,20.0,0.0,1.0))
+    pylab.clabel(c1,fontsize=9, inline=1)    
+    #pylab.figure(figsize=(10,1))
+    c2=pylab.contour(c,levels=c_levels,extent=(0.0,10.0,0.0,0.5))
+    #pylab.clabel(c2,fontsize=9, inline=1)    
+    
+    
+def func(a,b,c,d):
+    prod=1
+    value=1    
+    for counter in range(1,50):
+        prod=prod*(a+counter-1)*c/((b+counter-1)*counter)
+        value=value+prod
+    value=d*numpy.exp(-0.5*c)*value
+    return value    
+def comparison_two_analytics(file_dir):
+    eigen=[2.2631,6.2977,10.3077,14.3128,18.3159,22.3181,26.3197,30.3209,34.3219,38.3227]
+    coeff_eig=[1.3382,-0.5455,0.3589,-0.2721,0.2211,-0.1873,0.1631,-0.1449,0.1306,-0.1191]
+    
+    num_terms=50
+    c0=0.0
+    cs=1.0
+    u_bubble=0.05*40
+    omega=1.8
+    diffusion=1.0/3.0*(1.0/omega-0.5)
+    peclet=u_bubble/diffusion
+
+    y,x=0.01*numpy.mgrid[1:101,1:2001]
+    c_book=numpy.zeros_like(x)
+    
+    prof=numpy.zeros_like(y[:,0])
+    for m_counter in range(0,10):
+        c_book=c_book-coeff_eig[m_counter]*numpy.exp(-eigen[m_counter]*eigen[m_counter]*x/peclet)*func(0.5+0.25*(1-eigen[m_counter]),1.5,eigen[m_counter]*y*y,y)
+        prof=prof+coeff_eig[m_counter]*func(0.5+0.25*(1-eigen[m_counter]),1.5,eigen[m_counter]*y[:,0]*y[:,0],y[:,0])
+    c_book=c_book+1
+
+    
+    c=numpy.zeros_like(x)
+    
+    sign=-1
+    for i in range(0,num_terms):
+        sign=-sign
+        c=c+sign*(scipy.special.erfc((y+2.0*i)/numpy.sqrt(4.0*x*diffusion/u_bubble))+scipy.special.erfc((2.0*(i+1)-y)/numpy.sqrt(4.0*x*diffusion/u_bubble)))
+        
+    c=c0-(c0-cs)*c
+    pylab.figure()    
+    pylab.imshow(c,extent=(0,10,0,0.5))
+    pylab.colorbar()
+    pylab.title("Analytics Irandoust")
+    
+    pylab.figure()    
+    pylab.imshow(c_book,extent=(0,10,0,0.5))
+    pylab.colorbar()
+    pylab.title("Analytics Book")
+
+    concentration=numpy.loadtxt(file_dir+"FullProfile/film_iran_antibb0100000.dat")
+    dims=concentration.shape    
+    print dims
+ 
+    pylab.figure()    
+    pylab.imshow(concentration,extent=(0,20,0,1))
+    pylab.title("Simulations")
+    pylab.colorbar()
+    
+    c_levels=numpy.arange(0.2,1.0,0.2)
+    #print c_levels
+    pylab.figure(figsize=(10,1))
+    c1=pylab.contour(concentration,levels=c_levels,extent=(0.0,20.0,0.0,1.0))
+    pylab.clabel(c1,fontsize=9, inline=1)    
+    #pylab.figure(figsize=(10,1))
+    c2=pylab.contour(c_book,levels=c_levels,extent=(0.0,10.0,0.0,0.5))
+  
+    pylab.figure()
+    pylab.plot(prof)
+
+    
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"
     file_name="../Benchmarks/conc_initial.dat"    
@@ -721,7 +844,9 @@ if __name__=="__main__":
     #compare_film(file_dir)
     #compare_three_films(file_dir)
     #compare_full_profiles(file_dir)    
-    film_reconstruction(file_dir)
+    #film_reconstruction(file_dir)
     #check_equation(file_dir)    
     #check_analytics()    
+    #check_irandoust(file_dir)    
+    comparison_two_analytics(file_dir)    
     pylab.show()
