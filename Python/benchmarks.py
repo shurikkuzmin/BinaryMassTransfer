@@ -829,6 +829,77 @@ def comparison_two_analytics(file_dir):
     pylab.figure()
     pylab.plot(prof)
 
+def func_iran(eigen,x):
+    num_terms=30
+    coeffs=[1.0]
+    y=numpy.zeros_like(x)    
+    for i in range(0,num_terms):
+        term=coeffs[i]*(4*eigen*i+3*eigen-eigen*eigen)/((2*i+3)*(2*i+2))
+        coeffs.append(term)
+
+    for i in range(0,num_terms):
+        y=y+coeffs[i]*numpy.power(x,2*i+1)*numpy.exp(-0.5*eigen*x*x)
+    return y
+    
+
+def irandoust_construction(file_dir):
+    am=[2.6964, 2.57148, 2.55661, 2.55202, 2.54969, 2.55268, 2.53132,2.60922, 2.4173, 2.8315]
+    eig=[2.2631105380370293, 6.29768520284807, 10.307726795402782,\
+         14.312786408192768, 18.31566692902573, 22.31523617697906,\
+         26.30480463074491, 30.27270817974602, 34.20742244520866,\
+         38.10248626414265]
+    y,x=0.01*numpy.mgrid[0:100,0:2000]
+    c=numpy.zeros_like(x)
+    
+    c0=0.0
+    cs=1.0
+    u_bubble=0.05*12.5
+    omega=1.8
+    diffusion=1.0/3.0*(1.0/omega-0.5)
+    peclet=u_bubble/diffusion
+
+    for counter in range(0,10):
+        c=c+am[counter]*numpy.exp(-eig[counter]*eig[counter]*x/peclet)*func_iran(eig[counter],y)
+
+    c=cs+(c0-cs)*c
+    
+    
+    c_iran=numpy.zeros_like(x)
+    
+    sign=-1
+    for i in range(0,num_terms):
+        sign=-sign
+        c_iran=c_iran+sign*(scipy.special.erfc((y+2.0*i)/numpy.sqrt(4.0*x*diffusion/u_bubble))+scipy.special.erfc((2.0*(i+1)-y)/numpy.sqrt(4.0*x*diffusion/u_bubble)))
+        
+    c_iran=c0-(c0-cs)*c_iran
+       
+    
+    pylab.figure()    
+    pylab.imshow(c)
+    pylab.colorbar()
+
+    pylab.figure()    
+    pylab.imshow(c_iran)
+    pylab.colorbar()
+
+    concentration=numpy.loadtxt(file_dir+"FullProfile/film_iran_antibb0100000.dat")
+    dims=concentration.shape    
+    print dims
+ 
+    pylab.figure()    
+    pylab.imshow(concentration,extent=(0,20,0,1))
+    pylab.title("Simulations")
+    pylab.colorbar()
+    
+    c_levels=numpy.arange(0.2,1.0,0.2)
+    #print c_levels
+    pylab.figure(figsize=(10,1))
+    c1=pylab.contour(concentration,levels=c_levels,extent=(0.0,20.0,0.0,1.0))
+    pylab.clabel(c1,fontsize=9, inline=1)    
+    #pylab.figure(figsize=(10,1))
+    c2=pylab.contour(c,linestyles="dotted",levels=c_levels,extent=(0.0,10.0,0.0,0.5))
+    c_iran=pylab.contour(c_iran,levels=c_levels,extent=(0.0,10.0,0.0,0.5))
+
     
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"
@@ -848,5 +919,6 @@ if __name__=="__main__":
     #check_equation(file_dir)    
     #check_analytics()    
     #check_irandoust(file_dir)    
-    comparison_two_analytics(file_dir)    
+    #comparison_two_analytics(file_dir)    
+    irandoust_construction(file_dir)    
     pylab.show()
