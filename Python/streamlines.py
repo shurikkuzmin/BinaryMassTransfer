@@ -14,10 +14,10 @@ def produce_streamlines(dir_name):
     dims=ux.shape
     #pylab.figure()
     #pylab.imshow(phase)
-    pylab.figure()
-    pylab.imshow(ux)
-    pylab.figure()
-    pylab.imshow(uy)    
+    #pylab.figure()
+    #pylab.imshow(ux)
+    #pylab.figure()
+    #pylab.imshow(uy)    
     print dims
  
     y,x=numpy.mgrid[0:dims[0],0:dims[1]]        
@@ -80,10 +80,10 @@ def produce_streamlines(dir_name):
     dims=ux.shape
     #pylab.figure()
     #pylab.imshow(phase)
-    pylab.figure()
-    pylab.imshow(ux)
-    pylab.figure()
-    pylab.imshow(uy)    
+    #pylab.figure()
+    #pylab.imshow(ux)
+    #pylab.figure()
+    #pylab.imshow(uy)    
     print dims
  
     x,y=numpy.mgrid[0:dims[0],0:dims[1]]        
@@ -115,8 +115,9 @@ def produce_streamlines(dir_name):
     
 
 if __name__=="__main__":
-    file_dir="TweakingHydro2DRight/"
-    produce_bunch_streamlines(file_dir)
-    Ngl.end()
+    file_dir="TweakingHydro2DRight/90/"
+    print file_dir
+    produce_streamlines(file_dir)
+    #Ngl.end()
     
     
