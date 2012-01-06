@@ -737,13 +737,21 @@ Therefore, the overall solution is specified as:
 \section{Tweaking velocity}
 The reason to tweak velocity is that the velocity field because of the highly nonlinear binary liquid lattice Boltzmann model do not have nice velocity profile, since some streamlines penetrate the bubble in the reference frame of the bubble. Therefore there exists a normal to the surface of the bubble velocity component which destroys right away the advection-diffusion results. Therefore, a special additional free-surface solver was developed in order to dispose the vertical components. 
 
-The solver was through consequent steps. First, we extracted the velocity profiles from the original binary-liquid simulations. Then, we imposed walls with velocity of the bubble, so the bubble stays still. At the surface of the bubble the free boundary conditions were imposed, see \ref{appendix-free-surface}. One of the examples is shown in Fig. \ref{fig:streamlines:tweaked:velocity}.
+The solver was through consequent steps. First, we extracted the velocity profiles from the
+original binary-liquid simulations. Then, we imposed walls with velocity of the bubble, so the
+bubble stays still. At the surface of the bubble the free boundary conditions were imposed, see
+\ref{appendix-free-surface}. One of the examples is shown in Fig.
+\ref{fig:streamlines:tweaked:velocity}. Among all the simulations the bulk velocity in film and the
+slug are different of no more than $7$ percent. {\color{red} Add some pictures froms streamlines.py
+if it's required to show more.}
 \begin{figure}
-\includegraphics[width=\textwidth]{Figures/original.eps}\\
-\includegraphics[width=\textwidth]{Figures/performed.eps}\\
+\includegraphics[angle=90,width=\textwidth]{Figures/original.eps}\\
+\includegraphics[angle=90,width=\textwidth]{Figures/performed.eps}\\
 \caption{The comparison between original velocity fields and velocity fields obtained from free surface solver. \label{fig:streamlines:tweaked:velocity}}
 \end{figure}
 
+
+\section{Keeping Peclet}
 This section does the job of increasing velocity results. The ulimate goal is to increase velocity
 to about $20-50$ times for velocity while keeping dimensionless parameters the same. The
 nondimensional parameter Peclet number governs the advection-diffusion equation:
@@ -756,7 +764,17 @@ $5,10,20,40$ times larger than original velocities.
 
 \appendix
 \section{Free surface boundary conditions}
-There are a few implementations of free boundary conditions \cite{ginzburg-free,verberg-free}. However, we developed the easy solver to impose the free surface boundary conditions at the complicated surface of the bubble. The reason is to impose the symmetric boundary conditions. Because the boundary is the staircase approximation, one can find the normal to the boundary which is always located by the angle of multiple of $45$, see Fig. \ref{fig:free:surface}. Imposing the symmetric boundary conditions requires $U_{n,F}$=$U_{n,B}$ and $U_{\tau,F}=U_{\tau,B}$. We can copy populations in the certain order to do it, for example $f_{B,i}=f_{F,\bar{i}}$, where $c_i$ and $c_{\bar{i}}$ are complementary directions, where $c_{i,n}=-c_{\bar{i},n}$ and $c_{i,\tau}=c_{\bar{i},\tau}$, where $c_{i,n}=(\bm{c_i} \cdot \bm{n})\bm{n}$ and $c_{i,\tau}=\bm{c_i}-(\bm{c_i}\cdot \bm{n})\bm{n}$.  
+\label{appendix-free-surface}
+There are a few implementations of free boundary conditions \cite{ginzburg-free,verberg-free}.
+However, we developed the easy solver to impose the free surface boundary conditions at the
+complicated surface of the bubble. The reason is to impose the symmetric boundary conditions.
+Because the boundary is the staircase approximation, one can find the normal to the boundary which
+is always located by the angle of multiple of $45$, see Fig. \ref{fig:free:surface}. Imposing the
+symmetric boundary conditions requires $U_{n,F}$=$U_{n,B}$ and $U_{\tau,F}=U_{\tau,B}$. We can copy
+populations in the certain order to do it, for example $f_{B,i}=f_{F,\bar{i}}$, where $c_i$ and
+$c_{\bar{i}}$ are complementary directions, where $c_{i,n}=-c_{\bar{i},n}$ and
+$c_{i,\tau}=c_{\bar{i},\tau}$, where $c_{i,n}=(\bm{c_i} \cdot \bm{n})\bm{n}$ and
+$c_{i,\tau}=\bm{c_i}-(\bm{c_i}\cdot \bm{n})\bm{n}$.  
 
 \begin{figure}
 \includegraphics[width=\textwidth]{Figures/free_surface.eps}
