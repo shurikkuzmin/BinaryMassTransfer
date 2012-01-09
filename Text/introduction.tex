@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{tabularx}
+\usepackage{leftidx}
 
 \newcommand{\beq}{\begin{equation}}
 \newcommand{\feq}{\end{equation}}
@@ -601,17 +602,7 @@ different diffusion coefficients are presented in Fig.\ref{fig:cylinder:benchmar
 accurately in non-dimensional space \label{fig:cylinder:benchmark}.}
 \end{figure}
 
-\subsection{Steady mass transfer}
-The problem we want to address can be formulated through the following PDE:
-\beq
-\begin{aligned}
-&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
-&C(0,y)=0,\, C(x,0)=C_s,\, \frac{\partial C}{\partial y }(x,\delta)=0\\
-&U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
-\end{aligned}
-\feq
-{\color{red} This problem is different from what I solved on computer.} 
-
+\subsection{Parabolic profile with velocity zero gradient at the wall}
 In any case here is what we want to solve as the system for :
 \beq
 \begin{aligned}
@@ -734,6 +725,85 @@ Therefore, the overall solution is specified as:
 \end{aligned}
 \feq
 
+\subsection{The parabolic profile mass transfer and comparison}
+The problem we want to address can be formulated through the following PDE:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
+&C(0,y)=0,\, C(x,\pm \delta)=C_s,\, \frac{\partial C}{\partial y }(x,0)=0\\
+&U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
+\end{aligned}
+\feq
+The same procedure can be done as in the previous case to redefine variables. After substitution
+the following can be obtained:
+\beq
+\begin{aligned}
+&\frac{\partial \Theta}{\partial \zeta}(1-\xi^2)=\frac{\partial^2 C}{\partial \xi^2}\\
+\Theta(\zeta,\xi)=C-C_s\,\Theta(0,\xi)=-C_s\,\Theta(0,\pm 1)=0\\
+\end{aligned}
+\feq
+After separation of variables, $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$ one can come up with two
+equations:
+\beq
+\label{fourier:separation:variables}
+\begin{aligned}
+&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}+m^4 X(\zeta)=0\\
+&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 (1-\xi^2) Y(\xi)=0
+\end{aligned}
+\feq
+The first equation has a solution:
+\beq
+X(\zeta)=\exp(-m^4 \zeta)
+\feq
+The second equation can be simplified after substitution $\bar{\xi}=m \sqrt{2} \xi$ to the standard
+equation:
+\beq
+Y''-\Bigl(\frac{1}{4}\xi^2+a\Bigr)Y=0.
+\feq
+The equation above has two solutions via parabolic cylinder functions or through the confluent
+hypergeometric function \cite{abramowitz}:
+\beq
+\begin{aligned}
+&Y_1=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{1}{4},\frac{1}{2},\frac{x^2}{2}\Bigr)\\
+&Y_2=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{3}{4},\frac{3}{2},\frac{x^2}{2}\Bigr)\\
+\end{aligned}
+\feq 
+Taking symmetry conditions in the consideration by leaving only even solution, Eq.
+(\ref{fourier:separation:variables}) has a solution as:
+\beq
+Y_m=C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 x^2\Bigr) 
+\feq
+To satisfy boundary condition we need to find zeros of the hypergeometric function, i.e.
+${_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \Bigr)=0$. First ten eigenvalues can be
+found using numerical methods, as $1.2967$, $2.3811$,$3.1093$,$3.6969$,$4.2032$,$4.6548$,$5.0662$,
+$5.4467$, $5.8023$,$6.1373$. One needs to satisfy one more condition to obtain coefficients $C_m$:
+\beq
+-C_{s}=\sum_m{C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)} 
+\feq
+One can multiply both parts on $(1-x^2){_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)$ and through orthoganality Sturm-Liouiville theorem obtain coefficients:
+\beq
+\label{coeff:series:parabolic:profile}
+C_m=-C_s \frac{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
+{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)\mathrm{d}x}}{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
+{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)^2\mathrm{d}x}}
+\feq
+Therefore a whole solution can be written as:
+\begin{equation}
+C=C_{s}-C_s \sum_{m=0}{C_m e^{-m^4 \frac{x}{\delta}\frac{1}{Pe}} e^{-m^2
+y^2/(2\delta^2)}{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \frac{y^2}{\delta^2}\Bigr)},
+\end{equation}
+where coefficients $C_m$ are taken from Eq. (\ref{coeff:series:parabolic:profile}). The comparison
+between profiles is represented in Fig. \ref{fig:parabolic:comparison}.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/parabolic_profile_comparison.eps}
+\caption{Comparison between analytical profile and simulations with pressure antibounceback
+conditions. One can see given a low resolution of the profile a nice coincedence.}
+\end{figure}
+
 \section{Tweaking velocity}
 The reason to tweak velocity is that the velocity field because of the highly nonlinear binary liquid lattice Boltzmann model do not have nice velocity profile, since some streamlines penetrate the bubble in the reference frame of the bubble. Therefore there exists a normal to the surface of the bubble velocity component which destroys right away the advection-diffusion results. Therefore, a special additional free-surface solver was developed in order to dispose the vertical components. 
 
@@ -759,7 +829,9 @@ nondimensional parameter Peclet number governs the advection-diffusion equation:
 Pe=\frac{U_{bubble} N_y}{D},
 \feq
 where $D$ is the diffusion coefficient to prescribe. As far as we want to increase velocity, that
-means one needs to increase the diffusion coefficient as well. We make a few runs with velocities
+means one needs to increase the diffusion coefficient as well. 
+
+We make a few runs with velocities
 $5,10,20,40$ times larger than original velocities. 
 
 \appendix

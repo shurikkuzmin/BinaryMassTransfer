@@ -401,7 +401,7 @@ def film_reconstruction(file_dir):
     c0=0
     coeffm=wmfivetwo/wmcubic*(c0-cwall)
     omega=1.8
-    u_bubble=0.05*80
+    u_bubble=0.05*40
     diffusion=1.0/3.0*(1.0/omega-0.5)
 
     pe=u_bubble/diffusion
@@ -900,6 +900,94 @@ def irandoust_construction(file_dir):
     c2=pylab.contour(c,linestyles="dotted",levels=c_levels,extent=(0.0,10.0,0.0,0.5))
     c_iran=pylab.contour(c_iran,levels=c_levels,extent=(0.0,10.0,0.0,0.5))
 
+def final_comparison():
+    from scipy.special import hyp1f1    
+    eig=numpy.array([1.296763402567712, 2.38114622522328, 3.10937975527442, \
+         3.696980043577128, 4.203257494533186, 4.654804542010845, \
+         5.06627047109941, 5.446744077399425, 5.802324195412259, \
+         6.137338548284962])
+
+    coeff=numpy.array([1.20083, -0.299161, 0.160826, -0.107437, 0.0796461, -0.0627757, \
+           0.0515192, -0.0435107, 0.0375418, -0.0329333])
+
+    y,x=0.01*numpy.mgrid[-100:101,0:4000]
+    c=numpy.zeros_like(x)
+    
+    num_terms=10
+
+    cwall=1
+    c0=0
+    print "Coeff=",coeff
+    
+    coeffm=coeff*(c0-cwall)
+    omega=1.8
+    
+    u_bubble=0.05*40
+    diffusion=1.0/3.0*(1.0/omega-0.5)
+
+    pe=u_bubble/diffusion
+    
+    print "Coeff=",coeffm
+    print "Eig=",eig
+    for i in range(0,num_terms):
+        c=c+coeffm[i]*numpy.exp(-(eig[i]**4)*x*diffusion/u_bubble)*numpy.exp(-0.5*eig[i]*eig[i]*y*y)*hyp1f1(0.25-0.25*eig[i]*eig[i],0.5,eig[i]*eig[i]*y*y)
+        print i
+    c=c+cwall
+ 
+    c_levels=numpy.arange(0.2,1.0,0.1)
+ 
+    conc_antibb =numpy.loadtxt(file_dir+"FullProfile/"+"film_antibb0050000.dat")
+    conc_inamuro=numpy.loadtxt(file_dir+"FullProfile/"+"film_outflow0050000.dat")
+    dims=conc_antibb.shape    
+    print "Dims=",dims
+    print "Pe=",pe
+
+    #pylab.figure()
+    #pylab.imshow(c,extent=(0,10,0,0.5))
+    #pylab.title("Analytical solutions")    
+    #pylab.colorbar()
+    
+    #pylab.figure()    
+    #pylab.imshow(conc_antibb[0:dims[0]/2,:],extent=(0,20,0,0.5))
+    #pylab.title("AntiBB simulations")
+    #pylab.colorbar()
+    
+    #pylab.figure()    
+    #pylab.imshow(conc_inamuro[0:dims[0]/2,:],extent=(0,20,0,0.5))
+    #pylab.title("Inamuro simulations")
+    #pylab.colorbar()
+    #pylab.figure()
+   
+    #combined_array=numpy.loadtxt(file_dir+"FullProfile/orest.txt")    
+    #triang = tri.Triangulation(combined_array[:,0], combined_array[:,1])
+    #print triang.triangles.shape
+    #ctriang=pylab.tricontour(triang,combined_array[:,2],levels=c_levels)
+    #pylab.clabel(ctriang)
+    
+    fig=pylab.figure(figsize=(18,5))
+    plt=pylab.subplot(1,1,1)    
+    c1=pylab.contour(conc_antibb,levels=c_levels,colors=['k'],linewidths=[2],extent=(0.0,20.0,0.0,1.0))
+    pylab.clabel(c1,fontsize=9, inline=1)    
+    #pylab.figure(figsize=(10,1))
+    #c2=pylab.contour(conc_inamuro,levels=c_levels,extent=(0.0,20.0,0.0,1.0))
+    #pylab.clabel(c2,fontsize=9, inline=1)
+    pylab.contour(c,levels=c_levels,linestyles="dotted",colors=['k'],linewidths=[2],extent=(0.0,20.0,0.0,1.0))
+    #plt.annotate("local max", xy=(5, 0.5), xytext=(6, 0.7),arrowprops=dict(facecolor="black", shrink=0.05),)
+    #plt.text(15, 0.8, "boxed italics text \n in data coords",bbox={"facecolor":"white", "alpha":1.0, "pad":10})
+
+    p1 = pylab.Line2D((0, 1), (0,0),linewidth=2,linestyle="solid",color="k")
+    p2 = pylab.Line2D((0, 1), (0,0),linewidth=2,linestyle="dotted",color="k")
+    
+    pylab.legend([p1,p2],["AntiBB simulations","Analytics"],fancybox=True)
+    #pylab.title(r'''$D='''+str(diffusion)[0:6]+'''$''',fontsize=30)
+    #pylab.legend(legs,fancybox=True,loc=2)
+    pylab.xlabel(r'''$x$''',fontsize=20)
+    pylab.ylabel(r'''$y$''',fontsize=20)    
+    #fig.subplots_adjust(left=0.2,right=0.8)
+    pylab.savefig("parabolic_profile_comparison.eps",format="EPS",dpi=300)
+    #ctriang=pylab.tricontour(triang,combined_array[:,2],levels=c_levels,linestyles="dashdot")
+    #pylab.legend()    
+    #pylab.legend(["Antibb simulations","Analytics"])
     
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"
@@ -920,5 +1008,6 @@ if __name__=="__main__":
     #check_analytics()    
     #check_irandoust(file_dir)    
     #comparison_two_analytics(file_dir)    
-    irandoust_construction(file_dir)    
+    #irandoust_construction(file_dir)    
+    final_comparison()    
     pylab.show()
