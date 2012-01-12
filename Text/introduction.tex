@@ -822,17 +822,45 @@ if it's required to show more.}
 
 
 \section{Keeping Peclet}
-This section does the job of increasing velocity results. The ulimate goal is to increase velocity
-to about $20-50$ times for velocity while keeping dimensionless parameters the same. The
-nondimensional parameter Peclet number governs the advection-diffusion equation:
+This section addresses the performance of the simulations. The ulimate goal is to increase
+velocity at least by several orders while keeping dimensionless parameters the same. Increasing
+velocity can result in simulations of a lot of unit cells required for continuous picture
+representation.
+
+Only nondimensional parameter Peclet number governs the advection-diffusion equation:
 \beq
 Pe=\frac{U_{bubble} N_y}{D},
 \feq
 where $D$ is the diffusion coefficient to prescribe. As far as we want to increase velocity, that
-means one needs to increase the diffusion coefficient as well. 
+means one needs to increase the diffusion coefficient as well. The runs were made with
+velocities $2,4,6,8,10,15,20,40$ times larger than original velocities. The velocities we chose and
+its corresponding capillary numbers are presented in Table \ref{table:scaling:peclet}. Periodic
+boundary conditions were used and mass transfer coefficient was calculated according to Eq.
+(\ref{main:simulation:equation}).
+\begin{table}[htb!]
+\begin{tabularx}{0.5\textwidth}{|X|X|}
+\hline
+$U_{bubble}$& $Ca$\\
+\hline
+0.0055&0.097\\
+0.0143&0.254\\
+0.0297&0.526\\
+0.0424&0.750\\
+0.0588&1.040\\
+\hline
+\end{tabularx}
+\end{table}
+For $Ca=0.0055$ a few results are given in Fig. \ref{fig:ca0055:keeping:peclet}. The rule of the
+thumb that for such simulations the velocity shouldn't be more than $0.05$.
 
-We make a few runs with velocities
-$5,10,20,40$ times larger than original velocities. 
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/scalingpeclet009.eps}
+\caption{The same Peclet number for $Ca=0.0055$. One can see that
+the mass transfer coefficient comes to the same point.{\color{red} Need to compare contours for the
+concentration!!!} \label{fig:ca0055:keeping:peclet}}
+\end{figure}
+
+
 
 \appendix
 \section{Free surface boundary conditions}

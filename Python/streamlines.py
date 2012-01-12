@@ -187,6 +187,69 @@ def get_velocities_compare():
     #pylab.ylabel(r'''$\delta$''',fontsize=30)
 
 
+def get_velocities_compare_selection():
+
+    print os.getcwd()
+    widths=[]
+    velocities=[]
+    re=[]
+    
+    for i in [9,21,42,60,84]:
+        dir_name="HydroResultsRight/"+str(i)
+        os.chdir(dir_name)
+        
+        name_phi="phase300000.dat"
+        name_velx="velocityx300000.dat"
+        name_vely="velocityy300000.dat"
+        
+        phase=numpy.loadtxt(name_phi)
+        velx=numpy.loadtxt(name_velx)
+        vely=numpy.loadtxt(name_vely)
+
+        dims=phase.shape
+        center=phase[dims[0]/2,:]
+       
+        z1 = numpy.min(numpy.where(center < 0.0))
+        z2 = numpy.max(numpy.where(center < 0.0))
+        if z1==0:
+            z2=numpy.min(numpy.where(center>0.0))+dims[1]
+            z1=numpy.max(numpy.where(center>0.0))
+        print z1,z2
+        print "Bubble length=",(z2-z1)/200.0
+        print "Slug length=",15.0-(z2-z1)/200.0
+        print "Liquid_velocity",numpy.sum(velx[1:-1,((z1+z2+dims[1])/2)%dims[1]])/(dims[0]-2)
+        #print "Gas holdup",float(len(numpy.where(array['phi']<0)[0]))/(dims[1]*(dims[0]-2))
+        prof=phase[:,((z1+z2)/2)%dims[1]]
+        widths.append(Get_Zero(prof))     
+        velocities.append(velx[dims[0]/2,z2%dims[1]])
+        re.append(velx[dims[0]/2,z2%dims[1]]*dims[0]/(2.0/3.0))
+    
+      
+        os.chdir("../..")
+    
+    capillaries=numpy.array(velocities)*(2.0/3.0)/math.sqrt(8.0*0.04*0.04/9.0)
+    
+    print "Widths=",widths
+    print "Capillaries=",capillaries
+    print "Velocities=",velocities
+    
+    fig1=pylab.figure()  
+    pylab.plot(capillaries,widths,"go-",linewidth=3,markersize=10)
+    fig2=pylab.figure()
+    pylab.loglog(capillaries,widths,"go-",linewidth=3,markersize=10)
+    pylab.xlim(0.02,1.5)
+    pylab.ylim(ymin=0.01)
+   
+    #fig.subplots_adjust(left=0.15,bottom=0.15)  
+    #pylab.xticks(fontsize=20)
+    #pylab.yticks(fontsize=20)
+    #pylab.xlabel(r'''$Ca$''',fontsize=30)
+    #pylab.ylabel(r'''$\delta$''',fontsize=30)
+
+
+
+
+
 def produce_one_streamline():
     from PyNGL import Ngl
 
@@ -311,15 +374,113 @@ def comparison_bulk_velocities(file_dir):
     print "Bulk film velocity original=",film_orig
     print "Bulk film velocity simulations=",film_sim
     print "Simulations over original=",film_sim/film_orig
+
+def produce_alexandra_image():
+    from PyNGL import Ngl    
+    file_dir="/home/shurik/Documents/People/Sasha/Data/"    
+    phase=numpy.loadtxt(file_dir+"phi0015.dat")
+    velx=numpy.loadtxt(file_dir+"velx0015.dat")
+    vely=numpy.loadtxt(file_dir+"vely0015.dat")
+    pylab.figure()    
+    pylab.imshow(phase)
+    pylab.figure()
+    pylab.imshow(velx)
+    pylab.figure()
+    pylab.imshow(vely)
+    dims=phase.shape
+    center=phase[dims[0]/2,:]
+   
+    z1 = numpy.min(numpy.where(center < 0.0))
+    z2 = numpy.max(numpy.where(center < 0.0))
+    if z1==0:
+        z2=numpy.min(numpy.where(center>0.0))+dims[1]
+        z1=numpy.max(numpy.where(center>0.0))
+    print z1,z2
+    print "Bubble length=",(z2-z1)/200.0
+    print "Slug length=",15.0-(z2-z1)/200.0
+    print "Liquid_velocity",numpy.sum(velx[1:-1,((z1+z2+dims[1])/2)%dims[1]])/(dims[0]-2)
+    print "Bubble velocity",velx[dims[0]/2,z2%dims[1]]        
+    velx=velx-velx[dims[0]/2,z2%dims[1]]    
+    #print "Gas holdup",float(len(numpy.where(array['phi']<0)[0]))/(dims[1]*(dims[0]-2))
+    #prof=phase[:,((z1+z2)/2)%dims[1]]
+    #widths.append(Get_Zero(prof))     
+    #velocities.append()
+
+    wks_type = "eps"
+    wks = Ngl.open_wks(wks_type,"alexandra")
+    resources = Ngl.Resources()
     
+        
+    #resources.tiMainFont    = "Times-Roman"
+    #resources.tiMainOn=True
+    #resources.tiMainString="Ca=0.22 "
+           
+    #resources.tiXAxisString = "streamlines"
+    resources.vpHeightF = 0.25 # Define height, width, and location of plot.
+    resources.vpWidthF  = 3*0.25
+    #resources.wkPaperSize="A5"
+    #resources.nglFrame = False
+    resources.vfXArray=numpy.linspace(0.0,15.0,len(velx[1,::5]))
+    resources.vfYArray=numpy.linspace(0.0,1.0,len(velx[::5,1]))
+    resources.nglFrame=False
+
+
+    
+    resources2=Ngl.Resources()
+    resources2.vpHeightF = 0.25 # Define height, width, and location of plot.
+    resources2.vpWidthF  = 3*0.25
+
+    resources2.cnLineLabelsOn = False   # Turn off contour line labels.
+        #resources2.cnLinesOn      = False   # Turn off contour lines.
+    resources2.cnFillOn       = False    # Turn on contour fill.
+    resources2.cnInfoLabelOn   = False 
+  
+        
+    resources2.cnLevelSelectionMode = "ExplicitLevels"  # Select contour levels. 
+    resources2.cnMinLevelValF       = 0.0
+    #resources2.cnMaxLevelValF       = 0.001
+    #resources2.cnLevelSpacingF      = 0.0
+    resources2.cnLevelCount=1
+    resources2.cnLevels=[0.0]
+    #resources2.cnLineThicknesses=[3]
+    resources2.cnMonoLineThickness=True
+    resources2.cnLineThicknessF=3.0
+    resources2.sfXArray=numpy.linspace(0.0,15.0,len(velx[1,:]))
+    resources2.sfYArray=numpy.linspace(0.0,1.0,len(velx[:,1]))
  
+     
+    plot=Ngl.streamline(wks,velx[::5,::5],vely[::5,::5],resources)
+    Ngl.contour(wks,phase,resources2)        
+    
+    
+def produce_one_image(file_dir):
+    geom=numpy.loadtxt(file_dir+"geometry.dat")
+    ux=numpy.loadtxt(file_dir+"vely0200000.dat")
+    uy=numpy.loadtxt(file_dir+"velx0200000.dat")
+    pylab.figure()    
+    pylab.imshow(geom)
+    pylab.figure()
+    pylab.imshow(ux)
+    pylab.figure()
+    pylab.imshow(uy)
+def produce_one_mass_image():
+    mass=numpy.loadtxt("ScalingPeclet/density0020000.dat")
+    pylab.figure()
+    pylab.imshow(mass)
+    pylab.colorbar()
+
 if __name__=="__main__":
-    file_dir="TweakingHydro2DRight/3/"
+    #file_dir="TweakingHydro2DRight/3/"
+    file_dir="ScalingPeclet/9/"    
     #print file_dir
     #produce_streamlines(file_dir)
-    get_velocities_compare()    
+    #get_velocities_compare()
+    #get_velocities_compare_selection()
     #produce_one_streamline()
     #comparison_bulk_velocities(3)
+    #produce_one_image(file_dir)    
+    #produce_one_mass_image()    
+    produce_alexandra_image()    
     pylab.show()
     #Ngl.end()
     
