@@ -838,27 +838,85 @@ its corresponding capillary numbers are presented in Table \ref{table:scaling:pe
 boundary conditions were used and mass transfer coefficient was calculated according to Eq.
 (\ref{main:simulation:equation}).
 \begin{table}[htb!]
-\begin{tabularx}{0.5\textwidth}{|X|X|}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
 \hline
-$U_{bubble}$& $Ca$\\
+Scale&$U_{bubble}$&Time Iterations&$C_{aver}$\\
 \hline
-0.0055&0.097\\
-0.0143&0.254\\
-0.0297&0.526\\
-0.0424&0.750\\
-0.0588&1.040\\
+\multicolumn{4}{c}{}\\
+\multicolumn{4}{c}{$Ca=0.097$}\\
+\hline
+$2$ &$0.011$&$400000$&$0.318$\\
+$4$ &$0.023$&$200000$&$0.319$\\
+$8$ &$0.044$&$100000$&$0.320$\\
+$10$&$0.055$&$80000$ &$0.321$\\
+$20$&$0.11 $&$40000$ &$0.324$\\
+$40$&$0.22 $&$20000$ &$0.328$\\
+\hline
+\multicolumn{4}{c}{}\\
+\multicolumn{4}{c}{$Ca=0.254$}\\
+\hline
+$2$& $0.0286$&$800000$&$0.6533$\\
+$4$& $0.0572$&$400000$&$0.6591$\\
+$8$& $0.1144$&$200000$&$0.6692$\\
+$10$&$0.1430$&$160000$&$0.6734$\\
+$20$&$0.2860$&$80000$ &$0.6894$\\
+\hline
+\multicolumn{4}{c}{}\\
+\multicolumn{4}{c}{$Ca=0.526$}\\
+\hline
+$2$&$0.0594$&$200000$&$0.3271$\\
+$4$&$0.1188$&$100000$&$0.3315$\\
+\hline
+\multicolumn{4}{c}{}\\
+\multicolumn{4}{c}{$Ca=0.750$}\\
+\hline
+$2$&$0.0848$&$200000$&$0.3489$\\
+\hline
+\multicolumn{4}{c}{}\\
+\multicolumn{4}{c}{$Ca=1.040$}\\
+\hline
+$2$&$0.1176$&$200000$&$0.3675$\\
 \hline
 \end{tabularx}
+\caption{Scaling Peclet table. One can see that scaling is pretty successful. One can see as well
+that the stability limit is approximately around $U_{bubble}=0.1$. That can give us an idea of
+scale of simulations. \label{table:scaling:peclet}}
 \end{table}
-For $Ca=0.0055$ a few results are given in Fig. \ref{fig:ca0055:keeping:peclet}. The rule of the
-thumb that for such simulations the velocity shouldn't be more than $0.05$.
 
-\begin{figure}[htb!]
-\includegraphics[width=\textwidth]{Figures/scalingpeclet009.eps}
-\caption{The same Peclet number for $Ca=0.0055$. One can see that
-the mass transfer coefficient comes to the same point.{\color{red} Need to compare contours for the
-concentration!!!} \label{fig:ca0055:keeping:peclet}}
+The corresponding to Table \ref{table:scaling:peclet} contour profiles for different scalings are
+presented in Fig. \ref{fig:contours:scaling:peclet}.
+\begin{figure}
+\includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca026.eps}\\
+\includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca054.eps}\\
+\includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca05.eps}\\
+\includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca097.eps}\\
+\includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca14.eps}\\
+\caption{Contours for scaling Peclet number.\label{fig:contours:scaling:peclet}}
 \end{figure}
+
+\section{Performing real simulations}
+As it was found earlier one needs to make a few units simulations to obtain a proper volumetric
+mass transfer coefficient. This section studies the quantity of the unit cells on the volumetric
+mass transfer coefficient to be independent of the number of unit cells. The cases we want to
+examine in terms of the capillary number are indicated above. The number of cells we want to
+simulate are $1$,$4$,$6$,$8$,$10$. As it was discussed in the previous section we want to keep
+velocity around $0.05-0.1$. The number of steps for mass to cross whole domain is approximately
+$1.5 \frac{N_x}{U_{bubble}}$, given the bulk velocity. If $U_{bubble}$ is taken as $0.05$ then for
+the domain size $3000$ one can obtain the following number of iteration for mass transfer to be
+stabilize $1.5 \frac{3000}{0.05}=90000$. Therefore, $10^{6}$ time iterations are enough for system
+to be stabilized.
+
+
+
+%For $Ca=0.0055$ a few results are given in Fig. \ref{fig:ca0055:keeping:peclet}. The rule of the
+%thumb that for such simulations the velocity shouldn't be more than $0.05$.
+
+%\begin{figure}[htb!]
+%\includegraphics[width=\textwidth]{Figures/scalingpeclet009.eps}
+%\caption{The same Peclet number for $Ca=0.0055$. One can see that
+%the mass transfer coefficient comes to the same point.{\color{red} Need to compare contours for the
+%concentration!!!} \label{fig:ca0055:keeping:peclet}}
+%\end{figure}
 
 
 

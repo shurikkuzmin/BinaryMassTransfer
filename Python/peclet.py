@@ -121,37 +121,59 @@ def analyze_particular_simulation(dir_name):
     pylab.figure(1)    
     pylab.savefig("scalingpeclet"+str(capillary)[0]+str(capillary)[2:4]+".eps",format="EPS",dpi=300)
 
-def check_particular_contours(dir_name):
+def check_particular_contours(dir_name,factor,subtract):
     capillary_str=[str(x) for x in [9,21,42,60,84]]
+    capillaries=[0.097,0.254,0.526,0.750,1.040]
     scale=[2,4,8,10,20,40]
     scale_str=[str(x) for x in [2,4,8,10,20,40]]
     os.chdir("ScalingPeclet/"+dir_name)
 
     c_levels=numpy.arange(0.2,1.0,0.2)
-    counter=capillary_str.index(dir_name)
-    for scale_counter in range(0,len(scale_str)-counter):
+    counter=capillary_str.index(dir_name) 
+    capillary=capillaries[counter]
+    for scale_counter in range(0,len(scale_str)-subtract):
         #subprocess.call(['mkdir','-p',scale_str[scale]])
         os.chdir(scale_str[scale_counter])
-        name=str(20000*scale[len(scale_str)-counter-1]/scale[scale_counter])
+        name=str(20000*factor*scale[len(scale_str)-subtract-1]/scale[scale_counter])
         name="density"+"0"*(7-len(name))+name+".dat"        
-        print name
+        print "Filename=",name
+        print "Scale=",scale_str[scale_counter]        
         #subprocess.call(['scp','shurik@checkers.westgrid.ca:/home/shurik/ScalingPeclet/'+dir_temp+"/"+scale_str[scale]+"/concentration.dat","."])
         arr=numpy.loadtxt(name)
-        print "Overall concentration=",numpy.sum(arr[numpy.where(arr>0.0)])/(200*3000)       
+        dims=arr.shape
+        gas_holdup=float(len(numpy.where(arr>0.0)[0]))/(dims[1]*(dims[0]-2))
+
+        print "Overall concentration=",numpy.sum(arr[numpy.where(arr>0.0)])/(gas_holdup*dims[1]*(dims[0]-2))       
         pylab.figure(scale_counter)
         pylab.imshow(arr)
         pylab.colorbar()
         
-        pylab.figure(99)
         
-        cont=pylab.contour(arr,levels=c_levels,linestyles="dotted",colors=['k'],linewidths=[2])
-        if scale_counter==len(scale_str)-counter-1:        
-            pylab.clabel(cont)        
+        pylab.figure(99,figsize=(12,3))
+        
+        cont=pylab.contour(arr,levels=c_levels,linestyles="dotted",colors=['k'],linewidths=[2],extent=(0,15,0,1))
+        if scale_counter==len(scale_str)-subtract-1:        
+            pylab.clabel(cont)
+        #else:
+        #    cont.clabel(fmt=scale_str[scale_counter],fontsize="12",inline_spacing=10)
         os.chdir("..")
+        
+    fig=pylab.figure(99)
     
+    fig.subplots_adjust(bottom=0.2,top=0.8)  
+    pylab.xticks(fontsize=20)
+    pylab.yticks(fontsize=20)
+    pylab.xlabel(r'''$x$''',fontsize=30)
+    pylab.ylabel(r'''$y$''',fontsize=30)    
+    pylab.title(r'''$Ca='''+str(capillary)+'''$''',fontsize=30)
+    pylab.savefig("contourlines_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
     
 if __name__=="__main__":
     #modify_file()
     #analyze_particular_simulation("42")
-    check_particular_contours("9")
+    #check_particular_contours("9",1,0)    
+    #check_particular_contours("21",4,1)
+    #check_particular_contours("42",5,4)
+    check_particular_contours("60",10,5)    
+    #check_particular_contours("84",10,5)    
     pylab.show()
