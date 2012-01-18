@@ -1,12 +1,14 @@
 import numpy
 import os
 import subprocess
-def modify_file(scale_str):
+def modify_file(scale_str,unit_str):
     f=open("binary.pbs","r+")
     f2=open("binary_new.pbs","w")
     for counter,line in enumerate(f):
         if line.find("TOCHANGE")!=-1:
-            line=line.replace("TOCHANGE",scale_str)
+            line=line.replace("TOCHANGE1",scale_str)
+            line=line.replace("TOCHANGE2",unit_str)
+            line=line.replace("TOCHANGE3",unit_str)
         f2.write(line)
             
     f.close()
@@ -15,22 +17,47 @@ def modify_file(scale_str):
 
 def run_simulations():
     capillary_str=[str(x) for x in [9,21,42,60,84]]
-    scale_str=[str(x) for x in [2,4,6,8,10,15,20,40]]
+    units=[4,6,8,10]
+    velocities=[0.0055,0.0143,0.0297,0.0424,0.05538]
+    scales=[0.3,0.5,1,2,4,6,8,10,15,20]    
+    scale_str=["03","05","1","2","4","6","8","10","15","20"]
     for counter,dir_temp in enumerate(capillary_str):
         subprocess.call(['cp','main.out',dir_temp+"/"])
         subprocess.call(['cp','binary.pbs',dir_temp+"/"])
         os.chdir(dir_temp)
-        for scale in range(0,len(scale_str)-counter):
-            subprocess.call(['mkdir','-p',scale_str[scale]])
-            subprocess.call(['cp','main.out',scale_str[scale]+"/"])
-            subprocess.call(['cp','binary.pbs',scale_str[scale]+"/"])
-           
-            subprocess.call(['cp','geometry.dat',scale_str[scale]+"/"])
-            subprocess.call(['cp','velx0200000.dat',scale_str[scale]+"/"])
-            subprocess.call(['cp','vely0200000.dat',scale_str[scale]+"/"])
-            os.chdir(scale_str[scale])
-            modify_file(scale_str[scale])
-            #subprocess.call(['qsub'],'binary_new.pbs']) 
+        flag=False
+        for scale_counter,scale in enumerate(scales):
+            if velocities[counter]*scale>0.12:
+                scale3=scales[scale_counter-1]
+                scale2=scales[scale_counter-2]
+                scale1=scales[scale_counter-3]
+                flag=True 
+                break
+        if not flag:
+            scale1=scales[-3]
+            scale2=scales[-2]
+            scale3=scales[-1] 
+        print scale1,scale2,scale3,velocities[counter] 
+        for scale in [scale1,scale2,scale3]:
+            dir_name=scale_str[scales.index(scale)]
+            subprocess.call(['mkdir','-p',dir_name])
+            subprocess.call(['cp','main.out',dir_name+"/"])
+            subprocess.call(['cp','binary.pbs',dir_name+"/"])
+            subprocess.call(['cp','geometry.dat',dir_name+"/"])
+            subprocess.call(['cp','velx0200000.dat',dir_name+"/"])
+            subprocess.call(['cp','vely0200000.dat',dir_name+"/"])
+            os.chdir(dir_name)
+            for unit in units:
+                subprocess.call(['mkdir','-p',str(unit)])
+                subprocess.call(['cp','main.out',str(unit)+"/"])
+                subprocess.call(['cp','binary.pbs',str(unit)+"/"])
+                subprocess.call(['cp','geometry.dat',str(unit)+"/"])
+                subprocess.call(['cp','velx0200000.dat',str(unit)+"/"])
+                subprocess.call(['cp','vely0200000.dat',str(unit)+"/"])
+                os.chdir(str(unit))            
+                modify_file(str(scale),str(unit))
+                #subprocess.call(['qsub'],'binary_new.pbs']) 
+                os.chdir("..")
             os.chdir("..")
             #subprocess.call(['qsub','binary_new.pbs'])
         os.chdir("..")

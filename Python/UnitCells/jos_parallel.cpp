@@ -22,10 +22,10 @@ int mpi_size;
 const int NPOP=9;
 
 //Time steps
-int N=100000;
-int NOUTPUT=1000;
-int NSIGNAL=100;
-int scale=1;
+int N=2000000;
+int NOUTPUT=50000;
+int NSIGNAL=1000;
+double scale=1.0;
 
 //Fields and populations
 double *f;
@@ -693,7 +693,7 @@ int main(int argc, char* argv[])
 
     if (argc==2)
     {
-    	scale=atoi(argv[1]);
+    	scale=atof(argv[1]);
         omega=2.0*omega/(scale*(2-omega)+omega);
         omega_minus=omega;
         std::cout<<"Scaling parameter is "<<scale<<"\n";
