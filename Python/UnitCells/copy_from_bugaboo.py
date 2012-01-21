@@ -7,9 +7,9 @@ def copy_files():
     units=[1,4,6,8,10]
     scale=[1,2,4,8,10,20]
     scale_str=[str(x) for x in scale]
-    subprocess.call(['scp','jos_parallel.cpp','shurik@checkers.westgrid.ca:/home/shurik/UnitCells/'])
-    subprocess.call(['scp','govern.py','shurik@checkers.westgrid.ca:/home/shurik/UnitCells/'])
-    subprocess.call(['scp','binary.pbs','shurik@checkers.westgrid.ca:/home/shurik/UnitCells/'])
+    subprocess.call(['scp','jos_parallel.cpp','shurik@bugaboo.westgrid.ca:/home/shurik/UnitCells/'])
+    subprocess.call(['scp','govern.py','shurik@bugaboo.westgrid.ca:/home/shurik/UnitCells/'])
+    subprocess.call(['scp','binary.pbs','shurik@bugaboo.westgrid.ca:/home/shurik/UnitCells/'])
     for counter,dir_temp in enumerate(capillary_str):
         os.chdir(dir_temp)
         #subprocess.call(['scp','geometry.dat','shurik@checkers.westgrid.ca:/home/shurik/UnitCells/'+dir_temp+"/"])
@@ -24,7 +24,7 @@ def copy_one_directory(dir_name):
     velocities=[0.0055,0.0143,0.0297,0.0424,0.05538]
     scales=[0.3,0.5,1,2,4,6,8,10,15,20]    
     scale_str=["03","05","1","2","4","6","8","10","15","20"]
-    os.chdir(dir_name)
+    os.chdir("Bugaboo/"+dir_name)
     flag=False
     counter=capillary_str.index(dir_name)
     for scale_counter,scale in enumerate(scales):
@@ -46,7 +46,7 @@ def copy_one_directory(dir_name):
         for unit in units:
             subprocess.call(['mkdir','-p',str(unit)])
             os.chdir(str(unit))            
-            subprocess.call(['scp','shurik@checkers.westgrid.ca:/home/shurik/UnitCells/'+dir_name+"/"+dir_name_scale+"/"+str(unit)+"/density*.dat","."])
+            subprocess.call(['scp','shurik@bugaboo.westgrid.ca:/home/shurik/UnitCells/'+dir_name+"/"+dir_name_scale+"/"+str(unit)+"/density*.dat","."])
             print "Done with ",unit
             os.chdir("..")
         os.chdir("..")

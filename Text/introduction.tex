@@ -16,30 +16,153 @@
 \newcommand{\beqalstar}{\begin{equation*}\begin{aligned}}
 \newcommand{\feqalstar}{\end{aligned}\end{equation*}}
 \newcommand{\vol}{k_L\,a}
+\newcommand{\lbubble}{L_{\mathrm{bubble}}}
+\newcommand{\lunit}{L_{\mathrm{unit}}}
+\newcommand{\lslug}{L_{\mathrm{slug}}}
+\newcommand{\ububble}{U_{\mathrm{bubble}}}
+\newcommand{\uliq}{U_{\mathrm{liq}}}
+\newcommand{\ugas}{U_{\mathrm{gas}}}
+\newcommand{\cbubble}{C_{\mathrm{bubble}}}
 
 \title{Lattice Boltzmann study of mass transfer for complicated geometries}
 
 \begin{document}
 \maketitle
+\begin{abstract}
+This work gives the thorough procedure of how to determine the volumetric mass transfer coefficient
+in the context of lattice Boltzmann simulations. The novelty of this work lies in the establishing
+a thorough procedure of how to measure the volumetric mass transfer coefficient in case of mass
+sources to be comparable of the representative unit cell, which accounts for the inhomogenous
+situation. By examining $5$ representative cases taken from microfluidics with the capillary number
+from $Ca=0.1$ to $Ca=1$ the following relationship was established {\color{red} Give main findings
+here}. The work is of use to people performing mass transfer numerical simulations.
+\end{abstract}
+
+\section{Introduction}
+The volumetric mass transfer coefficient is a very important characteristic for microchannels 
+design \cite{kreutzer-overview}. It allows to
+properly manufacture a microchannel with necessary properties to ensure that chemical
+reactions are performed in the best manner. 
+
+The volumetric mass transfer coefficient correlations are represented as a function of the diffusion
+coefficient, slug and bubble lengths, and bubble velocity. For example, \citet{yue-mass} established
+experimental correlation for periodic bubble train as: 
+\begin{equation}
+\vol =\frac{2}{d_h} \Bigl(\frac{D
+\ububble}{\lbubble+\lslug}\Bigr)^{0.5}
+\Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^{0.3},
+\end{equation}
+where $\vol$ is the volumetric mass transfer coefficient, $d_h$ is the hydrodynamic capillary
+diameter, $\lbubble$ is the bubble length, $\lslug$ is the slug distance (between bubbles),
+$\ububble$ is the bubble velocity. This correlation is within $10\%$ accuracy for experimental
+results for the following range of
+parameters: bubble velocity $0.4\,\mathrm{m/s}<\ububble<2\,\mathrm{m/s}$, bubble length
+$1.4<\frac{\lbubble}{d_h}<6.3$, slug length $1<\frac{\lslug}{d_h}<3.2$,
+hydrodynamic diameter $d_h = 400 \mathrm{\mu m}$.
+
+Other correlations can be found in works of \citet{kreutzer-overview}
+and \citet{bercic-mass}. Among a variety of experimental works extensively covered
+\cite{yue-mass}, the numerical validations to the best author knowledge are sparse. One of the
+reasons is that the experimental correlations are established for continous system, i.e. one does
+not distinguish separate bubbles, but looks to the system as a whole measuring mass concentration
+in different places. There are some works as how to avoid this approach and perform numerical
+simulations for one unit cell. For example, \citet{vanbaten-circular} perform numerical simulations
+for one unit cell using periodic boundary conditions and measure the volumetric mass transfer
+coefficient as:
+\begin{equation}
+\label{main:simulation:equation}
+k_L a=\frac{\text{Flux}}{\cbubble-C_{outlet}} \frac{\text{bubble surface area}}{\text{unit cell
+volume}},
+\end{equation}
+where $C_{outlet}=\int{C U_{outlet}\mathrm{d}A}/\int{U_{outlet}\mathrm{d}A}$. 
+The concentration flux is calculated as the difference between overall
+average concentration taken in the whole domain ($C_{overall}=\int_{V} C \mathrm{d}V /V$)
+at time
+$t_1$ and time $t_2$ divided on the time difference $t_2-t_1$. The agreement between numerical
+simulations and correlations of \citet{bercic-mass} was good. However, the numerical model only
+accounts for circular capillaries and short contact times (the mass t), which indicate that the
+bubble film is not saturated with the mass concentration. As well, authors took the approximation of
+bubble shapes for small capillary numbers $Ca<0.01$ and then derived the hydrodynamics fields by
+imposing a free-slip condition on the bubble surface. 
+
+This work aims at the establishing numerical procedures as to how properly obtain the volumetric
+mass transfer coefficient in the interesting range of capillary numbers, i.e. $0.1\leq Ca\leq1.0$.
+The comparison of volumetric mass transfer coefficient correlations with experimental correlations
+and establishing the Sherwood number as a function of other non-dimensional parameters is the goal
+of the future work.
+
+We chose this type of the problem due to different reasons:
+\begin{description}
+\item[I] The gas holdup, i.e. the ratio of volume occupied by bubble to unit cell volume, is
+significant. Therefore, one cannot assume that the mass source is a point source or one can have
+homogenous picture. Therefore, to establish the volumetric mass transfer coefficient one needs to
+mimic the continuos picture. One of the goals of this work is to establish certain criteria as how
+to simulate it numerically.
+\item[II] For small capillary numbers as $Ca<0.7$ \cite{giavedoni-numerical} there is a vortex in
+the reference frame moving with
+the bubble, which  influences and improves the corresponding mass transfer.  For larger capillary
+numbers there is no vortex and stremalines go around the bubble. Thus, the problem is interesting
+because of really different hydrodynamic patterns depending on capillary number. Note that the flow
+patterns strongly depend on the number of parameters as the slug length, the thickness of the
+thickness and the existence of the vortex in front of the bubble. There are some available
+correlations in literature \cite{bercic-mass,kreutzer-overview} and one of the particular goal of
+this work is to study mass transfer dependence on the number of parameters. 
+\end{description}
+ 
+The approach we want to use is the lattice Boltzmann method, a relatively new CFD
+competitor emerged during last $20$ years \cite{frisch,mcnamara,HJ,HSB}. During years the method
+was applied to simulate not only hydrodynamic problems \cite{yu}, but as well multiphase flows
+\cite{Shan-chen:extended,swift,gunstensen}, heat transfer
+\cite{yuan-thermal,zhang-thermal}, ferrofluids \cite{dellar-ferro,kuzmin-aniso}.
+
+The mass transfer problems in the lattice Boltzmann framework were mainly addressed in series of
+works of Dr. Ginzburg and co-authors
+\cite{ginzburg-main,ginzburg-boundary-conditions,ginzburg-saturated-flow}. However, all these works
+are of general nature to simulate the advection-diffusion equation via the lattice Boltzmann
+framework. The manuscripts do not establish of how to obtain the volumetric mass transfer
+coefficients. The work of \citet{inamuro-scalar-boundary} simulates heat and mass transfers in the
+porous media. The work of \citet{jos-mass} simulates lateral mixing in cross-channel flow. While
+two last works are focused at the mass transfer problems, both problems are of homogenuous nature
+and do not guide as to how to simulate the non-homogenous problems.            
+
+The overall goal of this paper is to address the questions arised and to establish the numerical
+procedure suitable to measure the volumetric mass transfer coefficient. We will utilize the results
+of numerical simulations of flow
+obtained
+before \cite{kuzmin-binary2d}. 
+
+The paper is organized as follows. The mass transfer coefficients and volumetric mass transfer
+coefficients are covered. The limiting cases from the continuos representation and their
+application to the present simulation are given. The mass transfer simulations benchmarks are
+presented. Finally, numerical simulations of hypotheses presented in this work and comparison
+between them are presented. 
+
+
 \section{Mass transfer definitions}
-By the definition the mass transfer coefficient is the following:
+By the definition the mass transfer coefficient from the surface with the imposed constant
+concentration $\cbubble$ is the following:
 \beq
 k_L=\frac{\dot{m}}{P \Delta C},
 \feq
 where $\dot{m}$ is the mass rate $\Bigl[\frac{kg}{s}\Bigr]$, $P$ is the area of the surface
-$\Bigl[m^2\Bigr]$, $\Delta C$ is the concentration difference $\Bigl[\frac{kg}{m^3}\Bigr]$.
-Therefore, $k_L$ has a dimension of velocity $\Bigl[\frac{m}{s}\Bigr]$. 
+$\Bigl[m^2\Bigr]$, $\Delta C$ is the concentration difference between the surface and the medium
+$\Bigl[\frac{kg}{m^3}\Bigr]$. Therefore, $k_L$ has a dimension of velocity
+$\Bigl[\frac{m}{s}\Bigr]$. Usually, the medium concentration is taken at the infinite distance
+from the bubble. However, in the case bubble, the medium concentration can be the average
+concentration in the domain, the flux averaged concentration at the outlet. Thus, one needs to
+establish a thorough definition of the volumetric mass transfer coefficient in the case of complex
+geometries and hydrodynamic patterns.
 
 There are different methods to estimate the mass transfer coefficient $k_L$. We first examine the
 theoretical definitions of the mass transfer in case of the point sources.
 \subsection{Point mass sources}
-In what follows we will present three approaches to calculate the mass points mass transfer
+In what follows we will present three approaches to calculate point mass transfer
 coefficients:
 \begin{enumerate}
 \item
 Let us look at the infinitisemal small domain of the volume $A \Delta x$ in a steady-state, not
 moving and with the mass source. Then the concentration difference can be found as $\Delta C = C^* -
-C(t)$, where $C^*$ is the imposed concentration on the infinitesimal concentration source, $C(t)$ is
+C(t)$, where $C^*$ is the imposed point source concentration, $C(t)$ is
 the time depending average concentration. Therefore one can write the time dependent ODE for the
 average concentration in the domain:
 \beq
@@ -48,10 +171,13 @@ average concentration in the domain:
 with the initial condition $C(0)=0$
 The solution in time becomes as follows:
 \beq
-C(t)= C^{*}(1-\exp(-k_L a t )), 
+C(t)= C^{*}(1-\exp(-\vol t )), 
 \feq
-where $k_L a$ is the volumetric mass transfer coefficient.
-
+where $\vol$ is the volumetric mass transfer coefficient defined as:
+\beq
+\vol=k_L \frac{P}{V},
+\feq
+where $P$ is the source surface, $V$ is the unit cell volume.
 \item
 The previous consideration is able to predict mass transfer happening in moving with the velocity
 $U$ liquid, see Fig. \ref{fig:moving:frame}.
@@ -98,6 +224,34 @@ Mixing patterns of the film and the liquid slugs are of great importance for the
 estimation of the mass transfer \cite{yue-mass}.
  
 \subsection{Numerical calculation}
+
+The numerical benchmark is presented in Fig. \ref{fig:benchmark}. In
+the same figure, one can see the proposed benchmark for the tracer. The
+physical
+picture for the proposed numerical benchmark is  related to classical experiments conducted by
+\citet{bercic-mass}. In their work authors studied gas-liquid mass transfer coefficient by
+injecting methane as the gas bubble and measuring the dissolved concentration of methane in water
+along the channel. This situation implies the periodic boundary conditions and steady-state motion
+of bubbles.  
+
+The numerical  procedure of studying mass transfer is presented in the following steps:
+\begin{description}
+ \item[Flow field] The hydrodynamics for the bubble motion in the periodic domain is obtained
+according to the work \cite{kuzmin-binary2d}. The grid resolution is taken to insure grid
+independency of results.  
+ \item[Bubble reference frame] Once the hydrodynamics is resolved, the mass transfer simulations
+are conducted in the moving
+reference frame with the bubble. Then the bubble stands still and the flow is coming around the
+bubble. We impose a steady concentration of solutant on the surface of the bubble.
+\item[Mass transfer] One needs not only perform a Galilean transformation to the reference
+frame moving with the bubble but also to
+transfer the bubble to the inlet condition. This can insure that the studied phenomenon is a liquid
+slug. 
+\end{description}
+
+
+
+
 In the numerical simulation it is not possible to simulate really long domains with the infinite
 number of the bubbles. As we saw before there are two approaches towards it - either to simulate
 the bubble train and then to measure concentration along the pipe, Eq.
@@ -918,7 +1072,37 @@ to be stabilized.
 %concentration!!!} \label{fig:ca0055:keeping:peclet}}
 %\end{figure}
 
-
+\section{Performing average approach}
+One can calculate the average domain concentration over the time. According to the definitions of
+the volumetric mass transfer coefficient one can obtain the following concentration depending on
+time, i.e. streamwise coordinate:
+\beqal
+&\vol t \frac{\ububble}{\ugas+\uliq}=\ln\frac{C^*}{C^*-C(t)}\\
+&\vol \frac{\lunit}{\ugas+\uliq}=\frac{\lunit}{\ububble t} \ln \frac{C^*}{C^*-C(t)}\\
+\feqal
+Simulations for coefficient $\vol \frac{\ububble}{\ugas+\uliq}$ are shown in Fig.
+\ref{fig:aver:conc:different:capillaries}.
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca026.eps}
+\includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca054.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca05.eps}
+\includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca097.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca14.eps}\\
+\caption{Volumetric mass transfer coefficient for different capillaries and scales. One can see the
+excellent agreement. \label{fig:aver:conc:different:capillaries}}
+\end{figure}
+One of interesting correlations for the mass transfer volumetric coefficient was presented by
+\citet{yue-mass}:
+\beqal
+&\vol=\frac{2}{d_h}\Bigl(\frac{D \ububble}{\lbubble+\lslug}\Bigr)^{0.5}
+\Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^0.3\\
+&\vol \frac{\lunit}{\ugas+\uliq}=2\frac{\lunit}{d_h} \Bigl(\frac{D \varepsilon
+}{(\ububble+\ugas)\lbubble+\lslug}\Bigr)^{0.5}
+\Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^0.3 \propto Pe^{-\frac{1}{2}}.
+\feqal
+\begin{figure}
+\includegraphics[width=\textwidth]{Figures/volumetric_mass_peclet.eps}
+\end{figure}
 
 \appendix
 \section{Free surface boundary conditions}

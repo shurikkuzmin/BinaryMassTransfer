@@ -469,6 +469,85 @@ def produce_one_mass_image():
     pylab.imshow(mass)
     pylab.colorbar()
 
+def produce_new_image():
+    from PyNGL import Ngl    
+    file_dir="/home/shurik/Documents/Projects/binary_mass_transfer/Python/HydroAlexandra/9/"    
+    phase=numpy.loadtxt(file_dir+"phase300000.dat")
+    velx=numpy.loadtxt(file_dir+"velocityx300000.dat")
+    vely=numpy.loadtxt(file_dir+"velocityy300000.dat")
+    pylab.figure()    
+    pylab.imshow(phase)
+    pylab.figure()
+    pylab.imshow(velx)
+    pylab.figure()
+    pylab.imshow(vely)
+    dims=phase.shape
+    center=phase[dims[0]/2,:]
+   
+    z1 = numpy.min(numpy.where(center < 0.0))
+    z2 = numpy.max(numpy.where(center < 0.0))
+    if z1==0:
+        z2=numpy.min(numpy.where(center>0.0))+dims[1]
+        z1=numpy.max(numpy.where(center>0.0))
+    print z1,z2
+    print "Bubble length=",(z2-z1)/200.0
+    print "Slug length=",15.0-(z2-z1)/200.0
+    print "Liquid_velocity",numpy.sum(velx[1:-1,((z1+z2+dims[1])/2)%dims[1]])/(dims[0]-2)
+    print "Bubble velocity",velx[dims[0]/2,z2%dims[1]]        
+    velx=velx-velx[dims[0]/2,z2%dims[1]]    
+    #print "Gas holdup",float(len(numpy.where(array['phi']<0)[0]))/(dims[1]*(dims[0]-2))
+    #prof=phase[:,((z1+z2)/2)%dims[1]]
+    #widths.append(Get_Zero(prof))     
+    #velocities.append()
+
+    wks_type = "eps"
+    wks = Ngl.open_wks(wks_type,"new_force")
+    resources = Ngl.Resources()
+    
+        
+    #resources.tiMainFont    = "Times-Roman"
+    #resources.tiMainOn=True
+    #resources.tiMainString="Ca=0.22 "
+           
+    #resources.tiXAxisString = "streamlines"
+    resources.vpHeightF = 0.25 # Define height, width, and location of plot.
+    resources.vpWidthF  = 3*0.25
+    #resources.wkPaperSize="A5"
+    #resources.nglFrame = False
+    resources.vfXArray=numpy.linspace(0.0,15.0,len(velx[1,::5]))
+    resources.vfYArray=numpy.linspace(0.0,1.0,len(velx[::5,1]))
+    resources.nglFrame=False
+
+
+    
+    resources2=Ngl.Resources()
+    resources2.vpHeightF = 0.25 # Define height, width, and location of plot.
+    resources2.vpWidthF  = 3*0.25
+
+    resources2.cnLineLabelsOn = False   # Turn off contour line labels.
+        #resources2.cnLinesOn      = False   # Turn off contour lines.
+    resources2.cnFillOn       = False    # Turn on contour fill.
+    resources2.cnInfoLabelOn   = False 
+  
+        
+    resources2.cnLevelSelectionMode = "ExplicitLevels"  # Select contour levels. 
+    resources2.cnMinLevelValF       = 0.0
+    #resources2.cnMaxLevelValF       = 0.001
+    #resources2.cnLevelSpacingF      = 0.0
+    resources2.cnLevelCount=1
+    resources2.cnLevels=[0.0]
+    #resources2.cnLineThicknesses=[3]
+    resources2.cnMonoLineThickness=True
+    resources2.cnLineThicknessF=3.0
+    resources2.sfXArray=numpy.linspace(0.0,15.0,len(velx[1,:]))
+    resources2.sfYArray=numpy.linspace(0.0,1.0,len(velx[:,1]))
+ 
+     
+    plot=Ngl.streamline(wks,velx[::5,::5],vely[::5,::5],resources)
+    Ngl.contour(wks,phase,resources2)        
+
+
+
 if __name__=="__main__":
     #file_dir="TweakingHydro2DRight/3/"
     file_dir="ScalingPeclet/9/"    
@@ -480,7 +559,8 @@ if __name__=="__main__":
     #comparison_bulk_velocities(3)
     #produce_one_image(file_dir)    
     #produce_one_mass_image()    
-    produce_alexandra_image()    
+    #produce_alexandra_image()    
+    produce_new_image()    
     pylab.show()
     #Ngl.end()
     

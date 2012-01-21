@@ -309,7 +309,18 @@ void update_inlet_outlet()
 				f2[counter_inlet*NPOP+k]=f2[(counter_inlet+NX)*NPOP+k];
 			}
 		}   	
-	
+        if (mpi_size==1)
+        {
+		    for(int iX=1;iX<NX-1;iX++)
+			{
+				int counter_outlet=(NY-1)*NX+iX;
+				for(int k=0;k<NPOP;k++)
+				{
+					rho[counter_outlet]=rho[counter_outlet-NX];
+					f2[counter_outlet*NPOP+k]=f2[(counter_outlet-NX)*NPOP+k];
+				}
+			}    
+        }
 		return;
 	}
 
@@ -578,11 +589,10 @@ void stream_boundaries()
 	}
 	
 	//special treatment of BB nodes
-	f[NX*(NY-1)*NPOP+8]=f2[NX*(NY-1)*NPOP+6];
-	f[NX*(NY-1)*NPOP+(NX-1)*NPOP+7]=f2[NX*(NY-1)*NPOP+(NX-1)*NPOP+5];
-	f[5]=f2[7];
-	f[(NX-1)*NPOP+6]=f2[(NX-1)*NPOP+8];
-	
+	f[NX*(NY-1)*NPOP+NPOP+8]=f2[NX*(NY-1)*NPOP+NPOP+6];
+	f[NX*(NY-1)*NPOP+(NX-2)*NPOP+7]=f2[NX*(NY-1)*NPOP+(NX-2)*NPOP+5];
+	f[NPOP+5]=f2[NPOP+7];
+	f[(NX-2)*NPOP+6]=f2[(NX-2)*NPOP+8];
 }
 
 void stream_column(int coor_y,int coor_bottom,int coor_top)
