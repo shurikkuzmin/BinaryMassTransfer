@@ -209,9 +209,9 @@ def check_average_concentration(dir_name,factor,subtract):
         concentration=numpy.loadtxt("concentration.dat")
         aver_concentration=concentration[1:,1]/(3000*200*gas_holdup)
         pylab.figure(1)
-        pylab.plot(aver_concentration,styles[scale_counter])
+        pylab.plot(velocities[counter]*scale[scale_counter]*concentration[1:,0],aver_concentration,styles[scale_counter])
         pylab.figure(2)
-        pylab.plot(3000.0/(velocities[counter]*scale[scale_counter]*concentration[1:,0])*numpy.log(1.0/(1.0-aver_concentration)),styles[scale_counter],linewidth=2)                
+        pylab.plot(velocities[counter]*scale[scale_counter]*concentration[1:,0],3000.0/(velocities[counter]*scale[scale_counter]*concentration[1:,0])*numpy.log(1.0/(1.0-aver_concentration)),styles[scale_counter],linewidth=2)                
         #pylab.figure(99,figsize=(12,3))
         print 3000.0/(velocities[counter]*scale[scale_counter]*concentration[exam_point,0])*numpy.log(1.0/(1.0-aver_concentration[exam_point-1]))
         legs.append(scale_str[scale_counter])        
@@ -233,7 +233,7 @@ def check_average_concentration(dir_name,factor,subtract):
     pylab.xlabel(r'''$\mathrm{Time}\times 10^3$''',fontsize=30)
     pylab.ylabel(r'''$C$''',fontsize=30)    
     pylab.title(r'''$Ca='''+str(capillary)+'''$''',fontsize=30)
-    pylab.savefig("aver_conc_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+    #pylab.savefig("aver_conc_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
 
 def check_dependance():
     aver_coefficients=numpy.array([0.25,0.14,0.098,0.0736,0.060303])
@@ -293,6 +293,6 @@ if __name__=="__main__":
     #check_average_concentration("60",10,5)
     #check_average_concentration("84",10,5)    
 
-    check_dependance()
+    #check_dependance()
     
     pylab.show()
