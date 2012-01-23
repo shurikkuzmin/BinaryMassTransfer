@@ -576,6 +576,7 @@ void stream_boundaries()
 {
 	for(int iX=1;iX<NX-1;iX++)
 	{
+		
 		//Streaming from the right
 		f[NX*(NY-1)*NPOP+iX*NPOP+4]=mpi_right[iX*NPOP+4];
 		f[NX*(NY-1)*NPOP+iX*NPOP+7]=mpi_right[(iX+1)*NPOP+7];
@@ -706,6 +707,7 @@ int main(int argc, char* argv[])
     	scale=atof(argv[1]);
         omega=2.0*omega/(scale*(2-omega)+omega);
         omega_minus=omega;
+        omega_plus=2.0-omega_minus;
         std::cout<<"Scaling parameter is "<<scale<<"\n";
     }
 
