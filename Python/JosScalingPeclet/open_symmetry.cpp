@@ -283,20 +283,17 @@ void update_bounce_back()
 	for(int iY=0;iY<NY;iY++)
 	{
 		int counter=iY*NX;
-		int counter_top=((iY+1+NY)%NY)*NX;
-		int counter_bottom=((iY-1+NY)%NY)*NX;
-
 
 		f2[counter*NPOP+1]=f2[(counter+1)*NPOP+3];
-		f2[counter*NPOP+5]=f2[(counter_top+1)*NPOP+7];
-		f2[counter*NPOP+8]=f2[(counter_bottom+1)*NPOP+6];
+		f2[counter*NPOP+5]=f2[(counter+1)*NPOP+6];
+		f2[counter*NPOP+8]=f2[(counter+1)*NPOP+7];
 
 		f2[(counter+NX-1)*NPOP+3]=f2[(counter+NX-2)*NPOP+1];
-		f2[(counter+NX-1)*NPOP+6]=f2[(counter_top+NX-2)*NPOP+8];
-		f2[(counter+NX-1)*NPOP+7]=f2[(counter_bottom+NX-2)*NPOP+5];
+		f2[(counter+NX-1)*NPOP+6]=f2[(counter+NX-2)*NPOP+5];
+		f2[(counter+NX-1)*NPOP+7]=f2[(counter+NX-2)*NPOP+8];
 
-		rho[counter]=conc_wall;
-		rho[counter+NX-1]=conc_wall;
+		rho[counter]=rho[counter+1];
+		rho[counter+NX-1]=rho[counter+NX-2];
 		ux[counter]=0.0;
 		ux[counter+NX-1]=0.0;
 		uy[counter]=0.0;
@@ -355,7 +352,7 @@ void initialize_geometry()
 			uy[counter]=0.0;
 		}
 		else
-			rho[counter]=1.0;
+			rho[counter]=0.0;
 	}
 	
 	//Finding bulk nodes
@@ -571,6 +568,11 @@ int main(int argc, char* argv[])
 		
 		if (counter%NSIGNAL==0)
 		{
+			if (rho[NX/2]!=rho[NX/2])
+			{
+				std::cout<<"The simulation is unstable!\n";
+				return -1;
+			}
 			std::cout<<"Counter="<<counter<<"\n";
 		    calculate_mass_transfer(counter);
 		}

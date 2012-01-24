@@ -1104,6 +1104,61 @@ One of interesting correlations for the mass transfer volumetric coefficient was
 \includegraphics[width=\textwidth]{Figures/volumetric_mass_peclet.eps}
 \end{figure}
 
+\section{Real calculations}
+This section examines different cells for the capillary $Ca=0.097$. The coefficient is
+non-dimensionalized in the following manner $\vol \frac{\lunit}{\ugas+\uliq}$. Therefore, we
+examined the average concentrations in different units and for different scalings. Therefore the
+average concentration between two different cells have to be of the following value:
+\beqal
+&C_1=C(x)=C^* \Bigl(1-e^{-\vol \frac{x}{\ugas+\uliq}}\Bigr)\\
+&C_2=C(x+L)=C^* \Bigl(1-e^{-\vol \frac{x+L}{\ugas+\uliq}}\Bigr)\\
+k_L\frac{L}{\ugas+\uliq}=\frac{C^*-C_1}{C^{*}-C_2}
+\feqal
+One can see that this number is different in comparison with the number used for periodic boundary
+conditions. Thus, the domain transformation from time domain to the coordinate domain is not
+straightforward and require other definitions. For example by definition we took $C_1$ and $C_2$ to
+be average concentrations over different units. One can see Fig. \ref{fig:unit:8:scale:10} for
+average coefficients and corresponding volumetric mass transfer coefficients.
+\subsection{4 units}
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/aver_units4scale10.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale10.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_units4scale15.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale15.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_units4scale20.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale20.eps}\\
+\caption{Average concentrations and volumetric coefficients for $4$ units.
+\label{fig:unit:4}}
+\end{figure}
+
+
+\subsection{8 units} 
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/aver_units8scale10.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units8scale10.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_units8scale15.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units8scale15.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_units8scale20.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units8scale20.eps}\\
+\caption{Average concentrations and volumetric coefficients for $8$ units.
+\label{fig:unit:8}}
+\end{figure}
+
+\subsection{10 units} 
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/aver_units10scale10.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units10scale10.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_units10scale15.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units10scale15.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_units10scale20.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units10scale20.eps}\\
+\caption{Average concentrations and volumetric coefficients for $8$ units.
+\label{fig:unit:10}}
+\end{figure}
+
+
+
+
 \appendix
 \section{Free surface boundary conditions}
 \label{appendix-free-surface}
