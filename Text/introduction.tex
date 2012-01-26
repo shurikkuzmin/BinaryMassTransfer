@@ -1095,10 +1095,13 @@ One of interesting correlations for the mass transfer volumetric coefficient was
 \citet{yue-mass}:
 \beqal
 &\vol=\frac{2}{d_h}\Bigl(\frac{D \ububble}{\lbubble+\lslug}\Bigr)^{0.5}
-\Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^0.3\\
-&\vol \frac{\lunit}{\ugas+\uliq}=2\frac{\lunit}{d_h} \Bigl(\frac{D \varepsilon
-}{(\ububble+\ugas)\lbubble+\lslug}\Bigr)^{0.5}
-\Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^0.3 \propto Pe^{-\frac{1}{2}}.
+\Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^{0.3}\\
+&\vol \frac{\lunit}{\ugas+\uliq}=2\frac{\lunit}{d_h} \Bigl(\frac{D 
+}{\lunit (\ububble+\ugas)} \frac{\ububble}{\ugas+\uliq}\Bigr)^{0.5}
+\Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^{0.3} \propto Pe^{-\frac{1}{2}}\\
+&\vol \frac{\lunit}{\ugas+\uliq}=2\frac{\lunit}{d_h} \Bigl(\frac{D 
+}{\lunit (\ububble+\ugas)} \frac{\ububble}{\ugas+\uliq}\Bigr)^{0.5}
+\Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^{0.3} \propto Pe^{-\frac{1}{2}}
 \feqal
 \begin{figure}
 \includegraphics[width=\textwidth]{Figures/volumetric_mass_peclet.eps}
@@ -1117,7 +1120,7 @@ k_L\frac{L}{\ugas+\uliq}=\frac{C^*-C_1}{C^{*}-C_2}
 One can see that this number is different in comparison with the number used for periodic boundary
 conditions. Thus, the domain transformation from time domain to the coordinate domain is not
 straightforward and require other definitions. For example by definition we took $C_1$ and $C_2$ to
-be average concentrations over different units. One can see Fig. \ref{fig:unit:8:scale:10} for
+be average concentrations over different units. One can see Fig. \ref{fig:unit:8} for
 average coefficients and corresponding volumetric mass transfer coefficients.
 \subsection{4 units}
 \begin{figure}[htb!]
@@ -1130,6 +1133,42 @@ average coefficients and corresponding volumetric mass transfer coefficients.
 \caption{Average concentrations and volumetric coefficients for $4$ units.
 \label{fig:unit:4}}
 \end{figure}
+The more interesting picture is actually moving window average which is calculated as:
+\beq
+\label{moving:average}
+\vol\frac{\lunit}{\ugas+\uliq}=\frac{\lunit}{\ububble (t_2
+-t_1)}\ln\Bigl(\frac{C^*-C_1}{C^*-C_2}\Bigr)
+\feq
+One can see those moving averages in Fig. \ref{window4}.
+\begin{figure}[htb!]
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window4scale10.eps}\\
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window4scale15.eps}\\
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window4scale20.eps}\\
+\caption{Moving averages defined in Eq. \ref{moving:average} for 4 units
+\label{fig:moving:average:window4}}
+\end{figure}
+
+\subsection{6 units} 
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/aver_units6scale10.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units6scale10.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_units6scale15.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units6scale15.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/aver_units6scale20.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/coeff_units6scale20.eps}\\
+\caption{Average concentrations and volumetric coefficients for $8$ units.
+\label{fig:unit:10}}
+\end{figure}
+
+Another moving concentrations window is presented in Fig. \ref{fig:moving:average:window6}.
+\begin{figure}[htb!]
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window6scale10.eps}\\
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window6scale15.eps}\\
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window6scale20.eps}\\
+\caption{Moving averages defined in Eq. \ref{moving:average} for $8$ units.
+\label{fig:moving:average:window6}}
+\end{figure}
+
 
 
 \subsection{8 units} 
@@ -1144,6 +1183,16 @@ average coefficients and corresponding volumetric mass transfer coefficients.
 \label{fig:unit:8}}
 \end{figure}
 
+Another moving concentrations window is presented in Fig. \ref{fig:moving:average:window8}.
+\begin{figure}[htb!]
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window8scale10.eps}\\
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window8scale15.eps}\\
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window8scale20.eps}\\
+\caption{Moving averages defined in Eq. \ref{moving:average} for $8$ units.
+\label{fig:moving:average:window8}}
+\end{figure}
+
+
 \subsection{10 units} 
 \begin{figure}[htb!]
 \includegraphics[width=0.5\textwidth]{Figures/aver_units10scale10.eps}\hfill
@@ -1156,7 +1205,32 @@ average coefficients and corresponding volumetric mass transfer coefficients.
 \label{fig:unit:10}}
 \end{figure}
 
+Another moving concentrations window is presented in Fig. \ref{fig:moving:average:window10}.
+\begin{figure}[htb!]
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window10scale10.eps}\\
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window10scale15.eps}\\
+\includegraphics[width=0.7\textwidth]{Figures/aver_moving_window10scale20.eps}\\
+\caption{Moving averages defined in Eq. \ref{moving:average} for $8$ units.
+\label{fig:moving:average:window10}}
+\end{figure}
 
+\section{Open boundary conditions}
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{Figures/jos_aver_conc_scale_ca0097.eps}
+\includegraphics[width=0.5\textwidth]{Figures/jos_aver_moving_window_ca0097.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/jos_aver_conc_scale_ca0254.eps}
+\includegraphics[width=0.5\textwidth]{Figures/jos_aver_moving_window_ca0254.eps}\\
+\caption{Open boundary conditions. \label{fig:open:boundary:jos}}
+\end{figure}
+
+\section{Symmetric boundary conditions}
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{Figures/sym_aver_conc_scale_ca0097.eps}
+\includegraphics[width=0.5\textwidth]{Figures/sym_aver_moving_window_ca0097.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/sym_aver_conc_scale_ca0254.eps}
+\includegraphics[width=0.5\textwidth]{Figures/sym_aver_moving_window_ca0254.eps}\\
+\caption{Symmetric boundary conditions. \label{fig:open:boundary:sym}}
+\end{figure}
 
 
 \appendix
