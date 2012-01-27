@@ -26,6 +26,10 @@
 \newcommand{\cbubble}{C_{\mathrm{bubble}}}
 \newcommand{\cinlet}{C_{\mathrm{inlet}}}
 \newcommand{\coutlet}{C_{\mathrm{outlet}}}
+\newcommand{\coverall}{C_{\mathrm{overall}}}
+\newcommand{\cstar}{C^{*}}
+\newcommand{\cmedium}{C_{\mathrm{medium}}}
+\newcommand{\volnondim}{\vol \frac{\lunit}{\ububble+\ugas}}
 
 \title{Lattice Boltzmann study of mass transfer for complicated geometries}
 
@@ -87,7 +91,7 @@ cell\ volume}},
 \end{equation}
 where $\coutlet=\int{C \uoutlet \mathrm{d}A}/\int{\uoutlet\mathrm{d}A}$. 
 The concentration flux is calculated as the difference between overall
-average concentration in the whole domain ($C_{overall}=\int_{V} C \mathrm{d}V /V$)
+average concentration in the whole domain ($\coverall=\int_{V} C \mathrm{d}V /V$)
 at time
 $t_1$ and at time $t_2$ divided on the time difference $t_2-t_1$. The agreement between numerical
 simulations and correlations of \citet{bercic-mass} was good. However, the numerical model only
@@ -184,17 +188,18 @@ coefficients:
 \begin{enumerate}
 \item
 Let us look at the infinitesimal small domain of the volume $A \Delta x$ not
-moving and with the point mass source. Then the concentration difference can be found as $\Delta C = C^* -
-C(t)$, where $C^*$ is the imposed point source concentration, $C(t)$ is
+moving and with the point mass source. Then the concentration difference can be found as $\Delta C =
+\cstar -
+C(t)$, where $\cstar$ is the imposed point source concentration, $C(t)$ is
 the time dependent average concentration. Therefore one can write the time dependent ODE for the
 average concentration in the domain:
 \beq
-\dot{m}= A \Delta x \frac{\mathrm{d}C}{\mathrm{d} t} = k_L P (C^{*}-C(t)), 
+\dot{m}= A \Delta x \frac{\mathrm{d}C}{\mathrm{d} t} = k_L P (\cstar-C(t)), 
 \feq
 with the initial condition $C(0)=0$
 The solution can be found by solving ODE:
 \beq
-C(t)= C^{*}(1-\exp(-\vol t )), 
+C(t)= \cstar (1-\exp(-\vol t )), 
 \feq
 where $\vol$ is the volumetric mass transfer coefficient defined as:
 \beq
@@ -214,11 +219,11 @@ mass fluxes entering and leaving domain $U \bigl(C(x+\Delta x)-C(x)\bigr)$. We a
 source is a point source with the effective perimeter (area) $P$. The accumulated mass should be proportional
 to the mass transfer coefficient:
 \beq
-U \bigl(C(x+\Delta x)-C(x)\bigr)=k_L P \bigl(C^{*}-C(x)\bigr), 
+U \bigl(C(x+\Delta x)-C(x)\bigr)=k_L P \bigl(\cstar-C(x)\bigr), 
 \feq 
 giving the same equation but only in the coordinate domain:
 \beq
-C(x)= C^{*}\Bigl(1-\exp\bigl(-k_L a \frac{x}{U} \bigr)\Bigr).
+C(x)= \cstar \Bigl(1-\exp\bigl(-k_L a \frac{x}{U} \bigr)\Bigr).
 \label{main:mass:transfer:expression} 
 \feq
 
@@ -227,112 +232,137 @@ the same as in the first case. However, one can connect the time and spatial loc
 velocity $U$ ($t=\frac{x}{U}$) to obtain the same equation as in the case 2.
 \end{enumerate}
 
-The expression (\ref{main:mass:transfer:expression}) was used in the experiments by
-\citet{bercic-mass}. One should be accurate with the definition of velocities because we have two
-different phases. Usually, one can take the velocity $U$ to be as
-average velocity or $U=U_{gas}+U_{liq}$, where $U_{gas}$ and $U_{liq}$ are liquid and gas
-superficial velocities correspondingly. In this case, the continuouty assumption is restored and
-all considerations above are valid.
+\subsection{Bubble train}
+In the application to the bubble train flow, if one can think of one bubble to be a point source,
+then all considerations above are valid. For example, the expression
+(\ref{main:mass:transfer:expression}) was used in the experiments by
+\citet{bercic-mass}. However, one should be accurate with the definition of velocities because two
+different phases co-exist in the bubble train flow. Usually, one can take the velocity $U$ to be as
+a bulk velocity or $U=\ugas+\uliq$, where $\ugas$ and $\uliq$ are liquid and gas
+superficial velocities correspondingly. 
 
- However, if one wants to analytically estimate the mass transfer coefficients, the situation is
-much more complicated because of the two phases presence. Phases can have different mixing patterns
-from film to slug and from slug to film. The analytical approaches described above assume that the
-contributions from film and bubble caps can be calculated separately. However one can see that such 
+Though the experimental measurements are straightforward as measuring concentrations at different
+locations and calculating the volumetric mass transfer coefficient through the logarithmic
+function. However, if one wants to analytically estimate the mass transfer coefficients, the
+situation is much more complicated because of two phases presence and complicated bubble
+geometry. Phases can have different mixing patterns
+from film to slug and from slug to film. As it was mentioned before depending on the capillary
+number the mixing velocity pattern is different. Analytical approaches
+\cite{irandoust,vanbaten-circular} assume that the
+contributions from film and bubble caps can be calculated separately. However, one can see that
+such 
 an assumption for bubble caps (slug well mixed and the concentration is uniformly distributed over
 the slug) usually overpredicts the mass transfer \cite{irandoust}. This happens since some tracer
 concentration from film is mixed with the slug and changes the overall concentration in the slug.
+Thus, all estimations for the analytical mass as well do not account mutual mass transfer from
+neighbouring bubbles.
+
 Another issue is that if the slug is long enough then the film saturates with the tracer
 concentration and its influence on the mass transfer can be negligible \cite{vanbaten-circular}.
 Mixing patterns of the film and the liquid slugs are of great importance for the analytical
-estimation of the mass transfer \cite{yue-mass}.
+estimation of the mass transfer \cite{yue-mass}. However, the assumptions usually taken for the
+mass transfer calculation are small capillary number and certain mixing patterns which help to
+estimate the mass transfer using the penetration theory of \citet{higbie}.
+
+The numerical approach can take into the account the complicated mixing patterns and geometries.
+However, there is a  challenge to restore the continous approach as it is seen in experiments. Next
+section gives more details about numerical simulations.
  
-\subsection{Numerical calculation}
-
-The numerical benchmark is presented in Fig. \ref{fig:benchmark}. In
-the same figure, one can see the proposed benchmark for the tracer. The
-physical
-picture for the proposed numerical benchmark is  related to classical experiments conducted by
-\citet{bercic-mass}. In their work authors studied gas-liquid mass transfer coefficient by
-injecting methane as the gas bubble and measuring the dissolved concentration of methane in water
-along the channel. This situation implies the periodic boundary conditions and steady-state motion
-of bubbles.  
-
-The numerical  procedure of studying mass transfer is presented in the following steps:
-\begin{description}
- \item[Flow field] The hydrodynamics for the bubble motion in the periodic domain is obtained
-according to the work \cite{kuzmin-binary2d}. The grid resolution is taken to insure grid
-independency of results.  
- \item[Bubble reference frame] Once the hydrodynamics is resolved, the mass transfer simulations
-are conducted in the moving
-reference frame with the bubble. Then the bubble stands still and the flow is coming around the
-bubble. We impose a steady concentration of solutant on the surface of the bubble.
-\item[Mass transfer] One needs not only perform a Galilean transformation to the reference
-frame moving with the bubble but also to
-transfer the bubble to the inlet condition. This can insure that the studied phenomenon is a liquid
-slug. 
-\end{description}
-
-
-
-
-In the numerical simulation it is not possible to simulate really long domains with the infinite
-number of the bubbles. As we saw before there are two approaches towards it - either to simulate
+\subsection{Numerical simulations}
+To restore the continuous picture one needs to perform a number of bubbles simulations. As we saw
+before there are two approaches towards it - either to simulate
 the bubble train and then to measure concentration along the pipe, Eq.
-\ref{main:mass:transfer:expression}, or to transfer to the reference frame moving with bulk
-velocity $U$ and conduct the same measurements through Eq. \ref{main:mass:transfer:expression}.
-However, both methods do require a tracking of moving bubbles which is complicated from the
-numerical point of view.
+\ref{main:mass:transfer:expression}, or to transfer to the reference frame moving with the bulk
+velocity $U$ and conduct same measurements. However, both methods do require a tracking of
+moving bubbles which is complicated from the numerical point of view. Therefore, one needs to come
+up with the simple smaller domain calculations of the mass transfer coefficient, which mimic the
+continuous picture with infinite numbers of the bubbles closely. 
 
-Therefore, one needs to come up with the simple smaller domain calculations
-of the mass transfer coefficient, which represent the continuous picture with infinite numbers of
-the bubbles closely. In comparison with analytical estimations of the mass transfer coefficient,
-where the mixing patterns are extremely important, the numerical simulations need only to mimic
-the continous picture and provide the way to calculate the volumetric mass transfer coefficient. 
+To avoid complications with moving grids, our
+approach is to simulate mass transfer in the reference frame moving with the bubble. Therefore, one
+needs to examine the equation for the continuous approach, Eq.
+\ref{main:mass:transfer:expression}. 
 
 We perform simulations in the frame moving with the bubble (velocity
-$U_{bubble}$), that the bubble position stands steady. The bubble velocity $U_{bubble}$ is
-different from the bulk velocity $U_{gas}+U_{liq}$. In this case we need to perform coordinate
-change:
+$\ububble$), that the bubble position stands steady. The bubble velocity $\ububble$ is
+different from the bulk velocity $\ugas+\uliq$. In this case we need to perform a coordinate $x$
+variable change:
 \beqal
-&x(t)=U_{bubble}t\\
-&C(x)=C^{*}\Bigl(1-\exp\bigl(-k_L\, a \frac{x}{U_{gas}+U_{liq}}\bigr)\Bigr)\\
-&C(t)=C^{*}\Bigl(1-\exp\bigl(-k_L\, a\, t \frac{U_{bubble}}{U_{gas}+U_{liq}}\bigr)\Bigr)
+\label{theor:average:concentration:time}
+&x(t)=\ububble t\\
+&C(x)=\cstar \Bigl(1-\exp\bigl(-\vol \frac{x}{\ugas+\uliq}\bigr)\Bigr)\\
+&C(t)=\cstar \Bigl(1-\exp\bigl(-\vol\, t \frac{\ububble}{\ugas+\uliq}\bigr)\Bigr).
 \feqal
-If the unit volume that we simulate is quite long one can obtain the values of the concentration
-in the inlet and outlet as a function of time:
+Therefore, one can obtain the volumetric mass transfer coefficient through the concentration:
 \beqal
-&C(U_{bubble}\, t)=C^{*}\Bigl(1-\exp\bigr(-k_L\, a\, t
-\frac{U_{bubble}}{U_{gas}+U_{liq}}\bigr)\Bigr)\\
-&C(U_{bubble}\,t+L_{unit})=C^{*}\Bigl(1-\exp\bigl(-k_L a \frac{
-U_{bubble}\,t+L_{unit}}{U_{gas}+U_{liq}}\bigr)\Bigr)\\
-&=C^{*}\Bigl(1-\exp\bigl(-k_L\, a\, t \frac{U_{bubble}}{U_{gas}+U_{liq}}\bigr)\exp\bigl(-k_L a
-\frac{L_{unit}}{U_{gas}+U_{liq}}\bigr)\Bigr)
+&\vol\, t \frac{\ububble}{\ugas+\uliq}=\ln \frac{\cstar}{\cstar-C(t)}\\
+&\volnondim=\frac{\lunit}{\ububble t}\ln \frac{\cstar}{\cstar-C(t)},
 \feqal
-Therefore the mass transfer coefficient can be calculated as follows:
-\begin{equation}
+where the parameter $\vol \frac{\lunit}{\ugas+\uliq}$ is non-dimensional. One can also measure the
+volumetric mass transfer coefficient from concentrations given at times $t_1$ and $t_2$:
+\beq
 \label{theor:continuous:mass:transfer}
-\begin{aligned}
-&-k_L a \frac{L_{unit}}{U_{gas}+U_{liq}}=\ln\Bigl(\frac{C^{*}-C_{outlet}}{C^{*}-C_{inlet}}\Bigr)\\
-&k_L a
-=\frac{U_{gas}+U_{liq}}{L_{unit}}\ln\Bigl(\frac{C^{*}-C_{inlet}}{C^{*}-C_{outlet}}
-\Bigr)
-\end{aligned}
-\end{equation}
-If inlet and outlet concentrations are small in comparison with the saturation concentration $C^{*}$
-then the expression for the volumetric mass transfer coefficitent $k_L a$ can be simplified:
-\beq
-\vol=\frac{\Delta C}{C^{*}} \frac{U_{gas}+U_{liq}}{L_{unit}},
+\volnondim=\frac{\lunit}{\ububble
+(t_2-t_1)}\ln\frac{C^{*}-C(t_1)}{C^{*}-C(t_2)}.
 \feq
-where $\Delta C=C_{outlet}-C_{inlet}$. If we go to the continuous formulation by changing $L_{unit}$
-to be a continuous coordinate $x$, then the following can be obtained \cite{jos-mass}:
-\beq
-\Delta C = C^{*} \vol \frac{x}{U_{gas}+U_{liq}}
-\label{small:conc:mass:estimation}
-\feq
-
-We consider the following possibilities of conducting numerical simulations:
+Expressions (\ref{theor:average:concentration:time}) and (\ref{theor:continuous:mass:transfer}) are
+the cornerstones of the present work. The main questions arisen in the present work are to define
+$C(t)$ and  the boundary conditions to produce a proper volumetric mass transfer coefficient
+$\vol$. 
+  
+Three possible scenarios of conducting numerical simulations are possible: 
 \begin{enumerate}
- \item 
+\item As far as the hydrodynamic flow is periodic, one can make an assumption of the same boundary
+conditions applied to the tracer concentration. Therefore, only one unit cell is simulated with
+periodic boundary conditions, see Fig. \ref{fig:benchmark}. As well, no tracer leaves a
+domain. The situation resembles a situation for the plug flow, where no tracer can leave a unit
+domain. We expect such a situation happening for small Capillary numbers $Ca<0.1$, where the film
+is thin and saturates fast with the tracer. Though easier to implement, it rises certain critisism
+towards the inlet concentration to be equal to the outlet concentration. In the continuous
+formulation there is the concentration difference between inlet and outlet involving the volumetric
+mass transfer coefficient:
+\beq
+\volnondim=\ln\frac{\cstar-\cinlet}{\cstar-\coutlet}.
+\feq
+The concentration $C(t)$ required for calculation the volumetric mass transfer coefficient, Eq.
+(\ref{theor:average:concentration:time}), can be taken as the average concentration in the domain:
+\beq
+C(t)=\frac{\int_{liquid}{C \mathrm{d}V}}{\int{\mathrm{d}V}}.
+\end
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/benchmark_middle.eps}\\
+\caption{The two-dimensional benchmarks for the  the mass transfer
+coefficient (bottom) for the bubble located near the entrance (top) and at the middle of the domain
+(bottom). \label{fig:benchmark}}
+\end{figure}
+\item The second approach is the same as the first one but the concentration is taken as in
+\cite{vanbaten-circular}. The characteristic concentration is taken as the inlet/outlet
+concentration:
+\beqal
+\cinlet=\frac{\int{U(y) C(0,y,t) \mathrm{d}y}}{\int{U(0,y) \mathrm{d}y}}\\
+\coutlet=\frac{\int{U(y) C(\Lunit,y,t) \mathrm{d}y}}{\int{U(\Lunit,y) \mathrm{d}y}}\\
+\cinlet=\coutlet.
+\feqal
+Therefore the assumptions  of this approach is that the difference between inlet and outlet is not
+considerably large and the tracer is well mixed in the slug. 
+
+\item
+The approach of \citet{vanbaten-circular} is taken. Periodic boundary conditions were used. By the
+definition the mass transfer coefficient is
+proportional to the gain of the mass in the system divided by the concentration difference
+multiplied on the surface area:
+\beq
+\vol=\frac{\dot{m}}{P \Delta C}\frac{P}{V}=\frac{\dot{m}}{V (\cstar-C(t))},
+\feq
+where mass difference in the domain can be calculated as:
+\beq
+\dot{m}=\frac{m_2-m_1}{t_2-t_1}=\frac{\int_{liq}{C(t_2)\mathrm{d}V}-\int_liq{C(t_1)\mathrm{d}V}}{
+t_2-t_1 } .
+\feq
+In the approach of \citet{vanbaten} the inlet and outlet concentrations were taken as the
+characteristic concentration $C(t)$.
+
+\item 
 The tracer picking up procedure can be introduced
 in the manner of the considerations above. We impose the concentration at the entrance to be
 constant $C(0,y)=C_{inlet}$, at the outlet we impose the outflow boundary condition $\frac{\partial
@@ -361,25 +391,46 @@ transfer coefficient is introduced that takes into the account the bubble geomet
 \caption{The numerical mass transfer benchmark. \label{fig:benchmark:jos}}
 \end{figure}
 
-\item Another possibility is to use the periodic boundary conditions as the limiting case of the
-continuous formulation. In this case the inlet and outlet concentrations are not much different
-($C(x)=C(x+L_{unit})=C(x+\Delta x)\approx C_{media}$, see Fig. \ref{fig:moving:frame}), where
-$C_{media}$ is the mass averaged over domain concentration. This formulation requires the periodic
-boundary condition $C_{inlet}=C_{outlet}$. By the definition the mass transfer coefficient is
-proportional to the gain of the mass in the system divided by the concentration difference:
-\beq
-j=\frac{\dot{m}}{P \Delta C}=\frac{\dot{m}}{P (C^{*}-C_{media})},
-\feq
-where mass difference in the domain can be calculated as:
-\beq
-\dot{m}=\frac{m_2-m_1}{t_2-t_1}=\frac{\int_{C(t_2)\mathrm{d}V}-\int{C(t_1)\mathrm{d}V}}{t_2-t_1}.
-\feq
-Therefore the assumptions  of this approach is that the difference between inlet and outlet is not
-considerably large and the tracer is well mixed in the slug, as one can take the concentration
-difference as $\Delta C = C^{*}-C_{media}$. The best case scenario is when $C_{media}$ is close to
-zero, in this case we can be sure that the flux to the domain is calculated precisely and periodic
-boundary conditions are fulfilled.
-\end{enumerate}
+
+
+\end{enumerate} 
+
+
+
+
+
+The numerical benchmark is presented in Fig. \ref{fig:benchmark}. In
+the same figure, one can see the proposed benchmark for the tracer. The
+physical
+picture for the proposed numerical benchmark is  related to classical experiments conducted by
+\citet{bercic-mass}. In their work authors studied gas-liquid mass transfer coefficient by
+injecting methane as the gas bubble and measuring the dissolved concentration of methane in water
+along the channel. This situation implies the periodic boundary conditions and steady-state motion
+of bubbles.  
+
+\section{Validation}
+
+\section{Numerical approach}
+\label{sec:numerics}
+The numerical  procedure of studying mass transfer is presented in the following steps:
+\begin{description}
+ \item[Flow field] The hydrodynamics for the bubble motion in the periodic domain is obtained
+according to the work \cite{kuzmin-binary2d}. The grid resolution is taken to insure grid
+independency of results.  
+ \item[Bubble reference frame] Once the hydrodynamics is resolved, the mass transfer simulations
+are conducted in the moving
+reference frame with the bubble. Then the bubble stands still and the flow is coming around the
+bubble. We impose a steady concentration of solutant on the surface of the bubble.
+\item[Mass transfer] One needs not only perform a Galilean transformation to the reference
+frame moving with the bubble but also to
+transfer the bubble to the inlet condition. This can insure that the studied phenomenon is a liquid
+slug. 
+\end{description}
+
+
+
+
+
 
 \section{Mass transfer}
 The mass transfer is characterized by non-dimensional numbers as Schmidt number (viscous diffusion
@@ -588,13 +639,6 @@ is located in the middle of the computational domain, and the characteristic con
 average concentration.
 \item[V] Definition with the concentration jump between inlet and outlet over one unit cell.
 \end{description}
-\begin{figure}[htb!]
-\includegraphics[width=\textwidth]{Figures/benchmark_periodic.eps}\\
-\includegraphics[width=\textwidth]{Figures/benchmark_middle.eps}\\
-\caption{The two-dimensional benchmarks for the  the mass transfer
-coefficient (bottom) for the bubble located near the entrance (top) and at the middle of the domain
-(bottom). \label{fig:benchmark}}
-\end{figure}
 
 \begin{figure}[htb!]
 \includegraphics[width=0.5\textwidth]{Figures/steady_state_per_entrance.eps}

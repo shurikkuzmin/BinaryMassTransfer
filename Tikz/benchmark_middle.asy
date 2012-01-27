@@ -47,4 +47,4 @@ draw(p1);
 draw(p2);
 draw(right_sphere+(0,rad)--left_sphere+(0,rad));
 draw(right_sphere+(0,-rad)--left_sphere+(0,-rad));
-draw("$C_s$",(right_sphere+left_sphere)*0.5+(0,-rad),N);
+draw("$C^*$",(right_sphere+left_sphere)*0.5+(0,-rad),N);
