@@ -17,7 +17,8 @@ int NX;
 int NUM;
 
 //Overall scaling parameter
-double scale_velocity=1;
+double scale_velocity=1.0;
+double scale_diffusion=1.0;
 
 //Other constants
 const int NPOP=9;
@@ -558,7 +559,7 @@ int main(int argc, char* argv[])
     	scale_velocity=atof(argv[1]);
     	scale_diffusion=atof(argv[2]);
         omega=2.0*omega/(scale_velocity*(2.0-omega)+omega);
-        omega=2.0*omega/(scale_diffusion*(2.0-omega)+omega)
+        omega=2.0*omega/(scale_diffusion*(2.0-omega)+omega);
         omega_minus=omega;
         omega_plus=2.0-omega;
         std::cout<<"Scaling velocity parameter is "<<scale_velocity<<"\n";
@@ -596,7 +597,7 @@ int main(int argc, char* argv[])
  			counterconvert<<counter;
  			filewritedensity<<std::fixed;
 
-			filewritedensity<<"density"<<std::string(7-counterconvert.str().size(),'0')<<counter;
+			filewritedensity<<"density_periodic"<<std::string(7-counterconvert.str().size(),'0')<<counter;
 			
  			writedensity(filewritedensity.str());
 		}

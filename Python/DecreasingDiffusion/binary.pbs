@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script for running serial program on glacier
 #PBS -S /bin/bash
-#PBS -l walltime=48:00:00
+#PBS -l walltime=60:00:00
 #PBS -l mem=TOCHANGE3GB
 #PBS -l procs=TOCHANGE3
 ###PBS -l nodes=2:ppn=16

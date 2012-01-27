@@ -168,31 +168,31 @@ concentration $\cbubble$ is the following:
 k_L=\frac{\dot{m}}{P \Delta C},
 \feq
 where $\dot{m}$ is the mass rate $\Bigl[\frac{kg}{s}\Bigr]$, $P$ is the area of the surface
-$\Bigl[m^2\Bigr]$, $\Delta C$ is the concentration difference between the surface and the medium
+$\Bigl[m^2\Bigr]$, $\Delta C$ is the concentration difference between the surface and the surrounding medium
 $\Bigl[\frac{kg}{m^3}\Bigr]$. Therefore, $k_L$ has a dimension of velocity
-$\Bigl[\frac{m}{s}\Bigr]$. Usually, the medium concentration is taken at the infinite distance
-from the bubble. However, in the case of complicated geometries and inhomogenuous concentrations, 
+$\Bigl[\frac{m}{s}\Bigr]$. Usually, the surrounding medium concentration is taken at the infinite distance
+from the bubble. However, in the case of complicated geometries and non-homogeneous concentrations, 
 the medium concentration can be the average concentration in the domain, the flux averaged
-concentration at the outlet. Thus, one needs to establish a thorough definition of the volumetric
-mass transfer coefficient in the case of complex geometries and hydrodynamic velocity patterns.
+concentration at the inlet or outlet. Thus, one needs to establish a thorough definition of the volumetric
+mass transfer coefficient in the case of complex geometries and non-trivial hydrodynamic velocity patterns.
 
 There are different methods to estimate the mass transfer coefficient $k_L$. We first examine the
-theoretical definitions of the mass transfer in case of the point sources.
+theoretical definitions of the mass transfer in case of point mass sources.
 \subsection{Point mass sources}
 In what follows we will present three approaches to calculate point mass transfer
 coefficients:
 \begin{enumerate}
 \item
-Let us look at the infinitisemal small domain of the volume $A \Delta x$ in a steady-state, not
-moving and with the mass source. Then the concentration difference can be found as $\Delta C = C^* -
+Let us look at the infinitesimal small domain of the volume $A \Delta x$ not
+moving and with the point mass source. Then the concentration difference can be found as $\Delta C = C^* -
 C(t)$, where $C^*$ is the imposed point source concentration, $C(t)$ is
-the time depending average concentration. Therefore one can write the time dependent ODE for the
+the time dependent average concentration. Therefore one can write the time dependent ODE for the
 average concentration in the domain:
 \beq
 \dot{m}= A \Delta x \frac{\mathrm{d}C}{\mathrm{d} t} = k_L P (C^{*}-C(t)), 
 \feq
 with the initial condition $C(0)=0$
-The solution in time becomes as follows:
+The solution can be found by solving ODE:
 \beq
 C(t)= C^{*}(1-\exp(-\vol t )), 
 \feq
@@ -203,15 +203,15 @@ where $\vol$ is the volumetric mass transfer coefficient defined as:
 where $P$ is the source surface, $V$ is the unit cell volume.
 \item
 The previous consideration is able to predict mass transfer happening in moving with the velocity
-$U$ liquid, see Fig. \ref{fig:moving:frame}.
+$U$ liquid, see Fig. \ref{fig:moving:frame}. 
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/mass_transfer.eps}
 \caption{The mass transfer in the moving liquid. \label{fig:moving:frame}}
 \end{figure}
 
-The mass accumulated in the unit volume $V=A \Delta x$ can be calculated as the difference of 
+If one can assume that the mass point sources are distributed in the whole medium, then the mass accumulated in the unit volume $V=A \Delta x$ can be calculated as the difference of 
 mass fluxes entering and leaving domain $U \bigl(C(x+\Delta x)-C(x)\bigr)$. We assume that the
-source is a point source with the effective perimeter P. The accumulated mass should be proportional
+source is a point source with the effective perimeter (area) $P$. The accumulated mass should be proportional
 to the mass transfer coefficient:
 \beq
 U \bigl(C(x+\Delta x)-C(x)\bigr)=k_L P \bigl(C^{*}-C(x)\bigr), 

@@ -1,4 +1,4 @@
-import numpy
+#import numpy
 import os
 import subprocess
 def modify_file(scale_str,unit_str,scale_diff_str):
@@ -31,16 +31,19 @@ def modify_periodic_file(scale_str,unit_str,scale_diff_str):
 
 def run_simulations(dir_name):
     capillary_str=[str(x) for x in [9,21,42,60,84]]
-    units=[4,6,8,10]
+    units=[4,6,8]
     velocities=[0.0055,0.0143,0.0297,0.0424,0.05538]
     scales=[0.3,0.5,1,2,4,6,8,10,15,20]    
     scale_str=["03","05","1","2","4","6","8","10","15","20"]
     scales_diff=[0.05,0.1,0.2,0.4,0.5,1.0]
+    scales_diff_str=["005","01","02","04","05","10"]
     
+    counter=capillary_str.index(dir_name)
     #for counter,dir_temp in enumerate(capillary_str):
     subprocess.call(['cp','main.out',dir_name+"/"])
     subprocess.call(['cp','main_diffusion.out',dir_name+"/"])
     subprocess.call(['cp','binary.pbs',dir_name+"/"])
+    subprocess.call(['cp','binary_periodic.pbs',dir_name+"/"])
     os.chdir(dir_name)
     
     flag=False
@@ -62,6 +65,7 @@ def run_simulations(dir_name):
         subprocess.call(['cp','main.out',dir_name+"/"])
         subprocess.call(['cp','main_diffusion.out',dir_name+"/"])
         subprocess.call(['cp','binary.pbs',dir_name+"/"])
+        subprocess.call(['cp','binary_periodic.pbs',dir_name+"/"])
         subprocess.call(['cp','geometry.dat',dir_name+"/"])
         subprocess.call(['cp','velx0200000.dat',dir_name+"/"])
         subprocess.call(['cp','vely0200000.dat',dir_name+"/"])
@@ -71,14 +75,31 @@ def run_simulations(dir_name):
             subprocess.call(['cp','main.out',str(unit)+"/"])
             subprocess.call(['cp','main_diffusion.out',str(unit)+"/"])
             subprocess.call(['cp','binary.pbs',str(unit)+"/"])
+            subprocess.call(['cp','binary_periodic.pbs',str(unit)+"/"])
             subprocess.call(['cp','geometry.dat',str(unit)+"/"])
             subprocess.call(['cp','velx0200000.dat',str(unit)+"/"])
             subprocess.call(['cp','vely0200000.dat',str(unit)+"/"])
-            os.chdir(str(unit))            
-            modify_file(str(scale),str(unit))
-            subprocess.call(['qsub','binary_new.pbs']) 
+            os.chdir(str(unit))
+            
+            for scale_diff_counter,scale_diff in enumerate(scales_diff_str):
+                subprocess.call(['mkdir','-p',scale_diff])
+                subprocess.call(['cp','main.out',scale_diff+"/"])
+                subprocess.call(['cp','main_diffusion.out',scale_diff+"/"])
+                subprocess.call(['cp','binary.pbs',scale_diff+"/"])
+                subprocess.call(['cp','binary.pbs',scale_diff+"/"])
+                subprocess.call(['cp','binary_periodic.pbs',scale_diff+"/"])
+                subprocess.call(['cp','geometry.dat',scale_diff+"/"])
+                subprocess.call(['cp','velx0200000.dat',scale_diff+"/"])
+                subprocess.call(['cp','vely0200000.dat',scale_diff+"/"])            
+                os.chdir(str(scale_diff))
+                modify_file(str(scale),str(unit),str(scales_diff[scale_diff_counter]))
+                modify_periodic_file(str(scale),str(unit),str(scales_diff[scale_diff_counter]))
+                subprocess.call(['qsub','binary_new.pbs']) 
+                subprocess.call(['qsub','binary_periodic_new.pbs'])
+                
+                os.chdir("..")
             os.chdir("..")
-            os.chdir("..")
+        os.chdir("..")
             #subprocess.call(['qsub','binary_new.pbs'])
     os.chdir("..")
 

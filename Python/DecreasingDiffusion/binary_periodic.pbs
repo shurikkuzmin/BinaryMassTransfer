@@ -56,5 +56,5 @@ str="Starting run at =`date`"
 #unset TMPDIR
 #export -n TMPDIR
 module load mpi/openmpi/1.4.3
-mpirun -n TOCHANGE2 ./main.out TOCHANGE1 TOCHANGE4 > output.txt
+./main.out TOCHANGE1 TOCHANGE4 > output.txt
 echo "Job finished with exit code $? at: `date`"

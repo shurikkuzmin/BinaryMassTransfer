@@ -18,9 +18,11 @@ def copy_files(dir_name):
     os.chdir(dir_name)
     #for counter,dir_temp in enumerate(capillary_str):
     #    os.chdir(dir_temp)
-    subprocess.call(['scp','geometry.dat','shurik@checkers.westgrid.ca:/home/shurik/DecreasingDiffusion/'+dir_name+"/"])
-    subprocess.call(['scp','velx0200000.dat','shurik@checkers.westgrid.ca:/home/shurik/DecreasingDiffusion/'+dir_name+"/"])
-    subprocess.call(['scp','vely0200000.dat','shurik@checkers.westgrid.ca:/home/shurik/DecreasingDiffusion/'+dir_name+"/"])
+    
+    #subprocess.call(['scp','geometry.dat','shurik@checkers.westgrid.ca:/home/shurik/DecreasingDiffusion/'+dir_name+"/"])
+    #subprocess.call(['scp','velx0200000.dat','shurik@checkers.westgrid.ca:/home/shurik/DecreasingDiffusion/'+dir_name+"/"])
+    #subprocess.call(['scp','vely0200000.dat','shurik@checkers.westgrid.ca:/home/shurik/DecreasingDiffusion/'+dir_name+"/"])
+    
     print "Done with ",dir_name 
     os.chdir("..")
 
