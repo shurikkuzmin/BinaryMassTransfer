@@ -30,6 +30,8 @@
 \newcommand{\cstar}{C^{*}}
 \newcommand{\cmedium}{C_{\mathrm{medium}}}
 \newcommand{\volnondim}{\vol \frac{\lunit}{\ububble+\ugas}}
+\newcommand{\omegaplus}{\omega_{+}}
+\newcommand{\omegaminus}{\omega_{-}}
 
 \title{Lattice Boltzmann study of mass transfer for complicated geometries}
 
@@ -327,8 +329,9 @@ mass transfer coefficient:
 The concentration $C(t)$ required for calculation the volumetric mass transfer coefficient, Eq.
 (\ref{theor:average:concentration:time}), can be taken as the average concentration in the domain:
 \beq
+\label{average:concentration:definition}
 C(t)=\frac{\int_{liquid}{C \mathrm{d}V}}{\int{\mathrm{d}V}}.
-\end
+\feq
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/benchmark_middle.eps}\\
 \caption{The two-dimensional benchmarks for the  the mass transfer
@@ -339,9 +342,9 @@ coefficient (bottom) for the bubble located near the entrance (top) and at the m
 \cite{vanbaten-circular}. The characteristic concentration is taken as the inlet/outlet
 concentration:
 \beqal
-\cinlet=\frac{\int{U(y) C(0,y,t) \mathrm{d}y}}{\int{U(0,y) \mathrm{d}y}}\\
-\coutlet=\frac{\int{U(y) C(\Lunit,y,t) \mathrm{d}y}}{\int{U(\Lunit,y) \mathrm{d}y}}\\
-\cinlet=\coutlet.
+&\cinlet=\frac{\int{U(y) C(0,y,t) \mathrm{d}y}}{\int{U(0,y) \mathrm{d}y}}\\
+&\coutlet=\frac{\int{U(y) C(\lunit,y,t) \mathrm{d}y}}{\int{U(\lunit,y) \mathrm{d}y}}\\
+&\cinlet=\coutlet.
 \feqal
 Therefore the assumptions  of this approach is that the difference between inlet and outlet is not
 considerably large and the tracer is well mixed in the slug. 
@@ -359,56 +362,440 @@ where mass difference in the domain can be calculated as:
 \dot{m}=\frac{m_2-m_1}{t_2-t_1}=\frac{\int_{liq}{C(t_2)\mathrm{d}V}-\int_liq{C(t_1)\mathrm{d}V}}{
 t_2-t_1 } .
 \feq
-In the approach of \citet{vanbaten} the inlet and outlet concentrations were taken as the
+In the approach of \citet{vanbaten-circular} the inlet and outlet concentrations were taken as the
 characteristic concentration $C(t)$.
 
 \item 
-The tracer picking up procedure can be introduced
-in the manner of the considerations above. We impose the concentration at the entrance to be
-constant $C(0,y)=C_{inlet}$, at the outlet we impose the outflow boundary condition $\frac{\partial
-C}{\partial x}(L,y)=0$. To be compliant with the considerations above one needs to impose as well
-the outflow boundary conditions for the inlet as well. However, without loss of the generality one
-can impose $C_{inlet}=0$, since the walls in the reference frame
-moving with the bubble are moving from the inlet to the outlet. That means that no tracer
-concentration leaves domain from the inlet side, which is true for the capillary numbers larger
-than $0.6$.  However, this boundary condition can not be used in the case of small capillary
-numbers, since there is a strong circulation in front of the bubble. One can see the sketch of the
-approach in Fig. \ref{fig:benchmark:jos}. The longer the numerical domain length the better will be
-results. One can estimate the volumetric mass transfer coefficient in this case through the equation
-(\ref{small:conc:mass:estimation}) for small concentrations. Note a few considerations:
-\begin{itemize}
-\item  The considerations above were established for the homogenous velocity field. In the case of
-the non-homogenous velocity field one needs to obtain a concentration from the mass flux:
-\beq
-C_{outlet}=\frac{\int{U(y) C(L_{unit},y) \mathrm{d}y}}{\int{U(y) \mathrm{d}y}}.
-\feq
-\item Note, that one cannnot use the definition of the mass transfer coefficient as far as it
-varies through the bubble due to inhomogenoities of the flow. Therefore, the volumetric mass
-transfer coefficient is introduced that takes into the account the bubble geometry.
-\end{itemize}
+The approach of the opened boundaries was examined, see Fig. \ref{fig:benchmark:jos}. At the inlet
+and outlet boundaries the diffusion flux was imposed to be zero, $\frac{\partial C}{\partial x}=0$.
+The characteristic concentration was taken as the average concentration in the whole domain.
 \begin{figure}
 \includegraphics[width=\textwidth]{Figures/benchmark_jos.eps}
-\caption{The numerical mass transfer benchmark. \label{fig:benchmark:jos}}
+\caption{The numerical mass transfer benchmark with open boundaries. The mass transfer is
+calculated according to Eq. \ref{theor:average:concentration:time} with the characteristic
+concentration accoring to Eq. \ref{average:concentration:definition}. \label{fig:benchmark:jos}}
 \end{figure}
 
-
-
+\item 
+The last approach to be examined in this paper is the approach of the simulation of a lot of unit
+volumes, see Fig. \ref{big:benchmar:alot}. This situation corresponds to the simulation of the
+bubble train head, after injecting to the pipe and travelling along the pipe. The argument here is
+that behind a certain number of the bubble train head, the influence of the boundaries will be
+diminished. Thus, the average concentration in time will be governed by Eq.
+\ref{theor:continuous:mass:transfer}. This simulation statement is of most correspondence to
+experiments and should give right answer. However, one of the
+disadvantages is to simulate a certain number of unit cells, thus increasing a computational
+complexity.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/benchmark_alot.eps}\\
+\caption{Benchmark for a lot of units. \label{fig:benchmark:alot}}
+\end{figure}
 \end{enumerate} 
 
-
-
-
-
-The numerical benchmark is presented in Fig. \ref{fig:benchmark}. In
-the same figure, one can see the proposed benchmark for the tracer. The
-physical
-picture for the proposed numerical benchmark is  related to classical experiments conducted by
-\citet{bercic-mass}. In their work authors studied gas-liquid mass transfer coefficient by
-injecting methane as the gas bubble and measuring the dissolved concentration of methane in water
-along the channel. This situation implies the periodic boundary conditions and steady-state motion
-of bubbles.  
+Before all the approaches will be examined we will perform benchmarks of parts of geometries that
+form a problem.
 
 \section{Validation}
+As for analytical expressions the problem of the mass transfer can be decomposed to the following
+parts: the mass transfer from two hemispheres and the mass transfer from the film. We will examine
+these problems with the help of the lattice Boltzmann method and compare them against analytical
+solutions. The next sections will present the lattice Boltzmann method and a few benchmarks.
+
+\subsection{TRT $D2Q9$ model}
+The lattice Boltzmann equation (LBE) operates on a rectangular grid representing the
+physical domain. It utilizes
+probability distribution functions (also known as particle populations)
+containing information about
+macroscopic variables, such as fluid density and momentum. LBE consists of
+two parts: a local collision step, and a propagation step which transports
+information from one node to another along some 
+directions specified by the discrete velocity set.
+The LBE is typically implemented as follows:
+\begin{equation}
+\label{standard:implementation}
+\begin{aligned}
+&f_i^{*}(\bm{x},t)= f_i(\bm{x},t)-\omega \bigl(f_i(\bm{x},t)-f_i^{eq}(\bm{x},t)\bigr),&&\text{
+collision step}\\
+&f_i(\bm{x}+\bm{c_i},t+1)=f_i^{*}(\bm{x},t),&&\text{ propagation step}, 
+\end{aligned}
+\end{equation}
+where $f_i$ is the probability distribution function in the direction $\bm{c_i}$,
+ $f_i^{eq}$ is the equilibrium probability distribution function, $\omega$ is the
+relaxation parameter. Collision operator, $-\omega \bigl(f_i- f_i^{eq}\bigr)$ is so-called BGK
+collision operator \cite{bgk}. However, the approach to be used here is the TRT
+(two-relaxation-times) collision operator \cite{ginzburg-main,ginzburg-saturated-flow}. In
+comparison with the widely used BGK collision operator, TRT collision operator have better accuracy
+for diffusion and convection fluxes, larger range of parameters where the LBM scheme is stable.
+
+The TRT collision operator \cite{ginzburg-boundary-main}
+decomposes the populations and the equilibrium
+distribution into the symmetric and antisymmetric parts:
+\begin{equation}
+\label{trtdecomp}
+f^{\pm}_i=\frac{f_i\pm f_{\bar{i}}}{2}\;,\; 
+{eq_i}^{\pm}=\frac{eq_i\pm eq_{\bar{i}}}{2}\;,
+\end{equation}
+where $\bar{i}$ is the opposite direction to the $i$-th direction.
+The collision is performed with two independent relaxation rates for 
+symmetric and antisymmetric modes:
+\begin{equation}
+\label{trt}
+\begin{aligned}
+&f_i^{*}(\bm{x},t)=f_i(\bm{x},t)-\omegaplus (f_i^{+} - eq_i^+)-\omegaminus
+(f_i^{-} -
+eq_i^-)\\
+&f_i(\bm{x}+\bm{c_i},t+1)=f_i^{*}(\bm{x},t).
+\end{aligned}
+\end{equation}
+Note that the BGK collision operator is the particular subclass of the TRT relaxation operator with
+$\omegaplus=\omegaminus$. In comparison with the BGK collision operator,
+the TRT collision operator has the additional degree of freedom. Thus, the TRT operator then
+introduces
+so-called magic (free) parameter
+$\Lambda=\Bigl(\frac{1}{\omegaplus}-\frac{1}{2}\Bigr)\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}
+\Bigr)$. 
+This free parameter controls the effective location of the bounce-back
+walls \cite{ginzburg-multireflection}, second-order accuracy of
+boundary \cite{ginzburg-boundary-main} and interface schemes \cite{ginzburg-discontinious}, 
+spatial accuracy \cite{ginzburg-recurrence,servan-trt-stability},
+consistency \cite{ginzburg-brinkman} and, to some extent,
+stability \cite{kuzmin-stability-optimal,kuzmin-d1q3,servan-trt-stability}.
+In particular, $\Lambda=\frac{1}{4}$ achieves the optimal stability for the
+linear advection-diffusion isotropic equation \cite{kuzmin-stability-optimal}. 
+
+The parameters $\omegaplus$, $\omegaminus$ and $f_i^{eq}$ fully define the lattice Boltzmann
+procedure. The two-dimensional nine velocities LBM $D2Q9$ is defined on the set of lattice
+velocities with coordinates:
+\beqal
+&c_{ix}=\{0,1,0,-1,0,1,-1,-1,1\},\text{ for } i=0\dots8\\
+&c_{iy}=\{0,0,1,0,-1,1,1,-1,-1\},\text{ for } i=0\dots8\,.
+\feqal
+
+The equilibrium functions for $D2Q9$ TRT model are represented as \cite{kuzmin-stability-optimal}:
+\begin{equation}
+\begin{aligned}
+&eq_i^{+}=eq_i^{(m)}+g^{(u)} eq_i^{(u)}\\
+&eq_i^{(m)}=t_i^{(m)} c_e+ eq_i^{(a)}\\
+&eq_i^{(u)}=t_i^{(u)} \frac{u_x^2+u_y^2}{2}+\frac{u_x^2-u_y^2}{4} p_i^{(xx)}+g_{xy}^{(u)}\frac{u_x
+u_y}{4} p_i^{xy}\\
+&eq_i^{(a)}=\frac{D_{xx}-D_{yy}}{4} p_i^{xx}+\frac{D_{xy}}{4} p_i^{(xy)},
+\end{aligned}
+\end{equation}
+where the tensor $p_i^{(xx)}=c_{ix}^2-c_{iy}^2$, the tensor  $p_i^{(xy)}=c_{ix} c_{iy}$, the weights
+$t_i^{(u,m,a)}$ can be chosen based on stability criteria. Though not the best set of weights for
+stability, but the most spread set of weights, so called ``hydrodynamic`` weights, was chosen:
+\begin{equation}
+t_i^{(u)}=t_i^{(m)}=t_i^{(a)}=\Bigl\{0,\frac{1}{3},\frac{1}{3},\frac{1}{3},\frac{1}{3},\frac{1}{12},
+\frac {1}{12},\frac{1}{12},\frac{1}{12}\Bigr\}
+\end{equation}
+ 
+It can be shown through the Chapman-Enskog procedure \cite{chapman}, that the simple update rule
+with the equilibrium function presented above restores the anisotropic
+advection-diffusion equation:
+\beq
+\partial_t C+ \partial_{\alpha} C u_{\alpha}=\partial_{\alpha\beta} D_{\alpha\beta} C,
+\feq
+ with the
+following diffusion tensor:
+\begin{equation}
+D_{\alpha\beta}=
+\begin{pmatrix}
+D_{xx} + (g^{(u)}-1) u_x^2 & D_{xy}+(g_{xy}^{(u)}-1)u_x u_y\\
+D_{xy} + (g_{xy}^{(u)}-1) u_x u_y& D_{yy}+(g^{(u)}-1) u_y^2 
+\end{pmatrix}
+\end{equation}
+To consider the situation when the resolution is not needed to be changed in $x$ and $y$
+directions, one can obtain that $D_{xx}=D_{yy}$. The cross-diagonal components of the diffusion
+tensor are taken as zeros, i.e. $D_{xy}=0$. In comparison with $D2Q5$ model, with the $D2Q9$ it is
+possible to cancel the numerical diffusion by the proper choice
+of the equilibrium functions, i.e. $g_{xy}^{(u)}=g^{(u)}=1$. If one introduces 
+
+As far as the simulated diffusion tensor is close to $0$ the stability limits restrict the velocity
+amplitude to be simulated \cite{kuzmin-stability-optimal}. However, particular choice of weights
+can drastically help. Fig. \ref{stability:d2q9} shows the stability limits for D2Q9 with removed
+numerical diffusion and with it for two particular choices of weights.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/d2q9_stability.eps}
+\caption{The non-negativity areas and stable sub-domains of the OTRT schemes ($\Lambda=\frac{1}{4}$)
+are plotted for the $D2Q9$ (standard weights, left) and the $D2Q9$ (uniform weights, right) when the
+numerical diffusion is removed, partially or completely. Two non-negativity areas where all the
+equilibrium populations are positive have curvilinear boundaries: they are smaller when
+$g^{(u)}_{xy}=0$ (yellow) and than when $g^{(u)}_{xy}=1$ (green+yellow). The non-negativity
+condition is required by BGK collision operator. The stable sub-domains for $g^{(u)} = 1,
+g^{(u)}_{xy} = 0$ are small (red+green+yellow) triangles. When the numerical diffusion is removed
+the stable area is bounded by magenta and the (blue) domain above. The proper choice of weights can
+allow to obtain  total triangle $0 \leq u_x^2+u_y^2 \leq 1−c_e$ (the
+uniform weights only).
+\label{stability:d2q9}}
+\end{figure}
+
+The set of equations (\ref{set:equilibrium:binary}) restores the
+macroscopic
+fluid equations as:
+\begin{equation}
+\begin{aligned}
+&\partial_t \rho+ \partial_{\alpha} \rho u_{\alpha}=0\\
+\end{aligned}
+\label{advection:diffusion:equation}
+\end{equation}
+where $D=c_s^2 (\tau-1/2)$ is the viscosity, 
+$P_{\alpha\beta}=\Bigl(p_0-k\phi \Delta \phi -\frac{k}{2}|\nabla \phi|^2\Bigr)\delta_{\alpha\beta}
++ k \partial_{\alpha} \phi \partial_{\beta} \phi$  \cite{pooley-contact}.
+
+{\color{red}
+While the lattice Boltzmann system has parameters such as the surface tension, the gas and liquid
+viscosities, etc., those parameters are not the representative and
+proportional quantities of the parameters in a physical system. The parameters of the lattice
+Boltzmann are connected with the physical parameters only through the non-dimensional
+numbers governing the physics of the problem. In our case, these numbers are the capillary number
+and the
+viscosity ratio $\frac{\mu_{\mathrm{liq}}}{\mu_{\mathrm{gas}}}$, which are
+obtained from the physical world and then matched through the lattice Boltzmann quantities.
+Therefore, one can substitute any quantity, i.e.
+$U_{\mathrm{bubble}}$, in the physical units or in the lattice Boltzmann units as soon as the
+capillary number is the same in both worlds.} 
+
+
+\subsection{The radial case}
+We want to examine the bounce-back conditions against the analytical solution. The system can be
+prescribed by the following system of equations:
+\beq
+\begin{aligned}
+&\partial_t C(r,t)=\frac{1}{r}\partial_r r \partial_r C(r,t)\\
+&C(a,t)=C_0,\,C(r,0)=C_{init}
+\end{aligned}
+\feq 
+The solution is represented as \cite{chemical-correlations}:
+\beq
+\frac{C(r,t)-C_{0}}{C_{init}-C_{0})}=\sum_{n=1}^{\infty}{\frac{2}{\mu_n
+J_1(\mu_n)}\exp\Bigl(-\mu_n^2 \frac{D t}{a^2} \Bigr)J_0(\mu_n \frac{r}{a})},
+\feq
+where $\mu_n$ is the $n$-th zero root of the $0$th order Bessel polynomial $J_0(\mu_n)=0$. Some of
+the corresponding roots are as follows: $\mu_1=2.4048$,$\mu_2=5.5201$,$\mu_3=8.6537$,
+$\mu_4=11.7915$,$\mu_5=14.9309$.
+By taking initial concentration to be $0$, one can obtain the following solution:
+\beq
+C(r,t)=C_0 \Biggl(1 - \sum_{n=1}^{\infty}{\frac{2}{\mu_n
+J_1(\mu_n)}\exp\Bigl(-\mu_n^2 \frac{D t}{a^2} \Bigr)J_0(\mu_n \frac{r}{a})}\Biggr).
+\feq
+
+The solution depends only on the non-dimensional time: $\tau=\frac{D t}{a^2}$. Some examples for
+different diffusion coefficients are presented in Fig.\ref{fig:cylinder:benchmark}.
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/cylinder1666.eps}
+\includegraphics[width=0.5\textwidth]{Figures/cylinder0833.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/cylinder0104.eps}
+\includegraphics[width=0.5\textwidth]{Figures/cylinder0052.eps}\\
+\caption{Profiles for different diffusion parameters. One can see that the diffusion is captured
+accurately in non-dimensional space \label{fig:cylinder:benchmark}.}
+\end{figure}
+
+\subsection{Parabolic profile with velocity zero gradient at the wall}
+In any case here is what we want to solve as the system for :
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
+&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,\delta)=0\\
+&U(y)=U_0 \Bigl(\frac{y}{\delta}\Bigr)^2
+\end{aligned}
+\feq
+The system after non-dimensionalization becomes as follows:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial \frac{x}{H}} \frac{U_0}{H}
+\Bigl(\frac{y}{H}\Bigr)^2=\frac{D}{H^2}\frac{\partial^2 C}{\partial \frac{y^2}{H^2}}\\
+&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,H)=0\\
+\end{aligned}
+\feq
+After a change of variables:
+\beq
+\begin{aligned}
+&\zeta=\frac{x}{H} \frac{D}{U_0 H}=\frac{1}{Pe}\frac{x}{H}\\
+&\xi=\frac{y}{H}
+\end{aligned}
+\feq
+, the equation with boundary conditions becomes as follows:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial \zeta}\xi^2=\frac{\partial^2 C}{\partial \xi^2}\\
+&C(0,\xi)=C_0\\
+&C(\zeta,0)=C_{wall}\\
+&\frac{\partial C}{\partial \xi}(\zeta,1)=0\\
+\end{aligned}
+\feq 
+Still the equation cannot be solved with the separation of variables as it requires the homogenuos
+boundary conditions. Thus, let us introduce the new variable to be $\Theta=C-C_{wall}$. The system
+will be changed but not considerably:
+\beq
+\begin{aligned}
+&\frac{\partial \Theta}{\partial \zeta}=\frac{1}{\xi^2}\frac{\partial^2 \Theta}{\partial \xi^2}\\
+&\Theta(0,\xi)=C_0-C_{wall}\\
+&\Theta(\zeta,0)=0,\, \partial_{\xi}\Theta(\zeta,1)=0\\
+\end{aligned}
+\feq 
+This equation can be solved by separation of variables if the solutions is represented as the
+multiplication of two functions $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$. The differential equation will
+become as follows:
+\beq
+\begin{aligned}
+&\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}Y(\xi)=\frac{X(\zeta)}{\xi^2}\frac{\mathrm{d^2}
+Y(\xi)}{\mathrm{d}\xi^2}\\
+&\frac{1}{X(\zeta)}\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}=\frac{1}{\xi^{2} Y(\xi)}
+\frac{\mathrm{d^2} Y(\xi)}{\mathrm{d}\xi^2}
+\end{aligned}
+\feq
+The left and right parts depend on different variables. Therefore to be equal to each other both
+parts equal to constant, say $-m^4$. Thus, the separation of the variables leads to two ODE
+equations:
+\begin{equation*}
+\begin{aligned}
+&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}=-m^4 X(\zeta)\\
+&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 \xi^2 Y(\xi)=0\\ 
+\end{aligned}
+\end{equation*}
+The solution of the first equation is the exponential function:
+\beq
+X(\zeta)=\exp(-m^4 \zeta)\\
+\feq
+The solutions of the second equation are two hypergeometric function which can be expressed through
+the Bessel functions \cite{abramowitz}:
+\beq
+\begin{aligned}
+&Y_1=\sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y_2=\sqrt{\xi}J_{-\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y'_1=m^2 \xi^{3/2} J_{-\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y'_2=m^2 \xi^{3/2} J_{\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+\end{aligned}
+\feq
+The solution is the summation of two functions:
+\begin{equation*}
+Y(x)=C_1 Y_1(x)+C_2 Y_2(x). 
+\end{equation*}
+One can find coefficients from the boundary conditions:
+\beq
+\begin{aligned}
+&Y(0)=0=C_1 Y_1(0)+C_2 Y_2(0)\\
+&Y_1(0)=0,\,Y_2(0)=\frac{\sqrt{2}}{\sqrt{m} \Gamma(3/4)}\, C_2=0\\
+&Y'(1)=0=C_1 Y'_1(1)+C_2 Y'_2(1)=C_1 Y'_1(1)\\
+&J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)=0
+\end{aligned}
+\feq
+Therefore one needs to find zeros of $J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)$. To give some
+numerical values:
+$m_1=1.454997085$, $m_2=2.927133004$, $m_3=3.857578101$, $m_4=4.601777732$, $m_5=5.240824067$.
+Therefore a solution in a general form is represented as:
+\beq
+\Theta(\zeta,\xi)=\sum_m{C_m \sqrt{\xi} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\exp(-m^4 \zeta)}
+\feq
+To find unknown coefficients $C_m$ one needs to substitute the expression above to the initial
+condition:
+\beq
+\Theta(0,\xi)=C_0-C_{wall}=\sum_m{C_m \sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)}\\
+\feq
+Using the Stourm-Liouville theorem one can multiply by $\xi^{5/2}
+J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)$ and integrate left and right parts of the equation:
+\beq
+\begin{aligned}
+&\bigl(C_0-C_{wall}\bigr) \int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}=C_m\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}\\
+&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}
+\end{aligned}
+\feq
+Therefore, the overall solution is specified as:
+\beq
+\begin{aligned}
+&C(x,y)=C_{wall}+\sum_{m}{C_m
+\sqrt{\frac{y}{H}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{H^2}\Bigr)\exp\Bigl(-\frac{m^4}{Pe}
+\frac { x }{H}\Bigr)}\\
+&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}
+\end{aligned}
+\feq
+
+\subsection{The parabolic profile mass transfer and comparison}
+The problem we want to address can be formulated through the following PDE:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
+&C(0,y)=0,\, C(x,\pm \delta)=C_s,\, \frac{\partial C}{\partial y }(x,0)=0\\
+&U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
+\end{aligned}
+\feq
+The same procedure can be done as in the previous case to redefine variables. After substitution
+the following can be obtained:
+\beq
+\begin{aligned}
+&\frac{\partial \Theta}{\partial \zeta}(1-\xi^2)=\frac{\partial^2 C}{\partial \xi^2}\\
+\Theta(\zeta,\xi)=C-C_s\,\Theta(0,\xi)=-C_s\,\Theta(0,\pm 1)=0\\
+\end{aligned}
+\feq
+After separation of variables, $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$ one can come up with two
+equations:
+\beq
+\label{fourier:separation:variables}
+\begin{aligned}
+&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}+m^4 X(\zeta)=0\\
+&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 (1-\xi^2) Y(\xi)=0
+\end{aligned}
+\feq
+The first equation has a solution:
+\beq
+X(\zeta)=\exp(-m^4 \zeta)
+\feq
+The second equation can be simplified after substitution $\bar{\xi}=m \sqrt{2} \xi$ to the standard
+equation:
+\beq
+Y''-\Bigl(\frac{1}{4}\xi^2+a\Bigr)Y=0.
+\feq
+The equation above has two solutions via parabolic cylinder functions or through the confluent
+hypergeometric function \cite{abramowitz}:
+\beq
+\begin{aligned}
+&Y_1=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{1}{4},\frac{1}{2},\frac{x^2}{2}\Bigr)\\
+&Y_2=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{3}{4},\frac{3}{2},\frac{x^2}{2}\Bigr)\\
+\end{aligned}
+\feq 
+Taking symmetry conditions in the consideration by leaving only even solution, Eq.
+(\ref{fourier:separation:variables}) has a solution as:
+\beq
+Y_m=C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 x^2\Bigr) 
+\feq
+To satisfy boundary condition we need to find zeros of the hypergeometric function, i.e.
+${_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \Bigr)=0$. First ten eigenvalues can be
+found using numerical methods, as $1.2967$, $2.3811$,$3.1093$,$3.6969$,$4.2032$,$4.6548$,$5.0662$,
+$5.4467$, $5.8023$,$6.1373$. One needs to satisfy one more condition to obtain coefficients $C_m$:
+\beq
+-C_{s}=\sum_m{C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)} 
+\feq
+One can multiply both parts on $(1-x^2){_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)$ and through orthoganality Sturm-Liouiville theorem obtain coefficients:
+\beq
+\label{coeff:series:parabolic:profile}
+C_m=-C_s \frac{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
+{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)\mathrm{d}x}}{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
+{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)^2\mathrm{d}x}}
+\feq
+Therefore a whole solution can be written as:
+\begin{equation}
+C=C_{s}-C_s \sum_{m=0}{C_m e^{-m^4 \frac{x}{\delta}\frac{1}{Pe}} e^{-m^2
+y^2/(2\delta^2)}{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \frac{y^2}{\delta^2}\Bigr)},
+\end{equation}
+where coefficients $C_m$ are taken from Eq. (\ref{coeff:series:parabolic:profile}). The comparison
+between profiles is represented in Fig. \ref{fig:parabolic:comparison}.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/parabolic_profile_comparison.eps}
+\caption{Comparison between analytical profile and simulations with pressure antibounceback
+conditions. One can see given a low resolution of the profile a nice coincedence.}
+\end{figure}
 
 \section{Numerical approach}
 \label{sec:numerics}
@@ -786,244 +1173,6 @@ saturation.\label{table:time:steps}}
 \end{table}
 
 \section{Lattice Boltzmann Benchmarks}
-\citet{vanbaten-circular} represented a bubble with two hemisperes and a thin film. We want to
-perform the benchmarking against these two representative cases.
-
-\subsection{The radial case}
-We want to examine the bounce-back conditions against the analytical solution. The system can be
-prescribed by the following system of equations:
-\beq
-\begin{aligned}
-&\partial_t C(r,t)=\frac{1}{r}\partial_r r \partial_r C(r,t)\\
-&C(a,t)=C_0,\,C(r,0)=C_{init}
-\end{aligned}
-\feq 
-The solution is represented as \cite{chemical-correlations}:
-\beq
-\frac{C(r,t)-C_{0}}{C_{init}-C_{0})}=\sum_{n=1}^{\infty}{\frac{2}{\mu_n
-J_1(\mu_n)}\exp\Bigl(-\mu_n^2 \frac{D t}{a^2} \Bigr)J_0(\mu_n \frac{r}{a})},
-\feq
-where $\mu_n$ is the $n$-th zero root of the $0$th order Bessel polynomial $J_0(\mu_n)=0$. Some of
-the corresponding roots are as follows: $\mu_1=2.4048$,$\mu_2=5.5201$,$\mu_3=8.6537$,
-$\mu_4=11.7915$,$\mu_5=14.9309$.
-By taking initial concentration to be $0$, one can obtain the following solution:
-\beq
-C(r,t)=C_0 \Biggl(1 - \sum_{n=1}^{\infty}{\frac{2}{\mu_n
-J_1(\mu_n)}\exp\Bigl(-\mu_n^2 \frac{D t}{a^2} \Bigr)J_0(\mu_n \frac{r}{a})}\Biggr).
-\feq
-
-The solution depends only on the non-dimensional time: $\tau=\frac{D t}{a^2}$. Some examples for
-different diffusion coefficients are presented in Fig.\ref{fig:cylinder:benchmark}.
-\begin{figure}[htb!]
-\includegraphics[width=0.5\textwidth]{Figures/cylinder1666.eps}
-\includegraphics[width=0.5\textwidth]{Figures/cylinder0833.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/cylinder0104.eps}
-\includegraphics[width=0.5\textwidth]{Figures/cylinder0052.eps}\\
-\caption{Profiles for different diffusion parameters. One can see that the diffusion is captured
-accurately in non-dimensional space \label{fig:cylinder:benchmark}.}
-\end{figure}
-
-\subsection{Parabolic profile with velocity zero gradient at the wall}
-In any case here is what we want to solve as the system for :
-\beq
-\begin{aligned}
-&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
-&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,\delta)=0\\
-&U(y)=U_0 \Bigl(\frac{y}{\delta}\Bigr)^2
-\end{aligned}
-\feq
-The system after non-dimensionalization becomes as follows:
-\beq
-\begin{aligned}
-&\frac{\partial C}{\partial \frac{x}{H}} \frac{U_0}{H} \Bigl(\frac{y}{H}\Bigr)^2=\frac{D}{H^2}\frac{\partial^2 C}{\partial \frac{y^2}{H^2}}\\
-&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,H)=0\\
-\end{aligned}
-\feq
-After a change of variables:
-\beq
-\begin{aligned}
-&\zeta=\frac{x}{H} \frac{D}{U_0 H}=\frac{1}{Pe}\frac{x}{H}\\
-&\xi=\frac{y}{H}
-\end{aligned}
-\feq
-, the equation with boundary conditions becomes as follows:
-\beq
-\begin{aligned}
-&\frac{\partial C}{\partial \zeta}\xi^2=\frac{\partial^2 C}{\partial \xi^2}\\
-&C(0,\xi)=C_0\\
-&C(\zeta,0)=C_{wall}\\
-&\frac{\partial C}{\partial \xi}(\zeta,1)=0\\
-\end{aligned}
-\feq 
-Still the equation cannot be solved with the separation of variables as it requires the homogenuos boundary conditions. Thus, let us introduce the new variable to be $\Theta=C-C_{wall}$. The system will be changed but not considerably:
-\beq
-\begin{aligned}
-&\frac{\partial \Theta}{\partial \zeta}=\frac{1}{\xi^2}\frac{\partial^2 \Theta}{\partial \xi^2}\\
-&\Theta(0,\xi)=C_0-C_{wall}\\
-&\Theta(\zeta,0)=0,\, \partial_{\xi}\Theta(\zeta,1)=0\\
-\end{aligned}
-\feq 
-This equation can be solved by separation of variables if the solutions is represented as the multiplication of two functions $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$. The differential equation will become as follows:
-\beq
-\begin{aligned}
-&\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}Y(\xi)=\frac{X(\zeta)}{\xi^2}\frac{\mathrm{d^2}
-Y(\xi)}{\mathrm{d}\xi^2}\\
-&\frac{1}{X(\zeta)}\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}=\frac{1}{\xi^{2} Y(\xi)}
-\frac{\mathrm{d^2} Y(\xi)}{\mathrm{d}\xi^2}
-\end{aligned}
-\feq
-The left and right parts depend on different variables. Therefore to be equal to each other both
-parts equal to constant, say $-m^4$. Thus, the separation of the variables leads to two ODE
-equations:
-\begin{equation*}
-\begin{aligned}
-&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}=-m^4 X(\zeta)\\
-&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 \xi^2 Y(\xi)=0\\ 
-\end{aligned}
-\end{equation*}
-The solution of the first equation is the exponential function:
-\beq
-X(\zeta)=\exp(-m^4 \zeta)\\
-\feq
-The solutions of the second equation are two hypergeometric function which can be expressed through
-the Bessel functions \cite{abramowitz}:
-\beq
-\begin{aligned}
-&Y_1=\sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
-&Y_2=\sqrt{\xi}J_{-\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
-&Y'_1=m^2 \xi^{3/2} J_{-\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
-&Y'_2=m^2 \xi^{3/2} J_{\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
-\end{aligned}
-\feq
-The solution is the summation of two functions:
-\begin{equation*}
-Y(x)=C_1 Y_1(x)+C_2 Y_2(x). 
-\end{equation*}
-One can find coefficients from the boundary conditions:
-\beq
-\begin{aligned}
-&Y(0)=0=C_1 Y_1(0)+C_2 Y_2(0)\\
-&Y_1(0)=0,\,Y_2(0)=\frac{\sqrt{2}}{\sqrt{m} \Gamma(3/4)}\, C_2=0\\
-&Y'(1)=0=C_1 Y'_1(1)+C_2 Y'_2(1)=C_1 Y'_1(1)\\
-&J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)=0
-\end{aligned}
-\feq
-Therefore one needs to find zeros of $J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)$. To give some
-numerical values:
-$m_1=1.454997085$, $m_2=2.927133004$, $m_3=3.857578101$, $m_4=4.601777732$, $m_5=5.240824067$.
-Therefore a solution in a general form is represented as:
-\beq
-\Theta(\zeta,\xi)=\sum_m{C_m \sqrt{\xi} J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\exp(-m^4 \zeta)}
-\feq
-To find unknown coefficients $C_m$ one needs to substitute the expression above to the initial
-condition:
-\beq
-\Theta(0,\xi)=C_0-C_{wall}=\sum_m{C_m \sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)}\\
-\feq
-Using the Stourm-Liouville theorem one can multiply by $\xi^{5/2}
-J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)$ and integrate left and right parts of the equation:
-\beq
-\begin{aligned}
-&\bigl(C_0-C_{wall}\bigr) \int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}=C_m\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}\\
-&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}}
-\end{aligned}
-\feq
-Therefore, the overall solution is specified as:
-\beq
-\begin{aligned}
-&C(x,y)=C_{wall}+\sum_{m}{C_m
-\sqrt{\frac{y}{H}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{H^2}\Bigr)\exp\Bigl(-\frac{m^4}{Pe}
-\frac { x }{H}\Bigr)}\\
-&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}}
-\end{aligned}
-\feq
-
-\subsection{The parabolic profile mass transfer and comparison}
-The problem we want to address can be formulated through the following PDE:
-\beq
-\begin{aligned}
-&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
-&C(0,y)=0,\, C(x,\pm \delta)=C_s,\, \frac{\partial C}{\partial y }(x,0)=0\\
-&U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
-\end{aligned}
-\feq
-The same procedure can be done as in the previous case to redefine variables. After substitution
-the following can be obtained:
-\beq
-\begin{aligned}
-&\frac{\partial \Theta}{\partial \zeta}(1-\xi^2)=\frac{\partial^2 C}{\partial \xi^2}\\
-\Theta(\zeta,\xi)=C-C_s\,\Theta(0,\xi)=-C_s\,\Theta(0,\pm 1)=0\\
-\end{aligned}
-\feq
-After separation of variables, $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$ one can come up with two
-equations:
-\beq
-\label{fourier:separation:variables}
-\begin{aligned}
-&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}+m^4 X(\zeta)=0\\
-&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 (1-\xi^2) Y(\xi)=0
-\end{aligned}
-\feq
-The first equation has a solution:
-\beq
-X(\zeta)=\exp(-m^4 \zeta)
-\feq
-The second equation can be simplified after substitution $\bar{\xi}=m \sqrt{2} \xi$ to the standard
-equation:
-\beq
-Y''-\Bigl(\frac{1}{4}\xi^2+a\Bigr)Y=0.
-\feq
-The equation above has two solutions via parabolic cylinder functions or through the confluent
-hypergeometric function \cite{abramowitz}:
-\beq
-\begin{aligned}
-&Y_1=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{1}{4},\frac{1}{2},\frac{x^2}{2}\Bigr)\\
-&Y_2=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{3}{4},\frac{3}{2},\frac{x^2}{2}\Bigr)\\
-\end{aligned}
-\feq 
-Taking symmetry conditions in the consideration by leaving only even solution, Eq.
-(\ref{fourier:separation:variables}) has a solution as:
-\beq
-Y_m=C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 x^2\Bigr) 
-\feq
-To satisfy boundary condition we need to find zeros of the hypergeometric function, i.e.
-${_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \Bigr)=0$. First ten eigenvalues can be
-found using numerical methods, as $1.2967$, $2.3811$,$3.1093$,$3.6969$,$4.2032$,$4.6548$,$5.0662$,
-$5.4467$, $5.8023$,$6.1373$. One needs to satisfy one more condition to obtain coefficients $C_m$:
-\beq
--C_{s}=\sum_m{C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)} 
-\feq
-One can multiply both parts on $(1-x^2){_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)$ and through orthoganality Sturm-Liouiville theorem obtain coefficients:
-\beq
-\label{coeff:series:parabolic:profile}
-C_m=-C_s \frac{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
-{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)\mathrm{d}x}}{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
-{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)^2\mathrm{d}x}}
-\feq
-Therefore a whole solution can be written as:
-\begin{equation}
-C=C_{s}-C_s \sum_{m=0}{C_m e^{-m^4 \frac{x}{\delta}\frac{1}{Pe}} e^{-m^2
-y^2/(2\delta^2)}{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \frac{y^2}{\delta^2}\Bigr)},
-\end{equation}
-where coefficients $C_m$ are taken from Eq. (\ref{coeff:series:parabolic:profile}). The comparison
-between profiles is represented in Fig. \ref{fig:parabolic:comparison}.
-\begin{figure}[htb!]
-\includegraphics[width=\textwidth]{Figures/parabolic_profile_comparison.eps}
-\caption{Comparison between analytical profile and simulations with pressure antibounceback
-conditions. One can see given a low resolution of the profile a nice coincedence.}
-\end{figure}
 
 \section{Tweaking velocity}
 The reason to tweak velocity is that the velocity field because of the highly nonlinear binary liquid lattice Boltzmann model do not have nice velocity profile, since some streamlines penetrate the bubble in the reference frame of the bubble. Therefore there exists a normal to the surface of the bubble velocity component which destroys right away the advection-diffusion results. Therefore, a special additional free-surface solver was developed in order to dispose the vertical components. 

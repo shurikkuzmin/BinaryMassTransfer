@@ -7,20 +7,21 @@ draw("$x$",AxisCenter+(0.5,0),S);
 draw("$y$",AxisCenter+(0,0.5),W);
 
 
-void one_bubble(real shift)
+void one_bubble(real shift, bool left,bool right)
 {
 		pair A=(-7.5+shift,0), B=(-7.5+shift,2), C=(7.5+shift,2), D=(7.5+shift,0);
 
-		draw (A--B--C--D--cycle);
-
-		pair bubble_vel_top=B+(C-B)*0.8;
-		pair bubble_vel_bottom=A+(D-A)*0.8;
-
-		draw("$U_{\mathrm{bubble}}$",bubble_vel_top,S);
-		draw("$U_{\mathrm{bubble}}$",bubble_vel_bottom,N);
-		draw(bubble_vel_top+(-0.5,-0.1)--bubble_vel_top+(0.75,-0.1),linewidth(0.4mm),Arrow(1mm));
-		draw(bubble_vel_bottom+(-0.5,0.1)--bubble_vel_bottom+(0.75,0.1),linewidth(0.4mm),Arrow(1mm));
-
+		//draw (A--B--C--D--cycle);
+        if (left) 
+            draw(A--B);
+       
+        draw(B--C);
+        draw(A--D);
+        
+        if (right)
+            draw(C--D);
+      
+		
 
 		real rad=0.8;
 		real bubble_length=4;
@@ -36,6 +37,30 @@ void one_bubble(real shift)
 		draw("$C^*$",(right_sphere+left_sphere)*0.5+(0,-rad),N);
 
 }
-draw((7.5,0)--(7.5,2));
-one_bubble(0);
-one_bubble(15);
+
+import roundedpath;
+void make_conjunction(real shift)
+{
+	pair bubble_vel_top=(7.5+shift,0);
+	pair bubble_vel_bottom=(7.5+shift,2);
+	pair middle_vel_top=(7.95+shift,1);
+	pair middle_vel_bottom=(7.45+shift,1.5);
+    draw(bubble_vel_top..middle_vel_top..middle_vel_bottom..bubble_vel_bottom,linetype("3 2 3 2"));
+	//draw(roundedpath(bubble_vel_top--middle_vel_top--middle_vel_bottom--bubble_vel_bottom,0.75),dashed);
+}
+make_conjunction(-0.25);
+make_conjunction(0.25);
+
+pair bubble_vel_top=(7.5,0);
+pair bubble_vel_bottom=(7.5,2);
+
+draw("$U_{\mathrm{bubble}}$",bubble_vel_top,S);
+draw("$U_{\mathrm{bubble}}$",bubble_vel_bottom,N);
+draw(bubble_vel_top+(-0.5,-0.1)--bubble_vel_top+(0.75,-0.1),linewidth(0.4mm),Arrow(1mm));
+draw(bubble_vel_bottom+(-0.5,0.1)--bubble_vel_bottom+(0.75,0.1),linewidth(0.4mm),Arrow(1mm));
+draw("$\frac{\partial C}{\partial x}=0$",(-7.5,1),W);
+draw("$\frac{\partial C}{\partial x}=0$",(22.5,1),E);
+
+
+one_bubble(0,true,false);
+one_bubble(15,false,true);
