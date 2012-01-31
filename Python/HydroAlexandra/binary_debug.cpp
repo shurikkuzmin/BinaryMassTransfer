@@ -13,13 +13,13 @@ const int NX=100;
 
 int width=10;
 //Time steps
-int N=1000;
-int NOUTPUT=10;
-int NSIGNAL=10;
+int N=200;
+int NOUTPUT=1;
+int NSIGNAL=1;
 
 //Fields and populations
 double f[NX][NY][9], f2[NX][NY][9], g[NX][NY][9], g2[NX][NY][9];
-double rho[NX][NY],ux[NX][NY],uy[NX][NY],phase[NX][NY];
+double rho[NX][NY],ux[NX][NY],uy[NX][NY],phase[NX][NY],laplace[NX][NY];
 
 double force_x=0.0000009;
 double force_y=0.0;
@@ -42,17 +42,17 @@ double weights[]={4.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,1.0/36.0,1.0/36.0,1.0/
 int cx[]={0,1,0,-1,0,1,-1,-1,1};
 int cy[]={0,0,1,0,-1,1,1,-1,-1};
 int compliment[]={0,3,4,1,2,7,8,5,6};
-float wxx[] = {0.0, 1.0/3.0, -1.0/6.0, 1.0/3.0, -1.0/6.0, -1.0/24.0, -1.0/24.0, -1.0/24.0, -1.0/24.0};
-float wyy[] = {0.0, -1.0/6.0, 1.0/3.0, -1.0/6.0, 1.0/3.0, -1.0/24.0, -1.0/24.0, -1.0/24.0, -1.0/24.0};
-float wxy[] = {0.0, 0.0, 0.0, 0.0, 0.0, 1.0/4.0, -1.0/4.0, 1.0/4.0, -1.0/4.0};
+double wxx[] = {0.0, 1.0/3.0, -1.0/6.0, 1.0/3.0, -1.0/6.0, -1.0/24.0, -1.0/24.0, -1.0/24.0, -1.0/24.0};
+double wyy[] = {0.0, -1.0/6.0, 1.0/3.0, -1.0/6.0, 1.0/3.0, -1.0/24.0, -1.0/24.0, -1.0/24.0, -1.0/24.0};
+double wxy[] = {0.0, 0.0, 0.0, 0.0, 0.0, 1.0/4.0, -1.0/4.0, 1.0/4.0, -1.0/4.0};
 
-float gradstencilx[9]={0.0,4.0/12.0,0.0,-4.0/12.0,0.0,
+double gradstencilx[9]={0.0,4.0/12.0,0.0,-4.0/12.0,0.0,
 			          1.0/12.0,-1.0/12.0,-1.0/12.0,1.0/12.0};
 
-float gradstencily[9]={0.0,0.0,4.0/12.0,0.0,-4.0/12.0,
+double gradstencily[9]={0.0,0.0,4.0/12.0,0.0,-4.0/12.0,
 			          1.0/12.0,1.0/12.0,-1.0/12.0,-1.0/12.0};
 
-float laplacestencil[9]={-20.0/6.0,4.0/6.0,4.0/6.0,4.0/6.0,4.0/6.0,
+double laplacestencil[9]={-20.0/6.0,4.0/6.0,4.0/6.0,4.0/6.0,4.0/6.0,
 					   1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0};
 
 void writedensity(std::string const & fName)
@@ -84,6 +84,22 @@ void writephase(std::string const & fName)
 	}
 
 }
+
+void writelaplace(std::string const & fName)
+{
+	std::string fullName = "./tmp/" + fName+ ".dat";
+	std::ofstream fout(fullName.c_str());
+	fout.precision(10);
+
+	for (int iY=NY-1; iY>=0; --iY)
+	{
+		for (int iX=0; iX<NX; ++iX)
+			fout<<laplace[iX][iY]<<" ";
+		fout<<"\n";
+	}
+
+}
+
 
 
 void writevelocityx(std::string const & fName)
@@ -119,7 +135,7 @@ void writevelocityy(std::string const & fName)
 double calculate_mass()
 {
 	double mass=0.0;
-	for (int iY=0; iY<NY;iY++)
+	for (int iY=1; iY<NY-1;iY++)
 		for (int iX=0;iX<NX;iX++)
 			mass+=phase[iX][iY];
 	return mass;	
@@ -133,7 +149,7 @@ void init()
     for(int iX=0;iX<NX;iX++)
 		for(int iY=0; iY<NY; iY++)
 		{
-			if ( (iX>=39) && (iX<=59) && (iY>=width) && (iY<=NY-width-1) )
+			if ( (iX>=4) && (iX<=15) && (iY>=4) && (iY<=15) )
             {
                 phase[iX][iY]=-1.0;
             }
@@ -216,7 +232,7 @@ void init_hydro()
     for(int iX=0;iX<NX;iX++)
 		for(int iY=0; iY<NY; iY++)
 		{
-			if ( (iX>=39) && (iX<=59) && (iY>=width) && (iY<=NY-width-1) )
+			if ( (iX>=4) && (iX<=15) && (iY>=4) && (iY<=15) )
             {
                 phase[iX][iY]=-1.0;
             }
@@ -273,7 +289,7 @@ void collide_bulk()
 {
     //The phase field should be calculated prior the laplacians
     for(int iX=0;iX<NX;iX++)
-        for(int iY=0;iY<NY;iY++)
+        for(int iY=1;iY<NY-1;iY++)
 		{
             phase[iX][iY]=0.0;
             for(int iPop=0;iPop<9;iPop++)
@@ -281,14 +297,14 @@ void collide_bulk()
 		}
 
     //The phase of the BB nodes
-    //for(int iX=0;iX<NX;iX++)
-    //{
-	//	phase[iX][0]=phase[iX][1]-wall_gradient;
-	//	phase[iX][NY-1]=phase[iX][NY-2]-wall_gradient;
-    //}
+    for(int iX=0;iX<NX;iX++)
+    {
+		phase[iX][0]=phase[iX][1]-wall_gradient;
+		phase[iX][NY-1]=phase[iX][NY-2]-wall_gradient;
+    }
 
     for(int iX=0;iX<NX;iX++)
-        for(int iY=0;iY<NY;iY++)
+        for(int iY=1;iY<NY-1;iY++)
 		{
 
 			//Construction equilibrium
@@ -318,7 +334,11 @@ void collide_bulk()
 				gradx_temp+=gradstencilx[k]*phase[iX2][iY2];
 				grady_temp+=gradstencily[k]*phase[iX2][iY2];
 			}
-
+            int iXtop=(iX+1+NX)%NX;
+            int iYtop=(iY+1+NY)%NY;
+            int iXbottom=(iX-1+NX)%NX;
+            int iYbottom=(iY-1+NY)%NY;
+            
 			double phase_temp=phase[iX][iY];
 			double dense_temp=rho[iX][iY];
 			double ux_temp=ux[iX][iY];
@@ -424,11 +444,11 @@ int main(int argc, char* argv[])
 	{
 
         collide_bulk();
-        //update_bounce_back();
+        update_bounce_back();
 
 		//Streaming
 		for(int iX=0;iX<NX;iX++)
-			for(int iY=0;iY<NY;iY++)
+			for(int iY=1;iY<NY-1;iY++)
 				for(int iPop=0;iPop<9;iPop++)
 				{
 					int iX2=(iX-cx[iPop]+NX)%NX;
@@ -457,22 +477,26 @@ int main(int argc, char* argv[])
  			std::stringstream filewritevelocityx;
  			std::stringstream filewritevelocityy;
  			std::stringstream filewritephase;
+            std::stringstream filewritelaplace;
  			std::stringstream counterconvert;
  			counterconvert<<counter;
  			filewritedensity<<std::fixed;
 			filewritevelocityx<<std::fixed;
 			filewritevelocityy<<std::fixed;
 			filewritephase<<std::fixed;
+            filewritelaplace<<std::fixed;
 
 			filewritedensity<<"density"<<std::string(6-counterconvert.str().size(),'0')<<counter;
 			filewritevelocityx<<"velocityx"<<std::string(6-counterconvert.str().size(),'0')<<counter;
 			filewritevelocityy<<"velocityy"<<std::string(6-counterconvert.str().size(),'0')<<counter;
             filewritephase<<"phase"<<std::string(6-counterconvert.str().size(),'0')<<counter;
+            filewritelaplace<<"laplace"<<std::string(6-counterconvert.str().size(),'0')<<counter;
 
  			writedensity(filewritedensity.str());
 			writevelocityx(filewritevelocityx.str());
 			writevelocityy(filewritevelocityy.str());
             writephase(filewritephase.str());
+            writelaplace(filewritelaplace.str());
 		}
 
 

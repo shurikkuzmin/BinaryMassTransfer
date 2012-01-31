@@ -481,7 +481,7 @@ u_y}{4} p_i^{xy}\\
 &eq_i^{(a)}=\frac{D_{xx}-D_{yy}}{4} p_i^{xx}+\frac{D_{xy}}{4} p_i^{(xy)},
 \end{aligned}
 \end{equation}
-where the tensor $p_i^{(xx)}=c_{ix}^2-c_{iy}^2$, the tensor  $p_i^{(xy)}=c_{ix} c_{iy}$, the weights
+where $D_{xx,yy,xy}$ are components of the diffusion tensor, $c_e=\frac{D_{xx}+D_{yy}}{2}$, the tensor $p_i^{(xx)}=c_{ix}^2-c_{iy}^2$, the tensor  $p_i^{(xy)}=c_{ix} c_{iy}$, the weights
 $t_i^{(u,m,a)}$ can be chosen based on stability criteria. Though not the best set of weights for
 stability, but the most spread set of weights, so called ``hydrodynamic`` weights, was chosen:
 \begin{equation}
@@ -493,9 +493,10 @@ It can be shown through the Chapman-Enskog procedure \cite{chapman}, that the si
 with the equilibrium function presented above restores the anisotropic
 advection-diffusion equation:
 \beq
-\partial_t C+ \partial_{\alpha} C u_{\alpha}=\partial_{\alpha\beta} D_{\alpha\beta} C,
+\partial_t C+ \partial_{\alpha} C u_{\alpha}=\partial_{\alpha\beta} K_{\alpha\beta} C,
 \feq
- with the
+where $K_{\alpha\beta}=\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)D_{\alpha\beta}$
+with the
 following diffusion tensor:
 \begin{equation}
 D_{\alpha\beta}=
@@ -504,60 +505,32 @@ D_{xx} + (g^{(u)}-1) u_x^2 & D_{xy}+(g_{xy}^{(u)}-1)u_x u_y\\
 D_{xy} + (g_{xy}^{(u)}-1) u_x u_y& D_{yy}+(g^{(u)}-1) u_y^2 
 \end{pmatrix}
 \end{equation}
-To consider the situation when the resolution is not needed to be changed in $x$ and $y$
-directions, one can obtain that $D_{xx}=D_{yy}$. The cross-diagonal components of the diffusion
-tensor are taken as zeros, i.e. $D_{xy}=0$. In comparison with $D2Q5$ model, with the $D2Q9$ it is
+We want to resolve the isotropic advection-diffusion equation, $D=D_{xx}=D_{yy}$ or $K=K_{xx}=K_{yy}$, with the non-diagonal diffusion tensor components to be zero $D_{xy}=0$. In comparison with the $D2Q5$ model, with the $D2Q9$ it is
 possible to cancel the numerical diffusion by the proper choice
-of the equilibrium functions, i.e. $g_{xy}^{(u)}=g^{(u)}=1$. If one introduces 
-
-As far as the simulated diffusion tensor is close to $0$ the stability limits restrict the velocity
-amplitude to be simulated \cite{kuzmin-stability-optimal}. However, particular choice of weights
-can drastically help. Fig. \ref{stability:d2q9} shows the stability limits for D2Q9 with removed
-numerical diffusion and with it for two particular choices of weights.
+of the equilibrium functions, i.e. $g_{xy}^{(u)}=g^{(u)}=1$.  The particular choice of parameters used in simulations is $c_e=\frac{1}{3}$, $\Lambda=\frac{1}{4}$. Thus, the diffusion coefficient $K$ is matched through $\omegaminus$, i.e. $K=c_e \Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)=\frac{1}{3}(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)$. From hereon, without a loss of generality we refer to diffusion coefficient 
+$K$ as $D$.  Free relaxation parameter $\omegaplus$ can be found through $\Lambda$. For particular choice $\Lambda=\frac{1}{4}$ (the optimal stability parameter), $\omegaplus$ can be found easily as $\omegaplus=2-\omegaminus$.  Fig. \ref{stability:d2q9} shows the stability limits for the $D2Q9$ model $c_e$ against $U^2=u_x^2+u_y^2$ for two particular choices.
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/d2q9_stability.eps}
-\caption{The non-negativity areas and stable sub-domains of the OTRT schemes ($\Lambda=\frac{1}{4}$)
-are plotted for the $D2Q9$ (standard weights, left) and the $D2Q9$ (uniform weights, right) when the
-numerical diffusion is removed, partially or completely. Two non-negativity areas where all the
-equilibrium populations are positive have curvilinear boundaries: they are smaller when
-$g^{(u)}_{xy}=0$ (yellow) and than when $g^{(u)}_{xy}=1$ (green+yellow). The non-negativity
-condition is required by BGK collision operator. The stable sub-domains for $g^{(u)} = 1,
-g^{(u)}_{xy} = 0$ are small (red+green+yellow) triangles. When the numerical diffusion is removed
-the stable area is bounded by magenta and the (blue) domain above. The proper choice of weights can
-allow to obtain  total triangle $0 \leq u_x^2+u_y^2 \leq 1−c_e$ (the
+\caption{The stable sub-domains of the $D2Q9$ schemes ($\Lambda=\frac{1}{4}$)
+are plotted for standard (hydrodynamic) weights (left) and uniform weights (right, not mentioned here) when the
+numerical diffusion is removed, partially or completely. For particular choice used in this work (hydrodynamic weights, $c_e=\frac{1}{3}$, left picture), the achieved stable velocity is $u_x^2+u_y^2\leq\frac{2}{3}$. The non-negativity of populations (green+yellow) is for BGK stability. One can see that the achieved maximum stable velocity is twice smaller $u_x^2+u_y^2\leq \frac{1}{3}$ for the BGK collision operator.The proper choice of weights can
+allow to obtain  total triangle $0 \leq u_x^2+u_y^2 \leq 1- c_e$ (the
 uniform weights only).
 \label{stability:d2q9}}
 \end{figure}
+{\color{red} Here need to cover boundary conditions}
 
-The set of equations (\ref{set:equilibrium:binary}) restores the
-macroscopic
-fluid equations as:
-\begin{equation}
-\begin{aligned}
-&\partial_t \rho+ \partial_{\alpha} \rho u_{\alpha}=0\\
-\end{aligned}
-\label{advection:diffusion:equation}
-\end{equation}
-where $D=c_s^2 (\tau-1/2)$ is the viscosity, 
-$P_{\alpha\beta}=\Bigl(p_0-k\phi \Delta \phi -\frac{k}{2}|\nabla \phi|^2\Bigr)\delta_{\alpha\beta}
-+ k \partial_{\alpha} \phi \partial_{\beta} \phi$  \cite{pooley-contact}.
-
-{\color{red}
-While the lattice Boltzmann system has parameters such as the surface tension, the gas and liquid
-viscosities, etc., those parameters are not the representative and
-proportional quantities of the parameters in a physical system. The parameters of the lattice
+Note that the parameters of the lattice
 Boltzmann are connected with the physical parameters only through the non-dimensional
-numbers governing the physics of the problem. In our case, these numbers are the capillary number
-and the
-viscosity ratio $\frac{\mu_{\mathrm{liq}}}{\mu_{\mathrm{gas}}}$, which are
-obtained from the physical world and then matched through the lattice Boltzmann quantities.
+numbers governing the physics of the problem. In our case, this number is the Peclet number, $Pe=\frac{\ububble L}{D}$.
 Therefore, one can substitute any quantity, i.e.
-$U_{\mathrm{bubble}}$, in the physical units or in the lattice Boltzmann units as soon as the
-capillary number is the same in both worlds.} 
+$\ububble$ in the lattice Boltzmann units as soon as the
+Peclet number is the matched in physical space and numerical simulations. This fact that $\ububble$ can be chosen arbitrarily is extremely useful in the context of numerical simulations, since can increase the time step, or decrease the computational demand by order of magnitude to obtain meaningful results. This point will be extensively covered later. 
 
+Next section will cover LBM benchmarks for problems that form the mass transfer problem, as mass transfer from the film  and hemispheres.
 
 \subsection{The radial case}
-We want to examine the bounce-back conditions against the analytical solution. The system can be
+The case to be examined here is the mass transfer from the stair-case boundary which represents a circle. It can be
 prescribed by the following system of equations:
 \beq
 \begin{aligned}
@@ -579,19 +552,19 @@ C(r,t)=C_0 \Biggl(1 - \sum_{n=1}^{\infty}{\frac{2}{\mu_n
 J_1(\mu_n)}\exp\Bigl(-\mu_n^2 \frac{D t}{a^2} \Bigr)J_0(\mu_n \frac{r}{a})}\Biggr).
 \feq
 
-The solution depends only on the non-dimensional time: $\tau=\frac{D t}{a^2}$. Some examples for
+The solution depends only on the non-dimensional time: $\tau=\frac{D t}{a^2}$. The domain size was $129\times 129$ with the circle radius $a=40$ units. Some examples for
 different diffusion coefficients are presented in Fig.\ref{fig:cylinder:benchmark}.
 \begin{figure}[htb!]
 \includegraphics[width=0.5\textwidth]{Figures/cylinder1666.eps}
 \includegraphics[width=0.5\textwidth]{Figures/cylinder0833.eps}\\
 \includegraphics[width=0.5\textwidth]{Figures/cylinder0104.eps}
 \includegraphics[width=0.5\textwidth]{Figures/cylinder0052.eps}\\
-\caption{Profiles for different diffusion parameters. One can see that the diffusion is captured
-accurately in non-dimensional space \label{fig:cylinder:benchmark}.}
+\caption{Profiles for different diffusion parameters varied with $\omegaminus$. One can see that the diffusion from the non-linear boundaries is captured
+accurately \label{fig:cylinder:benchmark}.}
 \end{figure}
 
 \subsection{Parabolic profile with velocity zero gradient at the wall}
-In any case here is what we want to solve as the system for :
+The problem is defined in terms of PDE as follows: 
 \beq
 \begin{aligned}
 &\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
@@ -1450,6 +1423,212 @@ Another moving concentrations window is presented in Fig. \ref{fig:moving:averag
 
 
 \appendix
+\section{Analytical solution for parabolic profile with zero velocity gradient at $0$}
+The problem is defined in terms of PDE as follows: 
+\beq
+\label{diffusion:zero:gradient:start}
+\begin{aligned}
+&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
+&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,\delta)=0\\
+&U(y)=U_0 \Bigl(\frac{y}{\delta}\Bigr)^2
+\end{aligned}
+\feq
+The non-dimensional parameters are introduced:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial \frac{x}{H}} \frac{U_0}{H}
+\Bigl(\frac{y}{H}\Bigr)^2=\frac{D}{H^2}\frac{\partial^2 C}{\partial \frac{y^2}{H^2}}\\
+&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,H)=0\\
+\end{aligned}
+\feq
+After a change of variables:
+\beq
+\begin{aligned}
+&\zeta=\frac{x}{H} \frac{D}{U_0 H}=\frac{1}{Pe}\frac{x}{H}\\
+&\xi=\frac{y}{H}
+\end{aligned}
+\feq
+, Eq. \ref{diffusion:zero:gradient:start} with boundary conditions becomes as follows:
+\beq
+\label{diffusion:zero:gradient:middle}
+\begin{aligned}
+&\frac{\partial C}{\partial \zeta}\xi^2=\frac{\partial^2 C}{\partial \xi^2}\\
+&C(0,\xi)=C_0\\
+&C(\zeta,0)=C_{wall}\\
+&\frac{\partial C}{\partial \xi}(\zeta,1)=0\\
+\end{aligned}
+\feq 
+Still Eq. \ref{diffusion:zero:gradient:middle} cannot be solved with the separation of variables as it requires homogenous
+boundary conditions. Thus, let us introduce the new variable, $\Theta=C-C_{wall}$, which makes the system to be with homogenous boundary conditions:
+\beq
+\begin{aligned}
+&\frac{\partial \Theta}{\partial \zeta}=\frac{1}{\xi^2}\frac{\partial^2 \Theta}{\partial \xi^2}\\
+&\Theta(0,\xi)=C_0-C_{wall}\\
+&\Theta(\zeta,0)=0,\, \partial_{\xi}\Theta(\zeta,1)=0\\
+\end{aligned}
+\feq 
+This equation can be solved by separation of variables if the solutions is represented as the
+multiplication of two functions $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$:
+\beq
+\begin{aligned}
+&\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}Y(\xi)=\frac{X(\zeta)}{\xi^2}\frac{\mathrm{d^2}
+Y(\xi)}{\mathrm{d}\xi^2}\\
+&\frac{1}{X(\zeta)}\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}=\frac{1}{\xi^{2} Y(\xi)}
+\frac{\mathrm{d^2} Y(\xi)}{\mathrm{d}\xi^2}
+\end{aligned}
+\feq
+The left and right parts depend on different variables. Therefore to be equal to each other both
+parts shall equal to constant, say $-m^4$. Thus, the separation of the variables leads to two ODEs:
+\begin{equation*}
+\begin{aligned}
+&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}=-m^4 X(\zeta)\\
+&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 \xi^2 Y(\xi)=0\\ 
+\end{aligned}
+\end{equation*}
+The solution of the first equation is the exponential function:
+\beq
+X(\zeta)=\exp(-m^4 \zeta)\\
+\feq
+The solutions of the second equation are two hypergeometric function which can be expressed through
+the Bessel functions \cite{abramowitz}:
+\beq
+\begin{aligned}
+&Y_1=\sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y_2=\sqrt{\xi}J_{-\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y'_1=m^2 \xi^{3/2} J_{-\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+&Y'_2=m^2 \xi^{3/2} J_{\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
+\end{aligned}
+\feq
+The solution is the summation of two functions:
+\begin{equation*}
+Y(x)=C_1 Y_1(x)+C_2 Y_2(x). 
+\end{equation*}
+One can find coefficients from the boundary conditions:
+\beq
+\begin{aligned}
+&Y(0)=0=C_1 Y_1(0)+C_2 Y_2(0)\\
+&Y_1(0)=0,\,Y_2(0)=\frac{\sqrt{2}}{\sqrt{m} \Gamma(3/4)}\, C_2=0\\
+&Y'(1)=0=C_1 Y'_1(1)+C_2 Y'_2(1)=C_1 Y'_1(1)\\
+&J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)=0
+\end{aligned}
+\feq
+Therefore one needs to find zeros of $J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)$. To give some
+numerical values:
+$m_1=1.454997085$, $m_2=2.927133004$, $m_3=3.857578101$, $m_4=4.601777732$, $m_5=5.240824067$.
+Therefore, the solution in a general form is represented as:
+\beq
+\Theta(\zeta,\xi)=\sum_m{C_m \sqrt{\xi} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\exp(-m^4 \zeta)}
+\feq
+To find unknown coefficients $C_m$ one needs to substitute the expression above to the initial
+condition:
+\beq
+\Theta(0,\xi)=C_0-C_{wall}=\sum_m{C_m \sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)}\\
+\feq
+Using the Stourm-Liouville theorem one can multiply by $\xi^{5/2}
+J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)$ and integrate left and right parts of the equation:
+\beq
+\begin{aligned}
+&\bigl(C_0-C_{wall}\bigr) \int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}=C_m\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}\\
+&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}
+\end{aligned}
+\feq
+Therefore, the overall solution is specified as:
+\beq
+\begin{aligned}
+&C(x,y)=C_{wall}+\sum_{m}{C_m
+\sqrt{\frac{y}{H}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{H^2}\Bigr)\exp\Bigl(-\frac{m^4}{Pe}
+\frac { x }{H}\Bigr)}\\
+&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
+\xi^2}{2}\Bigr)\mathrm{d}\xi}}
+\end{aligned}
+\feq
+For the sake of completeness, we list $5$ first coefficients $C_1=-1.5217$, $C_2=-0.4933$, $C_3=-0.3243$, $C_4=-0.2486$, $C_5=-0.2044$. 
+\subsection{The parabolic profile mass transfer and comparison}
+The problem we want to address can be formulated through the following PDE:
+\beq
+\begin{aligned}
+&\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
+&C(0,y)=0,\, C(x,\pm \delta)=C_s,\, \frac{\partial C}{\partial y }(x,0)=0\\
+&U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
+\end{aligned}
+\feq
+The same procedure can be done as in the previous case to redefine variables. After substitution
+the following can be obtained:
+\beq
+\begin{aligned}
+&\frac{\partial \Theta}{\partial \zeta}(1-\xi^2)=\frac{\partial^2 C}{\partial \xi^2}\\
+\Theta(\zeta,\xi)=C-C_s\,\Theta(0,\xi)=-C_s\,\Theta(0,\pm 1)=0\\
+\end{aligned}
+\feq
+After separation of variables, $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$ one can come up with two
+equations:
+\beq
+\label{fourier:separation:variables}
+\begin{aligned}
+&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}+m^4 X(\zeta)=0\\
+&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 (1-\xi^2) Y(\xi)=0
+\end{aligned}
+\feq
+The first equation has a solution:
+\beq
+X(\zeta)=\exp(-m^4 \zeta)
+\feq
+The second equation can be simplified after substitution $\bar{\xi}=m \sqrt{2} \xi$ to the standard
+equation:
+\beq
+Y''-\Bigl(\frac{1}{4}\xi^2+a\Bigr)Y=0.
+\feq
+The equation above has two solutions via parabolic cylinder functions or through the confluent
+hypergeometric function \cite{abramowitz}:
+\beq
+\begin{aligned}
+&Y_1=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{1}{4},\frac{1}{2},\frac{x^2}{2}\Bigr)\\
+&Y_2=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{3}{4},\frac{3}{2},\frac{x^2}{2}\Bigr)\\
+\end{aligned}
+\feq 
+Taking symmetry conditions in the consideration by leaving only even solution, Eq.
+(\ref{fourier:separation:variables}) has a solution as:
+\beq
+Y_m=C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 x^2\Bigr) 
+\feq
+To satisfy boundary condition we need to find zeros of the hypergeometric function, i.e.
+${_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \Bigr)=0$. First ten eigenvalues can be
+found using numerical methods, as $1.2967$, $2.3811$,$3.1093$,$3.6969$,$4.2032$,$4.6548$,$5.0662$,
+$5.4467$, $5.8023$,$6.1373$. One needs to satisfy one more condition to obtain coefficients $C_m$:
+\beq
+-C_{s}=\sum_m{C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)} 
+\feq
+One can multiply both parts on $(1-x^2){_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)$ and through orthoganality Sturm-Liouiville theorem obtain coefficients:
+\beq
+\label{coeff:series:parabolic:profile}
+C_m=-C_s \frac{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
+{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)\mathrm{d}x}}{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
+{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+x^2\Bigr)^2\mathrm{d}x}}
+\feq
+Therefore a whole solution can be written as:
+\begin{equation}
+C=C_{s}-C_s \sum_{m=0}{C_m e^{-m^4 \frac{x}{\delta}\frac{1}{Pe}} e^{-m^2
+y^2/(2\delta^2)}{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \frac{y^2}{\delta^2}\Bigr)},
+\end{equation}
+where coefficients $C_m$ are taken from Eq. (\ref{coeff:series:parabolic:profile}). The comparison
+between profiles is represented in Fig. \ref{fig:parabolic:comparison}.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/parabolic_profile_comparison.eps}
+\caption{Comparison between analytical profile and simulations with pressure antibounceback
+conditions. One can see given a low resolution of the profile a nice coincedence.}
+\end{figure}
+
 \section{Free surface boundary conditions}
 \label{appendix-free-surface}
 There are a few implementations of free boundary conditions \cite{ginzburg-free,verberg-free}.

@@ -3,7 +3,7 @@ import numpy
 import pylab
 import scipy.special
 import math
-import matplotlib.tri as tri
+#import matplotlib.tri as tri
 
 coeff=32
 omega=1.0/(0.5+0.5/coeff)
@@ -988,6 +988,106 @@ def final_comparison():
     #ctriang=pylab.tricontour(triang,combined_array[:,2],levels=c_levels,linestyles="dashdot")
     #pylab.legend()    
     #pylab.legend(["Antibb simulations","Analytics"])
+
+def final_comparison_zero_gradient():
+    wmfivetwo=numpy.array([0.20996479709362217, 0.018180897590318785, 0.006919303361557072,0.0037318500468507265, 0.0023673658890243144, \
+                            0.0016504522182779553, 0.0012240656323313512, 0.0009483894730813764, 0.0007590968780885121, \
+                            0.0006230691899630487, 0.000521773141559365, 0.0004441474396258039, 0.00038324243624026397, \
+                            0.00033450473194280715, 0.0002948449039830018, 0.0002621039555673866, 0.0002347343932804438, \
+                            0.00021160239472918784, 0.00019186109713872825,0.00017486713895424112, 0.00016012432055124612, \
+                            0.00014724473213250115, 0.0001359214046973261, 0.00012590872750600792, 0.00011700820222555297, \
+                            0.0001090579288501799, 0.00010192474302362525, 0.00009549826478267914, 0.00008968634379190777, \
+                            0.00008441153749062422, 0.00007960836196536182, 0.00007522112702512196, 0.00007120221729922205, \
+                            0.00006751071698186362, 0.0000641113016165315, 0.000060973339051508034, 0.00005807015547318643, \
+                            0.00005537843263812609, 0.00005287771007323228, 0.00005054997178480274])
+    wmcubic=numpy.array([0.13797406599320738, 0.036854581143239175, 0.02133155594370827, 0.015010686087355087, 0.011579602879061325, 0.009425240459319681, \
+                         0.00794676552988761, 0.006869235708429393, 0.006049027438296182, 0.005403797343711836, 0.004882949141705082, 0.0044536787382349384, \
+                         0.0040937854185415555, 0.0037877079495512375, 0.0035242151877391964, 0.003294997916730558, \
+                         0.0030937766542952425, 0.002915717555439377, 0.0027570390413366227, 0.0026147402465559653, \
+                         0.0024864094328322945, 0.002370086181472648, 0.002264160539779118, 0.0021672980550348627, 0.0020783832616715044, \
+                         0.0019964765310819576, 0.0019207807375925753, 0.001850615230525651, 0.001785395309967969, 0.0017246158947239064, \
+                         0.0016678384163521522, 0.0016146802195225812, 0.0015648059267859933, 0.0015179203557653368, \
+                         0.0014737626725206412, 0.0014321015367415484, 0.0013927310476398757, 0.0013554673405968029, 0.00132014571598235, \
+                         0.0012866182056656857]) 
+    bessel_zeros=numpy.array([1.45499708549819386722507026854180579346, 2.92713300440027766553121136094888110735, 3.8575781013492938200342434118812546441, 4.60177773228129985324241798621793597148, \
+                               5.24082406699070314354952418816449605517, 5.80978786426398906487468774457944491812, 6.32769430108396681532057061373337375445, 6.8062480022514212669586769504065468988, \
+                               7.25326168965686308822824791463505009483, 7.6742592995607184149250788121278225534, 8.07331795319108946335626947213305371378, 8.45354897437340233163926840148873400306, \
+                               8.81739086884080680472896916336389339722, 9.16679702363228751221979864959553140746, 9.50336098897760887069148869968298949199, 9.82840298647447126437751319761265707777, \
+                               10.14303137712219911244514916412671544951, 10.44818741811621983414432659838862125807, 10.74467854808127573053205335964669225223, 11.03320360258297538892991564331548075855, \
+                               11.31437222998145142057443770168774860219, 11.58872005940677119103217820431909528765, 11.85672070452047449321754322768063874146, 12.11879537438111167446084673341581712359, \
+                               12.37532064988645588833414500384166974648, 12.62663483645073127192279608364483685065, 12.8730431991488418101183117224826294002, 13.11482231162738863620077232279337810946, \
+                               13.35222369554359348133575969794532279845, 13.58547688707664934803393403887138075079, 13.81479203704230978691485194517723996389, 14.0403621284925403691860805796792028747, \
+                               14.2623648784142054972133104428159388272, 14.4809643768493324602515059590286238574, 14.69631250643745383397730190280670992963, 14.90855017729768053412230968849290743382, \
+                               15.11780840578937570988470787292523813834, 15.32420926061949995243758582398480085884, 15.52786669570596600871656820859722187773, 15.7288872859366536654040406731452138516])
+                        
+    y,x=0.01*numpy.mgrid[1:101,0:2000]
+    c=numpy.zeros_like(x)
+    dims=y.shape
+    num_terms=40
+    cwall=1
+    c0=0
+    coeffm=wmfivetwo/wmcubic*(c0-cwall)
+
+    print coeffm.shape
+    print "Coeff=",coeffm
+    #print "Check=",scipy.special.jv(-0.75,bessel_zeros*bessel_zeros*0.5)
+
+    omega=1.8
+    u_bubble=0.05*40.0
+    diffusion=1.0/3.0*(1.0/omega-0.5)
+
+    for i in range(0,num_terms):
+        c=c+coeffm[i]*scipy.special.jv(0.25,bessel_zeros[i]*bessel_zeros[i]*0.5*y*y)*numpy.sqrt(y)*numpy.exp(-(bessel_zeros[i]**4)*x*diffusion/u_bubble)
+
+    c=c+cwall
+    pylab.figure()
+    pylab.imshow(c,extent=(0,10,0,0.5))
+    pylab.colorbar()
+
+    c_levels=numpy.arange(0.2,1.0,0.1)
+
+    conc_antibb =numpy.loadtxt(file_dir+"FullProfile/"+"film_antibb0050000.dat")
+    conc_inamuro=numpy.loadtxt(file_dir+"FullProfile/"+"film_outflow0050000.dat")
+    dims=conc_antibb.shape    
+    #print "Dims=",dims
+    #print "Pe=",pe
+
+    #pylab.figure()
+    #pylab.imshow(c,extent=(0,10,0,0.5))
+    #pylab.title("Analytical solutions")    
+    #pylab.colorbar()
+
+    #pylab.figure()    
+    #pylab.imshow(conc_antibb[0:dims[0]/2,:],extent=(0,20,0,0.5))
+    #pylab.title("AntiBB simulations")
+    #pylab.colorbar()
+
+    fig=pylab.figure(figsize=(18,5))
+    plt=pylab.subplot(1,1,1)    
+    c1=pylab.contour(conc_antibb,levels=c_levels,colors=['k'],linewidths=[2],extent=(0.0,20.0,0.0,1.0))
+    pylab.clabel(c1,fontsize=9, inline=1)    
+    #pylab.figure(figsize=(10,1))
+    #c2=pylab.contour(conc_inamuro,levels=c_levels,extent=(0.0,20.0,0.0,1.0))
+    #pylab.clabel(c2,fontsize=9, inline=1)
+    pylab.contour(c,levels=c_levels,linestyles="dotted",colors=['k'],linewidths=[2],extent=(0.0,10.0,0.0,0.5))
+    #plt.annotate("local max", xy=(5, 0.5), xytext=(6, 0.7),arrowprops=dict(facecolor="black", shrink=0.05),)
+    #plt.text(15, 0.8, "boxed italics text \n in data coords",bbox={"facecolor":"white", "alpha":1.0, "pad":10})
+
+    p1 = pylab.Line2D((0, 1), (0,0),linewidth=2,linestyle="solid",color="k")
+    p2 = pylab.Line2D((0, 1), (0,0),linewidth=2,linestyle="dotted",color="k")
+
+    pylab.legend([p1,p2],["AntiBB simulations","Analytics"],fancybox=True)
+    #pylab.title(r'''$D='''+str(diffusion)[0:6]+'''$''',fontsize=30)
+    #pylab.legend(legs,fancybox=True,loc=2)
+    pylab.xlabel(r'''$x$''',fontsize=20)
+    pylab.ylabel(r'''$y$''',fontsize=20)    
+    #fig.subplots_adjust(left=0.2,right=0.8)
+    pylab.savefig("parabolic_profile_zero_gradient_comparison.eps",format="EPS",dpi=300)
+    #ctriang=pylab.tricontour(triang,combined_array[:,2],levels=c_levels,linestyles="dashdot")
+    #pylab.legend()    
+    #pylab.legend(["Antibb simulations","Analytics"])
+
+
     
 if __name__=="__main__":
     #file_name="../Benchmarks/density0001000.dat"
@@ -1009,5 +1109,6 @@ if __name__=="__main__":
     #check_irandoust(file_dir)    
     #comparison_two_analytics(file_dir)    
     #irandoust_construction(file_dir)    
-    final_comparison()    
+    #final_comparison()
+    final_comparison_zero_gradient()    
     pylab.show()
