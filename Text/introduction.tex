@@ -1429,7 +1429,7 @@ The problem is defined in terms of PDE as follows:
 \label{diffusion:zero:gradient:start}
 \begin{aligned}
 &\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
-&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,\delta)=0\\
+&C(0,y)=C_0,\, C(x,0)=\cstar,\, \frac{\partial C}{\partial y }(x,\delta)=0\\
 &U(y)=U_0 \Bigl(\frac{y}{\delta}\Bigr)^2
 \end{aligned}
 \feq
@@ -1438,7 +1438,7 @@ The non-dimensional parameters are introduced:
 \begin{aligned}
 &\frac{\partial C}{\partial \frac{x}{H}} \frac{U_0}{H}
 \Bigl(\frac{y}{H}\Bigr)^2=\frac{D}{H^2}\frac{\partial^2 C}{\partial \frac{y^2}{H^2}}\\
-&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,H)=0\\
+&C(0,y)=C_0,\, C(x,0)=\cstart,\, \frac{\partial C}{\partial y }(x,H)=0\\
 \end{aligned}
 \feq
 After a change of variables:
@@ -1454,16 +1454,16 @@ After a change of variables:
 \begin{aligned}
 &\frac{\partial C}{\partial \zeta}\xi^2=\frac{\partial^2 C}{\partial \xi^2}\\
 &C(0,\xi)=C_0\\
-&C(\zeta,0)=C_{wall}\\
+&C(\zeta,0)=\cstar\\
 &\frac{\partial C}{\partial \xi}(\zeta,1)=0\\
 \end{aligned}
 \feq 
 Still Eq. \ref{diffusion:zero:gradient:middle} cannot be solved with the separation of variables as it requires homogenous
-boundary conditions. Thus, let us introduce the new variable, $\Theta=C-C_{wall}$, which makes the system to be with homogenous boundary conditions:
+boundary conditions. Thus, let us introduce the new variable, $\Theta=C-\cstar$, which makes the system to be with homogenous boundary conditions:
 \beq
 \begin{aligned}
 &\frac{\partial \Theta}{\partial \zeta}=\frac{1}{\xi^2}\frac{\partial^2 \Theta}{\partial \xi^2}\\
-&\Theta(0,\xi)=C_0-C_{wall}\\
+&\Theta(0,\xi)=C_0-\cstar \\
 &\Theta(\zeta,0)=0,\, \partial_{\xi}\Theta(\zeta,1)=0\\
 \end{aligned}
 \feq 
@@ -1550,8 +1550,8 @@ Therefore, the overall solution is specified as:
 \end{aligned}
 \feq
 For the sake of completeness, we list $5$ first coefficients $C_1=-1.5217$, $C_2=-0.4933$, $C_3=-0.3243$, $C_4=-0.2486$, $C_5=-0.2044$. 
-\subsection{The parabolic profile mass transfer and comparison}
-The problem we want to address can be formulated through the following PDE:
+\subsection{The Poiseuille parabolic profile}
+The problem can be formulated through the following PDE:
 \beq
 \begin{aligned}
 &\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
@@ -1560,7 +1560,7 @@ The problem we want to address can be formulated through the following PDE:
 \end{aligned}
 \feq
 The same procedure can be done as in the previous case to redefine variables. After substitution
-the following can be obtained:
+the following equation can be obtained:
 \beq
 \begin{aligned}
 &\frac{\partial \Theta}{\partial \zeta}(1-\xi^2)=\frac{\partial^2 C}{\partial \xi^2}\\
