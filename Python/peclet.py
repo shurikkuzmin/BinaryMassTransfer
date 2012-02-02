@@ -398,6 +398,104 @@ def check_average_sym_concentration(dir_name,scales):
     pylab.savefig("sym_aver_conc_scale_ca"+str(capillary)[0:1]+str(capillary)[2:]+".eps",format="EPS",dpi=300)
 
 
+def give_overall_characteristics():
+    capillary_str=["9","21","42","60","84"]
+    
+    capillaries_orig=[]
+    reynolds_orig=[]
+    velocities_orig=[]
+    holdups_orig=[]
+    bubble_lengths_orig=[]
+    slug_lengths_orig=[]
+    widths_orig=[]
+    gas_velocities_orig=[]
+    liq_velocities_orig=[]
+    for dir_name in capillary_str:
+        file_dir="HydroResultsRight/"+dir_name+"/"        
+        phase=numpy.loadtxt(file_dir+"phase300000.dat")
+        velx=numpy.loadtxt(file_dir+"velocityx300000.dat")
+        vely=numpy.loadtxt(file_dir+"velocityy300000.dat")
+        dims=phase.shape
+        center=phase[dims[0]/2,:]
+   
+        z1 = numpy.min(numpy.where(center < 0.0))
+        z2 = numpy.max(numpy.where(center < 0.0))
+        if z1==0:
+            z2=numpy.min(numpy.where(center>0.0))+dims[1]
+            z1=numpy.max(numpy.where(center>0.0))
+        
+        prof=phase[:,((z1+z2)/2)%dims[1]]
+        widths_orig.append(Get_Zero(prof))     
+        bubble_lengths_orig.append((z2-z1)/float(dims[0]-2))
+        slug_lengths_orig.append(15.0-(z2-z1)/float(dims[0]-2))
+        velocities_orig.append(velx[dims[0]/2,z2%dims[1]])
+        holdups_orig.append(float(len(numpy.where(phase<0)[0]))/(dims[1]*(dims[0]-2)))        
+        liq_velocities_orig.append(numpy.sum(velx[1:-1,((z1+z2+dims[1])/2)%dims[1]])/(dims[0]-2))
+        gas_velocities_orig.append(holdups_orig[-1]*velocities_orig[-1])
+        capillaries_orig.append(velocities_orig[-1]*(2.0/3.0)/math.sqrt(8*0.04*0.04/9.0))
+        reynolds_orig.append(velocities_orig[-1]*(dims[0]-2)/(2.0/3.0))
+    
+    print "Bubble velocities=",velocities_orig
+    print "Liquid velocities=",liq_velocities_orig
+    print "Gas velocities=",gas_velocities_orig
+    print "Holdups=",holdups_orig
+    print "Widths=",widths_orig
+    print "Capillaries=",capillaries_orig
+    print "Reynolds=",reynolds_orig
+    print "Bubble lengths=",bubble_lengths_orig
+    print "Slug lengths=",slug_lengths_orig
+    
+    capillaries=[]
+    reynolds=[]
+    velocities=[]
+    holdups=[]
+    bubble_lengths=[]
+    slug_lengths=[]
+    widths=[]
+    gas_velocities=[]
+    liq_velocities=[]
+ 
+    for counter,dir_name in enumerate(capillary_str):
+        os.chdir("UnitCells/"+dir_name)
+        geometry=numpy.loadtxt("geometry.dat").transpose()
+        ux=numpy.loadtxt("vely0200000.dat").transpose()
+        uy=numpy.loadtxt("velx0200000.dat").transpose()
+        dims=geometry.shape
+       
+        center=geometry[dims[0]/2,:]
+        z1 = numpy.min(numpy.where(center < 0.0))
+        z2 = numpy.max(numpy.where(center < 0.0))
+        if z1==0:
+            z2=numpy.min(numpy.where(center>0.0))+dims[1]
+            z1=numpy.max(numpy.where(center>0.0))
+       
+        holdups.append(len(numpy.where(geometry<0)[0])/float((dims[0]-2)*dims[1]))
+        velocities.append(ux[0,0])
+        liq_velocities.append(ux[0,0]-numpy.sum(ux[1:-1,((z2+z1+dims[1])/2)%dims[1]])/float(dims[0]-2))
+        gas_velocities.append(velocities[-1]*holdups[-1])
+
+        prof=geometry[:,((z1+z2)/2)%dims[1]]
+        widths.append(Get_Zero(prof))     
+        bubble_lengths.append((z2-z1)/float(dims[0]-2))
+        slug_lengths.append(15.0-(z2-z1)/float(dims[0]-2))
+        capillaries.append(velocities[-1]*(2.0/3.0)/math.sqrt(8*0.04*0.04/9.0))
+        reynolds.append(velocities[-1]*(dims[0]-2)/(2.0/3.0))
+
+     
+        os.chdir("../..")
+    
+    print "Bubble velocities=",velocities
+    print "Liquid velocities=",liq_velocities
+    print "Gas velocities=",gas_velocities
+    print "Holdups=",holdups
+    print "Widths=",widths
+    print "Capillaries=",capillaries
+    print "Reynolds=",reynolds_orig
+    print "Bubble lengths=",bubble_lengths
+    print "Slug lengths=",slug_lengths
+
+    
+
 
 def check_dependance():
     aver_coefficients=numpy.array([0.21,0.14,0.095,0.074,0.0601])
@@ -538,6 +636,7 @@ if __name__=="__main__":
     #check_average_sym_concentration("21",["15","20"])
     
     #check_dependance()
-    check_yue_dependance()    
-    
+    #check_yue_dependance()    
+    give_overall_characteristics()     
+     
     pylab.show()

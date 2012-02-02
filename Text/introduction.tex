@@ -32,6 +32,7 @@
 \newcommand{\volnondim}{\vol \frac{\lunit}{\ububble+\ugas}}
 \newcommand{\omegaplus}{\omega_{+}}
 \newcommand{\omegaminus}{\omega_{-}}
+\newcommand{\holdup}{\varepsilon_{\mathrm{gas}}}
 
 \title{Lattice Boltzmann study of mass transfer for complicated geometries}
 
@@ -105,10 +106,18 @@ another numerical work by Kreutzer.}
 
 This work aims at the establishing numerical procedures as to how properly obtain the volumetric
 mass transfer coefficient in the range of capillary number $0.1\leq Ca\leq 1.0$, where the
-hydrodynamic velocity pattern changes. Different boundary conditions, i.e. the periodic boundary
+hydrodynamic velocity pattern changes. The details to obtain velocities and bubble shapes can be
+found in \cite{kuzmin-binary2d}. Fig. \ref{fig:benchmark:hydro} gives the simplified picture for the
+bubble train. Different boundary conditions, i.e. the periodic boundary
 conditions, open boundaries conditions will be examined to determine the volumetric mass transfer
-coefficient. As well, large scale simulations are performed, which simulate from 4 to 10 unit
+coefficient. As well, large scale simulations are performed, which simulate from $4$ to $10$ unit
 cells.
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/benchmark_hydro.eps}
+\caption{Simplified sketch of the bubble train motion. Using periodic conditions for the velocity
+field is natural, but needs validation for the mass transfer. \label{fig:benchmark:hydro}}
+\end{figure}
+
 
 The comparison of volumetric mass transfer coefficient
 correlations with experimental correlations and establishing the Sherwood number as a function of
@@ -271,6 +280,7 @@ However, there is a  challenge to restore the continous approach as it is seen i
 section gives more details about numerical simulations.
  
 \subsection{Numerical simulations}
+\label{section:cases}
 To restore the continuous picture one needs to perform a number of bubbles simulations. As we saw
 before there are two approaches towards it - either to simulate
 the bubble train and then to measure concentration along the pipe, Eq.
@@ -507,8 +517,15 @@ D_{xy} + (g_{xy}^{(u)}-1) u_x u_y& D_{yy}+(g^{(u)}-1) u_y^2
 \end{equation}
 We want to resolve the isotropic advection-diffusion equation, $D=D_{xx}=D_{yy}$ or $K=K_{xx}=K_{yy}$, with the non-diagonal diffusion tensor components to be zero $D_{xy}=0$. In comparison with the $D2Q5$ model, with the $D2Q9$ it is
 possible to cancel the numerical diffusion by the proper choice
-of the equilibrium functions, i.e. $g_{xy}^{(u)}=g^{(u)}=1$.  The particular choice of parameters used in simulations is $c_e=\frac{1}{3}$, $\Lambda=\frac{1}{4}$. Thus, the diffusion coefficient $K$ is matched through $\omegaminus$, i.e. $K=c_e \Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)=\frac{1}{3}(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)$. From hereon, without a loss of generality we refer to diffusion coefficient 
-$K$ as $D$.  Free relaxation parameter $\omegaplus$ can be found through $\Lambda$. For particular choice $\Lambda=\frac{1}{4}$ (the optimal stability parameter), $\omegaplus$ can be found easily as $\omegaplus=2-\omegaminus$.  Fig. \ref{stability:d2q9} shows the stability limits for the $D2Q9$ model $c_e$ against $U^2=u_x^2+u_y^2$ for two particular choices.
+of the equilibrium functions, i.e. $g_{xy}^{(u)}=g^{(u)}=1$.  The particular choice of parameters
+used in simulations is $c_e=\frac{1}{3}$, $\Lambda=\frac{1}{4}$. Thus, the diffusion coefficient $K$
+is matched through $\omegaminus$, i.e. $K=c_e
+\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)=\frac{1}{3}(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)$.
+From hereon, without a loss of generality we refer to diffusion coefficient 
+$K$ as $D$.  Free relaxation parameter $\omegaplus$ can be found through $\Lambda$. For particular
+choice $\Lambda=\frac{1}{4}$ (the optimal stability parameter), $\omegaplus$ can be found easily as
+$\omegaplus=2-\omegaminus$.  Fig. \ref{stability:d2q9} shows the stability limits for the $D2Q9$
+model $c_e$ against $U^2=u_x^2+u_y^2$ for two particular choices.
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/d2q9_stability.eps}
 \caption{The stable sub-domains of the $D2Q9$ schemes ($\Lambda=\frac{1}{4}$)
@@ -518,7 +535,19 @@ allow to obtain  total triangle $0 \leq u_x^2+u_y^2 \leq 1- c_e$ (the
 uniform weights only).
 \label{stability:d2q9}}
 \end{figure}
-{\color{red} Here need to cover boundary conditions}
+Boundary conditions for the mass transfer used in this work are all of Dirichlet type. We validated
+two types of boundary conditions: Inamuro boundary conditions \cite{inamuro-scalar-boundary} and
+Pressure anti bounce-back boundary conditions \cite{ginzburg-multireflection}. However, the
+simulation results presented in this work are only pressure anti bounce-back due to its simplicity
+to handle any complicated type of boundary:
+\beq
+\label{antibb}
+f^{*}_{B,i}=-f^{*}_{F,\bar{i}} + 2 eq^+(\cstar,\bm{u}),
+\feq
+where $\cstar$ is the concentration to be imposed at the surface, $\bm{u}$ is the surface velocity,
+$i$ is the direction number pointing to the domain (unknown) located at the boundary surface $B$,
+$\bar{i}$ is the direction number opposite to $i$ and is located at the fluid $F$ specifically that
+$B$ is located at the location $F+c_i$. 
 
 Note that the parameters of the lattice
 Boltzmann are connected with the physical parameters only through the non-dimensional
@@ -530,7 +559,8 @@ Peclet number is the matched in physical space and numerical simulations. This f
 Next section will cover LBM benchmarks for problems that form the mass transfer problem, as mass transfer from the film  and hemispheres.
 
 \subsection{The radial case}
-The case to be examined here is the mass transfer from the stair-case boundary which represents a circle. It can be
+The case to be examined here is the mass transfer from the stair-case boundary forming a circle. It
+can be
 prescribed by the following system of equations:
 \beq
 \begin{aligned}
@@ -540,7 +570,7 @@ prescribed by the following system of equations:
 \feq 
 The solution is represented as \cite{chemical-correlations}:
 \beq
-\frac{C(r,t)-C_{0}}{C_{init}-C_{0})}=\sum_{n=1}^{\infty}{\frac{2}{\mu_n
+\frac{C(r,t)-C_{0}}{C_{init}-C_{0}}=\sum_{n=1}^{\infty}{\frac{2}{\mu_n
 J_1(\mu_n)}\exp\Bigl(-\mu_n^2 \frac{D t}{a^2} \Bigr)J_0(\mu_n \frac{r}{a})},
 \feq
 where $\mu_n$ is the $n$-th zero root of the $0$th order Bessel polynomial $J_0(\mu_n)=0$. Some of
@@ -563,606 +593,177 @@ different diffusion coefficients are presented in Fig.\ref{fig:cylinder:benchmar
 accurately \label{fig:cylinder:benchmark}.}
 \end{figure}
 
-\subsection{Parabolic profile with velocity zero gradient at the wall}
+\subsection{Parabolic profile with the velocity zero gradient at the wall}
 The problem is defined in terms of PDE as follows: 
 \beq
 \begin{aligned}
 &\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
-&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,\delta)=0\\
-&U(y)=U_0 \Bigl(\frac{y}{\delta}\Bigr)^2
+&C(0,y)=C_0,\, C(x,0)=\cstar,\, \frac{\partial C}{\partial y }(x,\delta)=0\\
+&U(y)=U_0 \Bigl(\frac{y}{\delta}\Bigr)^2.
 \end{aligned}
 \feq
-The system after non-dimensionalization becomes as follows:
+The procedure to solve this PDE is presented in Appendix \ref{appendix:zero:gradient}:
 \beq
+\label{analytical:solution:zero:gradient}
 \begin{aligned}
-&\frac{\partial C}{\partial \frac{x}{H}} \frac{U_0}{H}
-\Bigl(\frac{y}{H}\Bigr)^2=\frac{D}{H^2}\frac{\partial^2 C}{\partial \frac{y^2}{H^2}}\\
-&C(0,y)=C_0,\, C(x,0)=C_{wall},\, \frac{\partial C}{\partial y }(x,H)=0\\
-\end{aligned}
-\feq
-After a change of variables:
-\beq
-\begin{aligned}
-&\zeta=\frac{x}{H} \frac{D}{U_0 H}=\frac{1}{Pe}\frac{x}{H}\\
-&\xi=\frac{y}{H}
-\end{aligned}
-\feq
-, the equation with boundary conditions becomes as follows:
-\beq
-\begin{aligned}
-&\frac{\partial C}{\partial \zeta}\xi^2=\frac{\partial^2 C}{\partial \xi^2}\\
-&C(0,\xi)=C_0\\
-&C(\zeta,0)=C_{wall}\\
-&\frac{\partial C}{\partial \xi}(\zeta,1)=0\\
-\end{aligned}
-\feq 
-Still the equation cannot be solved with the separation of variables as it requires the homogenuos
-boundary conditions. Thus, let us introduce the new variable to be $\Theta=C-C_{wall}$. The system
-will be changed but not considerably:
-\beq
-\begin{aligned}
-&\frac{\partial \Theta}{\partial \zeta}=\frac{1}{\xi^2}\frac{\partial^2 \Theta}{\partial \xi^2}\\
-&\Theta(0,\xi)=C_0-C_{wall}\\
-&\Theta(\zeta,0)=0,\, \partial_{\xi}\Theta(\zeta,1)=0\\
-\end{aligned}
-\feq 
-This equation can be solved by separation of variables if the solutions is represented as the
-multiplication of two functions $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$. The differential equation will
-become as follows:
-\beq
-\begin{aligned}
-&\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}Y(\xi)=\frac{X(\zeta)}{\xi^2}\frac{\mathrm{d^2}
-Y(\xi)}{\mathrm{d}\xi^2}\\
-&\frac{1}{X(\zeta)}\frac{\mathrm{d} X(\zeta)}{\mathrm{d} \zeta}=\frac{1}{\xi^{2} Y(\xi)}
-\frac{\mathrm{d^2} Y(\xi)}{\mathrm{d}\xi^2}
-\end{aligned}
-\feq
-The left and right parts depend on different variables. Therefore to be equal to each other both
-parts equal to constant, say $-m^4$. Thus, the separation of the variables leads to two ODE
-equations:
-\begin{equation*}
-\begin{aligned}
-&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}=-m^4 X(\zeta)\\
-&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 \xi^2 Y(\xi)=0\\ 
-\end{aligned}
-\end{equation*}
-The solution of the first equation is the exponential function:
-\beq
-X(\zeta)=\exp(-m^4 \zeta)\\
-\feq
-The solutions of the second equation are two hypergeometric function which can be expressed through
-the Bessel functions \cite{abramowitz}:
-\beq
-\begin{aligned}
-&Y_1=\sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
-&Y_2=\sqrt{\xi}J_{-\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
-&Y'_1=m^2 \xi^{3/2} J_{-\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
-&Y'_2=m^2 \xi^{3/2} J_{\frac{3}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)\\
-\end{aligned}
-\feq
-The solution is the summation of two functions:
-\begin{equation*}
-Y(x)=C_1 Y_1(x)+C_2 Y_2(x). 
-\end{equation*}
-One can find coefficients from the boundary conditions:
-\beq
-\begin{aligned}
-&Y(0)=0=C_1 Y_1(0)+C_2 Y_2(0)\\
-&Y_1(0)=0,\,Y_2(0)=\frac{\sqrt{2}}{\sqrt{m} \Gamma(3/4)}\, C_2=0\\
-&Y'(1)=0=C_1 Y'_1(1)+C_2 Y'_2(1)=C_1 Y'_1(1)\\
-&J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)=0
-\end{aligned}
-\feq
-Therefore one needs to find zeros of $J_{-\frac{3}{4}}\Bigl(\frac{m^2}{2}\Bigr)$. To give some
-numerical values:
-$m_1=1.454997085$, $m_2=2.927133004$, $m_3=3.857578101$, $m_4=4.601777732$, $m_5=5.240824067$.
-Therefore a solution in a general form is represented as:
-\beq
-\Theta(\zeta,\xi)=\sum_m{C_m \sqrt{\xi} J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\exp(-m^4 \zeta)}
-\feq
-To find unknown coefficients $C_m$ one needs to substitute the expression above to the initial
-condition:
-\beq
-\Theta(0,\xi)=C_0-C_{wall}=\sum_m{C_m \sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)}\\
-\feq
-Using the Stourm-Liouville theorem one can multiply by $\xi^{5/2}
-J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)$ and integrate left and right parts of the equation:
-\beq
-\begin{aligned}
-&\bigl(C_0-C_{wall}\bigr) \int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}=C_m\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}\\
-&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
-\xi^2}{2}\Bigr)\mathrm{d}\xi}}
-\end{aligned}
-\feq
-Therefore, the overall solution is specified as:
-\beq
-\begin{aligned}
-&C(x,y)=C_{wall}+\sum_{m}{C_m
+&C(x,y)=\cstar+\sum_{m}{C_m
 \sqrt{\frac{y}{H}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{H^2}\Bigr)\exp\Bigl(-\frac{m^4}{Pe}
 \frac { x }{H}\Bigr)}\\
-&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+&C_m = (C_0-\cstar \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}
 \end{aligned}
 \feq
-
-\subsection{The parabolic profile mass transfer and comparison}
+Fig. \ref{fig:parabolic:zero:gradient} shows the steady-state contours comparison between the
+analytical and the simulation with the Anti Bounce-Back conditions used to impose constant
+concentrations at the wall $\cstar=1$ and the inlet $C_0=0$. The grid used in the simulation is
+$80\times1600$. Parameter $\omegaminus=1.8$ implies the diffusion coefficient to be
+$D=\frac{1}{3}\Bigl(\frac{1}{\omega}-\frac{1}{2}\Bigr)=0.0185$.  
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{Figures/parabolic_profile_zero_gradient_comparison.eps}
+\caption{Comparison with the analytical concentration contours, Eq.
+(\ref{analytical:solution:zero:gradient}), for the diffusion coefficient $D=0.0185$. Simulation was
+performed on grid $80\times 1600$. The constant concentration is imposed with the
+anti bounce-back conditions, Eq.\ref{antibb}. \label{fig:parabolic:zero:gradient}}
+\end{figure}
+ 
+\subsection{Poiseulle velocity parabolic profile}
 The problem we want to address can be formulated through the following PDE:
 \beq
 \begin{aligned}
 &\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
-&C(0,y)=0,\, C(x,\pm \delta)=C_s,\, \frac{\partial C}{\partial y }(x,0)=0\\
+&C(0,y)=0,\, C(x,\pm \delta)=\cstar,\, \frac{\partial C}{\partial y }(x,0)=0\\
 &U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
 \end{aligned}
 \feq
-The same procedure can be done as in the previous case to redefine variables. After substitution
-the following can be obtained:
-\beq
-\begin{aligned}
-&\frac{\partial \Theta}{\partial \zeta}(1-\xi^2)=\frac{\partial^2 C}{\partial \xi^2}\\
-\Theta(\zeta,\xi)=C-C_s\,\Theta(0,\xi)=-C_s\,\Theta(0,\pm 1)=0\\
-\end{aligned}
-\feq
-After separation of variables, $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$ one can come up with two
-equations:
-\beq
-\label{fourier:separation:variables}
-\begin{aligned}
-&\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}+m^4 X(\zeta)=0\\
-&\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 (1-\xi^2) Y(\xi)=0
-\end{aligned}
-\feq
-The first equation has a solution:
-\beq
-X(\zeta)=\exp(-m^4 \zeta)
-\feq
-The second equation can be simplified after substitution $\bar{\xi}=m \sqrt{2} \xi$ to the standard
-equation:
-\beq
-Y''-\Bigl(\frac{1}{4}\xi^2+a\Bigr)Y=0.
-\feq
-The equation above has two solutions via parabolic cylinder functions or through the confluent
-hypergeometric function \cite{abramowitz}:
-\beq
-\begin{aligned}
-&Y_1=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{1}{4},\frac{1}{2},\frac{x^2}{2}\Bigr)\\
-&Y_2=e^{-x^2/4} {_1F_1}\Bigl(\frac{a}{2}+\frac{3}{4},\frac{3}{2},\frac{x^2}{2}\Bigr)\\
-\end{aligned}
-\feq 
-Taking symmetry conditions in the consideration by leaving only even solution, Eq.
-(\ref{fourier:separation:variables}) has a solution as:
-\beq
-Y_m=C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 x^2\Bigr) 
-\feq
-To satisfy boundary condition we need to find zeros of the hypergeometric function, i.e.
-${_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \Bigr)=0$. First ten eigenvalues can be
-found using numerical methods, as $1.2967$, $2.3811$,$3.1093$,$3.6969$,$4.2032$,$4.6548$,$5.0662$,
-$5.4467$, $5.8023$,$6.1373$. One needs to satisfy one more condition to obtain coefficients $C_m$:
-\beq
--C_{s}=\sum_m{C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)} 
-\feq
-One can multiply both parts on $(1-x^2){_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)$ and through orthoganality Sturm-Liouiville theorem obtain coefficients:
-\beq
-\label{coeff:series:parabolic:profile}
-C_m=-C_s \frac{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
-{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)\mathrm{d}x}}{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
-{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)^2\mathrm{d}x}}
-\feq
-Therefore a whole solution can be written as:
+The procedure to solve this problem is presented in Appendix \ref{appendix:poiseuille} which yields
+the final solution as:
 \begin{equation}
-C=C_{s}-C_s \sum_{m=0}{C_m e^{-m^4 \frac{x}{\delta}\frac{1}{Pe}} e^{-m^2
+C=\cstar-\cstar \sum_{m=0}{C_m e^{-m^4 \frac{x}{\delta}\frac{1}{Pe}} e^{-m^2
 y^2/(2\delta^2)}{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \frac{y^2}{\delta^2}\Bigr)},
 \end{equation}
 where coefficients $C_m$ are taken from Eq. (\ref{coeff:series:parabolic:profile}). The comparison
-between profiles is represented in Fig. \ref{fig:parabolic:comparison}.
+between contours of analytical and simulation results is presented in Fig.
+\ref{fig:parabolic:comparison}. Parameters were taken the same as in the previous case: the
+diffusion $D=0.0185$, the grid dimension is $80\times1600$. 
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/parabolic_profile_comparison.eps}
-\caption{Comparison between analytical profile and simulations with pressure antibounceback
-conditions. One can see given a low resolution of the profile a nice coincedence.}
+\caption{Comparison between the analytical concentration contours and simulations with pressure
+anti bounce-back conditions, Eq. (\ref{antibb}). The parameters were
+taken as $D=0.0185$ and grid $80\times1600$. \label{fig:parabolic:comparison}}
 \end{figure}
+
+After the LBM is validated against the benchmarks relevant for the flow around bubbles, one can
+examine all the cases to calculate the volumetric mass transfer coefficient, Section
+\ref{section:cases}.
 
 \section{Numerical approach}
 \label{sec:numerics}
-The numerical  procedure of studying mass transfer is presented in the following steps:
+The code was utilized to obtain the flow patterns for different capillary numbers
+\cite{kuzmin-binary2d}. Five particular cases were chosen to examine, their results are summarized
+in Table \ref{table:capillary:cases}. 
+\begin{table}[htb!]
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|X|}
+\hline
+$Ca$    &$Re$     &$\ububble$ &$\delta$&$\holdup$
+&$\uliq$&$\ugas$&$\lbubble$&$\lslug$\\
+\hline
+$0.097$ &$1.656$  &$0.0055$ &$0.092$ &$0.30$ &$0.0046$&$0.0016$&$5.79$&$9.21$\\ 
+$0.254$ &$4.318$  &$0.0143$ &$0.132$ &$0.28$ &$0.0108$&$0.0041$&$6.12$&$8.88$\\ 
+$0.526$ &$8.938$  &$0.0297$ &$0.157$ &$0.27$ &$0.0209$&$0.0080$&$6.19$&$8.81$\\
+$0.750$ &$12.744$ &$0.0424$ &$0.167$ &$0.25$ &$0.0293$&$0.0107$&$5.96$&$9.04$\\
+$1.040$ &$17.665$ &$0.0588$ &$0.177$ &$0.22$ &$0.0397$&$0.0135$&$5.59$&$9.41$\\
+\hline
+\end{tabularx}
+\caption{Sample results with the binary liquid lattice Boltzmann model \cite{kuzmin-binary2d}. The
+following notations are used: the capillary number $Ca=\frac{\ububble L}{\rho \nu}$, $\delta$ is the
+non-dimensional film thickness, $\uliq$ is the superficial liquid velocity, $\ugas$ is the
+superficial gas velocity. One can see the sketch of the simulation in Fig.
+\ref{fig:benchmark:hydro}. \label{table:capillary:cases}}
+\end{table}
+One can check that velocities in Table \ref{table:capillary:cases} are small. It means that to
+match large Peclet numbers, $Pe=\frac{\ububble L}{D}$, usually seen in experiments to measure
+the mass transfer coefficient, one needs to decrease
+$D=\frac{1}{3}\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)$. However, for parameters
+$\omegaminus \approx 0.5$ the stability of the lattice Boltzmann method drastically decreases
+\cite{kuzmin-d1q3}. On the other hand, one iteration in the lattice Boltzmann system corresponds
+to the time in the physical domain as $\Delta t=U_{\mathrm{bubble,LB}} \frac{\Delta
+x}{U_{\mathrm{bubble,phys}}}$. This time is proportional to the velocity of the $U_{\mathrm{LB}}$
+and the typical number of simulation steps to obtain necessary number with given velocities for
+$Ca<0.2$ is of the order of a few millions. Thus, one wants to increase the available velocity
+while keeping the Peclet number the same. This helps to stability of the method as well, since
+$\omegaminus$ is not close to its stability limit $\omegaminus=0.5$. 
+
+Given all the considerations above, one needs to approach the mass transfer in the following
+steps:
 \begin{description}
- \item[Flow field] The hydrodynamics for the bubble motion in the periodic domain is obtained
-according to the work \cite{kuzmin-binary2d}. The grid resolution is taken to insure grid
+ \item[Flow field] Given the capillary number $Ca$, one needs to obtain hydrodynamic fields around
+the bubble using the binary liquid lattice Boltzmann model according to work
+\cite{kuzmin-binary2d}. Periodic boundary conditions are used. The grid used in this work is
+$202\times 3000$ which corresponds to fluid domain size $200\times3000$. The grid resolution is
+taken to insure grid
 independency of results.  
  \item[Bubble reference frame] Once the hydrodynamics is resolved, the mass transfer simulations
-are conducted in the moving
-reference frame with the bubble. Then the bubble stands still and the flow is coming around the
-bubble. We impose a steady concentration of solutant on the surface of the bubble.
-\item[Mass transfer] One needs not only perform a Galilean transformation to the reference
-frame moving with the bubble but also to
-transfer the bubble to the inlet condition. This can insure that the studied phenomenon is a liquid
-slug. 
-\end{description}
+are conducted in the moving reference frame with the bubble. Then the bubble stands still and the
+flow is coming around the
+bubble. We impose a steady concentration of the trace on the surface
+of the bubble with the anti bounce-back condition, Eq. (\ref{antibb}).
+ \item[Velocity improvement] Due to necessity to increase velocity one can scale the velocity to
+perform fast simulations, one needs to improve velocity. This issue arises because of the
+multiphase model used in simulations.The binary liquid lattice Boltzmann model is the diffusive
+interface model. Thus, the
+transition between gas and liquid is the continuous function. We obtain the bubble shape according
+to the phase indicator $\phi$ as used in \cite{kuzmin-binary2d}, say $\phi<0$. The velocity of the
+bubble is calculated as the bubble tip velocity. Because of the highly non-linear diffusive
+interface model the shape of the bubble is determined within accuracy of one grid node, as well
+there is the error in determination in the bubble velocity. Though these errors are small, however
+there is small non-zero velocity component pointing to the bubble in some places, see Fig. 8 in
+\cite{kuzmin-binary2d} where some streamlines are penetrating a bubble surface a bit.
+This small velocity is amplified upon the velocity scaling and is inconsistent with the
+advection-diffusion equation.
 
 
+Thus, before performing the mass transfer simulations one additional one-component hydrodynamic
+simulation is performed. A special additional free-surface solver was developed in order to dispose
+the normal to surface velocity components. We take results from the multiphase simulations, extract
+bubble shape using the phase indicator $\phi<0$, approximate the bubble shape by the stair-case
+line. Then,the obtained bubble velocity is imposed on walls. This corresponds to conducting
+simulation in the reference frame moving with the bubble. In addition, the free-slip boundary
+condition on the bubble surface is imposed. Appendix \ref{appendix-free-surface} covers the simple
+free-slip boundary conditions drastically improving velocity patterns. The system is tterate until a
+steady state is reached. Note, that these type of simulations are much faster than original
+multiphase simulations. As the output all the non-zero velocity components perpendicular to the
+bubble surface are completely illuminated. We compared original multiphase simulations with
+one-component free-slip simulations. All quantities as superficial slug and bubble velocities are
+within $3\%$ for the capillary number in the range $0.05\leq Ca \leq 1.0$. This small trick helps to
+make mass transfer simulations stable and faster, since the velocity scaling can be done easier. One
+can see in Fig. \ref{fig:free:surface} two streamlines profiles for $Ca=0.097$  and $Ca=1.040$.
+\begin{figure}[htb!]
+\includegraphics[angle=90,width=\textwidth]{Figures/performed_ca0097.eps}\\
+\includegraphics[angle=90,width=\textwidth]{Figures/performed_ca1040.eps}
+\caption{The streamlines patterns produced by the free-surface solver with simplistic approximation
+of the free-slip bubble surface, see Appendix \ref{appendix-free-surface}. Two completely different
+velocity patterns are covered, $Ca=0.097$ (top) and $Ca=1.040$ (bottom).
+\label{fig:streamlines:tweaked:velocity}}
+\end{figure}
 
-
-
-
-\section{Mass transfer}
-The mass transfer is characterized by non-dimensional numbers as Schmidt number (viscous diffusion
+\item[Mass transfer] After improved velocity profiles are obtained one can perform any mass
+transfer simulations with different boundary conditions as covered in Section \ref{section:cases}.
+For this purpose one needs to match the Peclet number $Pe$ from experiments. Note that we
+specifically separated the hydrodynamic problem from the mass transfer problem. When one wants to
+solve these simultaneous problems, then one needs to match all the non-dimensional parameters, as
+the capillary number (viscous forces over surface tension), the Schmidt number (viscous diffusion
 rate over mass diffusion rate), the Peclet number (convection over diffusion) and the Sherwood
 number (convection mass transfer over diffusion mass transfer):
 \begin{equation}
 \begin{aligned}
-&Pe=\frac{U L}{D}\\
+&Ca=\frac{\ububble \mu_{\mathrm{liq}}}{\gamma}\\
+&Pe=\frac{\ububble L}{D}\\
 &Sh=\frac{K L}{D}\\
-&Sc=\frac{\nu}{D}\\
+&Sc=\frac{\nu}{D}.
 \end{aligned}
 \end{equation}
-
-As far as the lattice Boltzmann method operates only in the non-dimensional space, one needs to
-match the non-dimensional lattice Boltzmann parameters with non-dimensional physical parameters.
-Therefore, one needs to form non-dimensional numbers from the physical parameters. One of the
-particular experiment examples is the
-work by \citet{bercic-mass} who used the methane dissolution to characterize the mass transfer for
-bubble train flow. 
-
-In what follows we will perform the matching of obtained hydrodynamics results
-\cite{kuzmin-binary2d} with physical ones from experiment of \citet{bercic-mass}. The diffusion
-coefficient of the methane under standard conditions \cite{methane-properties} is
-$1.84\times 10^{-5} \mathrm{cm}^2/\mathrm{s}$. The diameters of capillaries in the experiment were
-as $1.5$, $2.5$ and
-$3.1\,\mathrm{mm}$. For simplicity reasons we will choose the diameter of capillary as $1.5\,
-\mathrm{mm}$. 
-The non-dimensional parameters obtained from the hydrodynamics lattice Boltzmann simulations are
-as:
-\begin{equation}
-\begin{aligned}
-&Ca=\frac{U \mu_{\mathrm{liq}}}{\gamma}\\
-&Re=\frac{\rho_{\mathrm{liq}} U L}{\mu_{\mathrm{liq}}}.
-\end{aligned}
-\end{equation}
-Given some physical characteristics as the liquid density and the channel length,
-one can obtain the physical velocity obtained from non-dimensional numbers:
-\begin{equation}
-\begin{aligned}
-Ca\cdot Re= \frac{\rho_{\mathrm{liq}} U^2 L}{\gamma}\\
-U=\sqrt{\frac{Ca\,Re\,\gamma}{\rho_{\mathrm{liq}}L}}
-\end{aligned}
-\end{equation}
-
-Assuming that the surface tension of water is $0.0728\,\mathrm{N/m}$ (methane exhibits the same
-trend \cite{schmidt-methane}), the density is       
-$1000\,\mathrm{kg/m^3}$, the hydraulic diameter of the channel to be $1.5\,\mathrm{mm}$ one can
-calculate the physical velocity of the bubble.
-Table \ref{table:twod:simulations} represents lattice Boltzmann simulations results and their
-physical equivalents for the grid $202\times 3002$. One can see
-that velocity is quite reasonable
-as \citet{bercic-mass} declared that experiments were conducted for velocities in the ranges of
-$0.01$ to $0.4\,\mathrm{m}/\mathrm{s}$. 
-\begin{table}
-\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
-\hline
-$Ca$    &$Re$     &$U_{LB}$ &$\delta$&$\varepsilon_{\mathrm{gas}}$
-&$U_{\mathrm{phys}}, \mathrm{m/s}$\\
-\hline
-$0.026$ &$0.449$  &$0.0014$ &$0.040$ &$0.306$ &$0.023$   \\ 
-$0.047$ &$0.820$  &$0.0027$ &$0.058$ &$0.293$ &$0.043$   \\ 
-$0.080$ &$1.378$  &$0.0045$ &$0.085$ &$0.280$ &$0.073$ \\
-$0.065$ &$1.126$  &$0.0037$ &$0.076$ &$0.266$ &$0.059$      \\
-$0.222$ &$3.807$  &$0.0125$ &$0.122$ &$0.253$ &$0.202$  \\
-$0.479$ &$8.222$  &$0.0271$ &$0.151$ &$0.249$ &$0.437$  \\
-$0.736$ &$12.617$ &$0.0416$ &$0.164$ &$0.236$ &$0.671$  \\ 
-$0.989$ &$16.960$ &$0.0559$ &$0.172$ &$0.230$ &$0.902$  \\
-\hline
-\end{tabularx}
-\caption{Two-dimensional simulations for different
-capillary numbers. \label{table:twod:simulations}}
-\end{table}
-
-\section{Lattice Boltzmann implementation}
-For the lattice Boltzmann implementation we took $\omega=1.99$ which results in the following
-lattice Boltzmann diffusivity parameter:
-\begin{equation}
-\begin{aligned}
-&D=\frac{1}{3}\Bigl(\frac{1}{\omega}-\frac{1}{2}\Bigr)\\
-&D=0.0008375
-\end{aligned}
-\end{equation}
-In terms of the Schmidt number (taking the lattice Boltzmann liquid viscosity in former simulations
-as $\frac{2}{3}$) that
-can result in:
-\begin{equation}
-\begin{aligned}
-&Sc=\frac{\nu_{\mathrm{liq}}}{D}\\
-&Sc=796\\
-\end{aligned}
-\end{equation}
-Taking the water dynamic viscosity as $8.9 \times 10^{-4}\,\mathrm{Pa\cdot s}$ or kinematic
-viscosity as $8.9 \times
-10^{-7} \,\mathrm{m^2/s}$ and the Schmidt number as $796$ results in the following physical
-diffusion coefficient:
-\begin{equation}
-D=1.118\times 10^{-5}\,\mathrm{cm^2/s},
-\end{equation}
-which is less than the diffusivity of the methane $1.84\times 10^{-5}\,\mathrm{cm^2/s}$ but is
-physical. After calculation of physical parameters one can calculate correlations indicated in
-Section \ref{sec:correlations} for mass transfer. Table \ref{table:lengths} presents extraction
-from the lattice Boltzmann simulation necessary to calculate mass transfer calculations.
-For the two-dimensional case parameter  $a$ is defined as:
-\begin{equation}
-a = \frac{\text{bubble perimeter}}{\text{cell area}}.
-\end{equation}
-For the height of the channel to be $H=1.5 \times 10^{-3}\,\mathrm{m}$, parameters $a$ are
-presented in Table \ref{table:lengths}. 
-\begin{table}
-\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
-\hline
-$Ca$&Bubble length& Slug Length&
-$U_{\mathrm{gas}},\,\mathrm{m/s}$&$U_{\mathrm{liq}},\,\mathrm{m/s}$&$a,\,\mathrm{m^{-1}}$\\
-\hline
-$0.026$&$5.225$&$9.775$ &$0.0070$ &$0.0209$&$510.77$\\
-$0.047$&$5.22$ &$9.78$  &$0.0126$ &$0.0379$&$508.62$\\
-$0.080$&$5.215$&$9.785$ &$0.0204$ &$0.0615$&$506.53$\\
-$0.065$&$4.965$&$10.035$&$0.0157$ &$0.0504$&$482.84$\\
-$0.222$&$5.25$ &$9.75$  &$0.0511$ &$0.1560$&$505.06$\\
-$0.479$&$5.565$&$9.435$ &$0.1089$ &$0.3155$&$530.37$\\
-$0.736$&$5.51$ &$9.49$  &$0.1584$ &$0.4677$&$525.38$\\
-$0.989$&$5.505$&$9.495$ &$0.2074$ &$0.6190$&$526.80$\\
-\hline
-\end{tabularx}
-\caption{The nondimensional (scaled to the height of the channel) lengths for the same
-lattice Boltzmann simulations as in Table \ref{table:twod:simulations}. As well superficial
-gas and liquid velocities are presented. \label{table:lengths}} 
-\end{table}
-
-The literature correlations of mass transfer dependence on the bubble velocities are presented in
-Fig. \ref{fig:mass:transfer:theoretical}. Note, that the correlations presented in
-Fig. \ref{fig:mass:transfer:theoretical} are used primarily for circular capillaries
-(\citeauthor{vanbaten-circular,bercic-mass}) and for square capillaries (\citeauthor{yue-mass}). We
-adapt these results for flow between parallel plates by using hydraulic
-diameter \cite{bercic-mass} which can be calculated as:
-\begin{equation}
-d_h = \lim_{W\to\infty}\frac{4A}{P}=\lim_{W\to\infty}\frac{4 W\,H}{2(W+H)}=2 H.
-\end{equation}
-For comparison reasons we derived in Section \ref{mass:transfer:correlation} the correlation for the
-flow between plates, see Fig. \ref{fig:mass:transfer:theoretical}. One can see that the
-difference is negligible.
-
-\begin{figure}[htb!]
-\includegraphics[width=\textwidth]{Figures/theoretical_correlations.eps}\\
-%\includegraphics[width=\textwidth]{Figures/theoretical_correlations_without_hydraulic.eps}\\
-\caption{The literature correlations by various authors.\label{fig:mass:transfer:theoretical}}
-\end{figure}
-
-The volumetric mass transfer coefficient is calculated according to the work of
-\citet{vanbaten-circular}. The concentration flux is calculated as the difference between overall
-average concentration taken in the whole domain ($C_{overall}=\int_{V} C \mathrm{d}V /V$)
-at time
-$t_1$ and time $t_2$ divided on the time difference $t_2-t_1$ {\color{red} (In this particular
-moment I don't know whether to take the volume of the whole domain or
-just the liquid phase. I will go for whole domain.)}. Then the volumetric mass transfer
-coefficient is calculated as \cite{vanbaten-circular}:
-\begin{equation}
-\label{main:simulation:equation}
-k_L a=\frac{\text{Flux}}{C_s-C_{outlet}} \frac{\text{bubble surface area}}{\text{unit cell volume}},
-\end{equation}
-where $C_{outlet}=\int{C U_{outlet}\mathrm{d}A}/\int{U_{outlet}\mathrm{d}A}$. 
-{\color{red} Do not understand why we need this ratio bubble surface area/unit cell volume. In this
-case the dimensional units do not coincide. In the calculations I will avoid it until further
-clearance.} The overall concentration in the lattice Boltzmann system is prescribed as:
-\begin{equation}
-C_{overall}=\frac{\sum{c_i}}{N_x \, (N_y-2)}.
-\end{equation}
-
-To properly do
-non-dimensioanalization one needs to insure the time conversion factor when the flux is calculated
-inside the lattice Botlzmann system. The time conversion can be easily obtained:
-\begin{equation}
-\begin{aligned}
-&U_{LB}=U_{phys}\frac{\Delta t}{\Delta x}\\
-&\Delta t=\frac{U_{LB}}{U_{phys}}\Delta x\\
-&\Delta t=\frac{1.5\,\mathrm{mm}}{200} \frac{0.0559}{0.902\,\mathrm{m/s}}=4.64\times
-10^{-7}\,\mathrm{s} 
-\end{aligned}
-\end{equation}
-
-The bubble surface length is the perimeter of the bubble in two-dimensional space and it is
-calculated with the extraction of the bubble contour and representing it with the polygon. After
-that the calculated perimeter is the effective summation of line lengths and can be represented as:
-\begin{equation}
-P=\sum_i{\sqrt{(x2_i-x1_i)^2+(y2_i-y1_i)^2}},
-\end{equation}
-where the index $i$ represents the polyline consisting of two points $(x1,y1)$ and $(x2,y2)$.
-%The corresponding volumetric mass transfer coefficients depending on the velocity are indicated in
-%Table \ref{table:volumetric:coefficients}.
-
-\section{Comparison between different approaches for one unit cell}
-We consequently will examine different approaches to the mass transfer definition, Fig.
-\ref{fig:comparison:one:unit:cell}:
-\begin{description}
-\item[I] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
-is located near the entrance of the computational domain, and the characteristic concentration is
-the inlet/outlet concentration, Fig \ref{fig:benchmark}. 
-\item[II] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
-is located near the entrance of the computational domain, and the characteristic concentration is
-the average concentration, Fig \ref{fig:benchmark}.
-\item[III] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a
-bubble is located in the middle of the computational domain, and the characteristic concentration
-is the inlet/outlet concentration.
-\item[IV] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
-is located in the middle of the computational domain, and the characteristic concentration is the
-average concentration.
-\item[V] Definition with the concentration jump between inlet and outlet over one unit cell.
 \end{description}
-
-\begin{figure}[htb!]
-\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_entrance.eps}
-\includegraphics[width=0.5\textwidth]{Figures/steady_state_inlet_aver.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_aver.eps}
-\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_middle_outlet.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/steady_state_jos_inlet_outlet.eps}\\
-\caption{\label{fig:comparison:one:unit:cell}}
-\end{figure}
-All the comparison is summarized in Table \ref{table:one_unit_comparison}.
-\begin{table}[htb!]
-\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
-\hline
-$Ca$&$Fo$&$\vol_{ent},\,\mathrm{s}^{-1}$&$\vol_{aver},\,\mathrm{s}^{-1}$&$\vol_{mid,
-aver},\,\mathrm{s} ^ { -1 }$&$\vol_{mid,out},\,\mathrm{s}^{-1}$&$\vol_{open},\,\mathrm{s}^{-1}$ \\
-\hline
-$0.026$&$0.08493$&$0.2737$&$0.1775$&$0.1692$&$0.2631$&$3.6756$\\
-$0.047$&$0.02160$&$0.3664$&$0.3431$&$0.2852$&$0.4553$&$11.4822$\\
-$0.080$&$0.00588$&$0.4959$&$0.4185$&$0.4079$&$0.6920$&$15.1964$\\
-$0.065$&$0.00862$&$0.4734$&$0.4517$&$0.4303$&$0.8923$&$21.4517$\\
-$0.222$&$0.00103$&$0.8505$&$0.6799$&$0.6109$&$0.8679$&N/A\\
-$0.479$&$0.00034$&$1.1541$&$1.0460$&$0.9884$&$1.2995$&N/A\\
-$0.736$&$0.00018$&$1.1801$&$1.2395$&$1.2199$&$1.1555$&N/A\\
-$0.989$&$0.00012$&$1.2215$&$1.3493$&$1.3400$&$1.0350$&N/A\\
-\hline
-\end{tabularx}
-\caption{Simulation results for different capillary numbers.
-\label{table:one_unit_comparison}}
-\end{table}
-One can see that the only consistent result is for simulations which take into the account average
-concentration. The results come to the steady-state after $1,000,000$ iterations. However, to
-understand properly what is the real mass transfer coefficient one needs to perform a few units
-simultions.
-
-\section{Two unit cells results}
-As far as one needs to restore the continuous picture one needs to make a simulation of a few
-cells. This section provides results for two units. The results are summarized in Table
-\ref{table:two_units}. The results for two sections are presented in Fig. \ref{fig:results:double}.
-\begin{figure}[htb!]
-\includegraphics[width=0.5\textwidth]{Figures/steady_double_overall.eps}
-\includegraphics[width=0.5\textwidth]{Figures/steady_double_first.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/steady_double_second.eps}
-\caption{Overall mass transfer coefficient (top left), first part (top
-right), second part (bottom left).\label{fig:results:double}}
-\end{figure}
-\begin{table}[htb!]
-\begin{tabularx}{\textwidth}{|X|X|X|}
-\hline
-$0.7392$&$1.0564$&$0.4220$\\
-$1.8993$&$2.8301$&$0.9684$\\
-$3.3925$&$4.7522$&$2.0328$\\
-$3.7870$&$4.5615$&$3.0125$\\
-\hline
-\end{tabularx}
-\caption{Simulation results for two units. \label{table:two_units}}
-\end{table}
-
-\section{Three unit cells results}
-Three unit cells results are subdivided into three cells. We calculate the mass transfer
-coefficients over the each cell, Fig. \ref{fig:results:triple}. The averaged coefficients  after
-$3,300,000$ time steps are represented in Table. \ref{table:three_units}. The most important thing
-is to look at the third column of the Table \ref{table:three_units} or for at the Fig.
-\ref{fig:results:triple} (bottom left). The coefficients for capillary numbers $0.026$ and $0.047$
-are almost zero which indicates that the concentration at the first part of the channel is almost
-the same as the second part. Thus, there is not enough time steps to transfer concentrate among
-whole the channel (plug flow). In comparison with the first two values for capillary number $0.080$
-the trend is different and concentrate is spread over the channel. However, the drop coefficients
-are still inconsistents. Though last part and the second part exhibit close values (needed to tell
-what is the real mass transfer coefficient). Overall, more time steps are needed.
-$0.080$
-\begin{table}[htb!]
-\begin{tabularx}{\textwidth}{|X|X|X|X|}
-\hline
-0.4928&1.0564&2.8472e-05&0.4219\\
-1.2662&2.8301&0.0146&0.9537\\
-2.3110&4.7532&1.0665&1.1133\\
-\hline
-\end{tabularx}
-\caption{Simulation results for three units.\label{table:three_units}}
-\end{table}
-\begin{figure}[htb!]
-\includegraphics[width=0.5\textwidth]{Figures/steady_triple_overall.eps}
-\includegraphics[width=0.5\textwidth]{Figures/steady_triple_first.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/steady_triple_second.eps}
-\includegraphics[width=0.5\textwidth]{Figures/steady_triple_third.eps}\\
-\caption{The mass transfer coefficient over time in different locations: overall mass transfer
-coefficient (top left), first part (top right), second part (bottom left), third part (bottom
-right). \label{fig:results:triple}}
-\end{figure}
-
-{\color{red} Probably we can consider that for capillary number less than $0.08$ the mass transfer
-is a plug flow mass transfer, keeping only the impact from caps.}
-
-\section{Four unit cells results}
-Four unit cells results are subdivided into four cells. The results are presented in Fig.
-\ref{fig:results:quadro}. While we expect certain deviations for the first and the last part, but
-surprisingly the concentration difference over the third segment tends to be zero. That means not
-enough time steps are performed. The results over segments are summarized in Table
-\ref{table:four_units}.
-\begin{table}[htb!]
-\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
-\hline
-$Ca$   &Overall  &I       &II      &III     &IV\\
-$0.080$&$1.7359$ &$4.7533$&$1.0665$&$0.1088$&$1.0150$\\
-$0.065$&$1.9260$ &$4.5620$&$0.9113$&$0.0619$&$2.1689$\\
-\hline
-\end{tabularx}
-\caption{Simulation results for mass transfer coefficients for 4 unit cells
-domain.\label{table:four_units}}
-\end{table}
-\begin{figure}[htb!]
-\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_overall.eps}
-\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_first.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_second.eps}
-\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_third.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/steady_quadro_fourth.eps}\\
-\caption{The mass transfer coefficient over time in different locations: overall mass transfer
-coefficient (top left), first part (top right), second part (middle left), third part (middle
-right) and fourth part (bottom left). \label{fig:results:quadro}}
-\end{figure}
-
-From Figs. \ref{fig:results:triple} and \ref{fig:results:quadro} one can see that $4,000,000$ time
-steps are enough to saturate the second unit for $Ca=0.080$ number. Let us recall bubble velocities
-and see what are the characteristic lengths for them calculated as time steps multiplied on the
-bubble velocity. From the table one can see that each unit cell is saturated with the timesteps as
-$1.5 \frac{N_x}{U_{bubble}}$ {\color{red}(Pretty important result)}. It's inevitably needs the
-velocity increase.
-\begin{table}[htb!]
-\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
-\hline
-$Ca$ &$U_{bubble}$ &$N_{iter_1}$ &$N_{iter_2}$ &$N_{iter_3}$ &$\frac{L_1}{N_x}$&$\frac{L_2}{N_x}$ 
-&$\frac{L_3}{N_x}$\\
-$0.026$&$0.0014$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$0.4666$ &$0.9333$ &$1.8666 $\\
-$0.047$&$0.0027$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$0.9$    &$1.8$    &$3.6    $\\
-$0.080$&$0.0045$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$1.5$    &$3.0$    &$6.0    $\\
-$0.065$&$0.0037$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$1.2333$ &$2.4666$ &$4.9333 $\\
-$0.222$&$0.0125$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$4.1666$ &$8.3333$ &$16.6666$\\
-$0.479$&$0.0271$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$9.0333$ &$18.0666$&$36.1333$\\
-$0.736$&$0.0416$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$13.8666$&$27.7333$&$55.4666$\\
-$0.989$&$0.0559$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$18.6333$&$37.2666$&$74.5333$\\
-\hline
-\end{tabularx}
-\caption{Table results to understand how many time steps are needed to be performed to reach the
-saturation.\label{table:time:steps}}
-\end{table}
-
-\section{Lattice Boltzmann Benchmarks}
-
-\section{Tweaking velocity}
-The reason to tweak velocity is that the velocity field because of the highly nonlinear binary liquid lattice Boltzmann model do not have nice velocity profile, since some streamlines penetrate the bubble in the reference frame of the bubble. Therefore there exists a normal to the surface of the bubble velocity component which destroys right away the advection-diffusion results. Therefore, a special additional free-surface solver was developed in order to dispose the vertical components. 
-
-The solver was through consequent steps. First, we extracted the velocity profiles from the
-original binary-liquid simulations. Then, we imposed walls with velocity of the bubble, so the
-bubble stays still. At the surface of the bubble the free boundary conditions were imposed, see
-\ref{appendix-free-surface}. One of the examples is shown in Fig.
-\ref{fig:streamlines:tweaked:velocity}. Among all the simulations the bulk velocity in film and the
-slug are different of no more than $7$ percent. {\color{red} Add some pictures froms streamlines.py
-if it's required to show more.}
-\begin{figure}
-\includegraphics[angle=90,width=\textwidth]{Figures/original.eps}\\
-\includegraphics[angle=90,width=\textwidth]{Figures/performed.eps}\\
-\caption{The comparison between original velocity fields and velocity fields obtained from free surface solver. \label{fig:streamlines:tweaked:velocity}}
-\end{figure}
-
 
 \section{Keeping Peclet}
 This section addresses the performance of the simulations. The ulimate goal is to increase
@@ -1228,7 +829,7 @@ scale of simulations. \label{table:scaling:peclet}}
 
 The corresponding to Table \ref{table:scaling:peclet} contour profiles for different scalings are
 presented in Fig. \ref{fig:contours:scaling:peclet}.
-\begin{figure}
+\begin{figure}[htb!]
 \includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca026.eps}\\
 \includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca054.eps}\\
 \includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca05.eps}\\
@@ -1236,6 +837,105 @@ presented in Fig. \ref{fig:contours:scaling:peclet}.
 \includegraphics[height=0.3\textwidth]{Figures/contourlines_scale_ca14.eps}\\
 \caption{Contours for scaling Peclet number.\label{fig:contours:scaling:peclet}}
 \end{figure}
+
+\section{Comparison between different approaches for one unit cell}
+We consequently will examine different approaches to the mass transfer definition, Fig.
+\ref{fig:comparison:one:unit:cell}:
+\begin{description}
+\item[I] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
+is located near the entrance of the computational domain, and the characteristic concentration is
+the inlet/outlet concentration, Fig \ref{fig:benchmark}. 
+\item[II] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
+is located near the entrance of the computational domain, and the characteristic concentration is
+the average concentration, Fig \ref{fig:benchmark}.
+\item[III] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a
+bubble is located in the middle of the computational domain, and the characteristic concentration
+is the inlet/outlet concentration.
+\item[IV] Definition of \citet{vanbaten-circular} with periodic boundary conditions where a bubble
+is located in the middle of the computational domain, and the characteristic concentration is the
+average concentration.
+\item[V] Definition with the concentration jump between inlet and outlet over one unit cell.
+\end{description}
+
+\begin{figure}[htb!]
+\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_entrance.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_state_inlet_aver.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_aver.eps}
+\includegraphics[width=0.5\textwidth]{Figures/steady_state_per_middle_outlet.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/steady_state_jos_inlet_outlet.eps}\\
+\caption{\label{fig:comparison:one:unit:cell}}
+\end{figure}
+All the comparison is summarized in Table \ref{table:one_unit_comparison}.
+\begin{table}[htb!]
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+\hline
+$Ca$&$Fo$&$\vol_{ent},\,\mathrm{s}^{-1}$&$\vol_{aver},\,\mathrm{s}^{-1}$&$\vol_{mid,
+aver},\,\mathrm{s} ^ { -1 }$&$\vol_{mid,out},\,\mathrm{s}^{-1}$&$\vol_{open},\,\mathrm{s}^{-1}$ \\
+\hline
+$0.026$&$0.08493$&$0.2737$&$0.1775$&$0.1692$&$0.2631$&$3.6756$\\
+$0.047$&$0.02160$&$0.3664$&$0.3431$&$0.2852$&$0.4553$&$11.4822$\\
+$0.080$&$0.00588$&$0.4959$&$0.4185$&$0.4079$&$0.6920$&$15.1964$\\
+$0.065$&$0.00862$&$0.4734$&$0.4517$&$0.4303$&$0.8923$&$21.4517$\\
+$0.222$&$0.00103$&$0.8505$&$0.6799$&$0.6109$&$0.8679$&N/A\\
+$0.479$&$0.00034$&$1.1541$&$1.0460$&$0.9884$&$1.2995$&N/A\\
+$0.736$&$0.00018$&$1.1801$&$1.2395$&$1.2199$&$1.1555$&N/A\\
+$0.989$&$0.00012$&$1.2215$&$1.3493$&$1.3400$&$1.0350$&N/A\\
+\hline
+\end{tabularx}
+\caption{Simulation results for different capillary numbers.
+\label{table:one_unit_comparison}}
+\end{table}
+One can see that the only consistent result is for simulations which take into the account average
+concentration. The results come to the steady-state after $1,000,000$ iterations. However, to
+understand properly what is the real mass transfer coefficient one needs to perform a few units
+simultions.
+
+\section{Open boundary conditions}
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{Figures/jos_aver_conc_scale_ca0097.eps}
+\includegraphics[width=0.5\textwidth]{Figures/jos_aver_moving_window_ca0097.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/jos_aver_conc_scale_ca0254.eps}
+\includegraphics[width=0.5\textwidth]{Figures/jos_aver_moving_window_ca0254.eps}\\
+\caption{Open boundary conditions. \label{fig:open:boundary:jos}}
+\end{figure}
+
+\section{Symmetric boundary conditions}
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{Figures/sym_aver_conc_scale_ca0097.eps}
+\includegraphics[width=0.5\textwidth]{Figures/sym_aver_moving_window_ca0097.eps}\\
+\includegraphics[width=0.5\textwidth]{Figures/sym_aver_conc_scale_ca0254.eps}
+\includegraphics[width=0.5\textwidth]{Figures/sym_aver_moving_window_ca0254.eps}\\
+\caption{Symmetric boundary conditions. \label{fig:open:boundary:sym}}
+\end{figure}
+
+
+
+\section{Four unit cells results}
+From Figs. \ref{fig:results:triple} and \ref{fig:results:quadro} one can see that $4,000,000$ time
+steps are enough to saturate the second unit for $Ca=0.080$ number. Let us recall bubble velocities
+and see what are the characteristic lengths for them calculated as time steps multiplied on the
+bubble velocity. From the table one can see that each unit cell is saturated with the timesteps as
+$1.5 \frac{N_x}{U_{bubble}}$ {\color{red}(Pretty important result)}. It's inevitably needs the
+velocity increase.
+\begin{table}[htb!]
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+\hline
+$Ca$ &$U_{bubble}$ &$N_{iter_1}$ &$N_{iter_2}$ &$N_{iter_3}$ &$\frac{L_1}{N_x}$&$\frac{L_2}{N_x}$ 
+&$\frac{L_3}{N_x}$\\
+$0.026$&$0.0014$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$0.4666$ &$0.9333$ &$1.8666 $\\
+$0.047$&$0.0027$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$0.9$    &$1.8$    &$3.6    $\\
+$0.080$&$0.0045$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$1.5$    &$3.0$    &$6.0    $\\
+$0.065$&$0.0037$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$1.2333$ &$2.4666$ &$4.9333 $\\
+$0.222$&$0.0125$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$4.1666$ &$8.3333$ &$16.6666$\\
+$0.479$&$0.0271$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$9.0333$ &$18.0666$&$36.1333$\\
+$0.736$&$0.0416$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$13.8666$&$27.7333$&$55.4666$\\
+$0.989$&$0.0559$&$10^6$&$2\cdot10^6$&$4\cdot10^6$&$18.6333$&$37.2666$&$74.5333$\\
+\hline
+\end{tabularx}
+\caption{Table results to understand how many time steps are needed to be performed to reach the
+saturation.\label{table:time:steps}}
+\end{table}
+
 
 \section{Performing real simulations}
 As it was found earlier one needs to make a few units simulations to obtain a proper volumetric
@@ -1304,7 +1004,7 @@ average concentration between two different cells have to be of the following va
 \beqal
 &C_1=C(x)=C^* \Bigl(1-e^{-\vol \frac{x}{\ugas+\uliq}}\Bigr)\\
 &C_2=C(x+L)=C^* \Bigl(1-e^{-\vol \frac{x+L}{\ugas+\uliq}}\Bigr)\\
-k_L\frac{L}{\ugas+\uliq}=\frac{C^*-C_1}{C^{*}-C_2}
+&k_L\frac{L}{\ugas+\uliq}=\frac{C^*-C_1}{C^{*}-C_2}
 \feqal
 One can see that this number is different in comparison with the number used for periodic boundary
 conditions. Thus, the domain transformation from time domain to the coordinate domain is not
@@ -1403,27 +1103,12 @@ Another moving concentrations window is presented in Fig. \ref{fig:moving:averag
 \label{fig:moving:average:window10}}
 \end{figure}
 
-\section{Open boundary conditions}
-\begin{figure}
-\includegraphics[width=0.5\textwidth]{Figures/jos_aver_conc_scale_ca0097.eps}
-\includegraphics[width=0.5\textwidth]{Figures/jos_aver_moving_window_ca0097.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/jos_aver_conc_scale_ca0254.eps}
-\includegraphics[width=0.5\textwidth]{Figures/jos_aver_moving_window_ca0254.eps}\\
-\caption{Open boundary conditions. \label{fig:open:boundary:jos}}
-\end{figure}
-
-\section{Symmetric boundary conditions}
-\begin{figure}
-\includegraphics[width=0.5\textwidth]{Figures/sym_aver_conc_scale_ca0097.eps}
-\includegraphics[width=0.5\textwidth]{Figures/sym_aver_moving_window_ca0097.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/sym_aver_conc_scale_ca0254.eps}
-\includegraphics[width=0.5\textwidth]{Figures/sym_aver_moving_window_ca0254.eps}\\
-\caption{Symmetric boundary conditions. \label{fig:open:boundary:sym}}
-\end{figure}
+\section{Scaling for $Ca=1.040$}
 
 
 \appendix
 \section{Analytical solution for parabolic profile with zero velocity gradient at $0$}
+\label{appendix:zero:gradient}
 The problem is defined in terms of PDE as follows: 
 \beq
 \label{diffusion:zero:gradient:start}
@@ -1438,17 +1123,17 @@ The non-dimensional parameters are introduced:
 \begin{aligned}
 &\frac{\partial C}{\partial \frac{x}{H}} \frac{U_0}{H}
 \Bigl(\frac{y}{H}\Bigr)^2=\frac{D}{H^2}\frac{\partial^2 C}{\partial \frac{y^2}{H^2}}\\
-&C(0,y)=C_0,\, C(x,0)=\cstart,\, \frac{\partial C}{\partial y }(x,H)=0\\
+&C(0,y)=C_0,\, C(x,0)=\cstar,\, \frac{\partial C}{\partial y }(x,H)=0\\
 \end{aligned}
 \feq
 After a change of variables:
 \beq
 \begin{aligned}
 &\zeta=\frac{x}{H} \frac{D}{U_0 H}=\frac{1}{Pe}\frac{x}{H}\\
-&\xi=\frac{y}{H}
+&\xi=\frac{y}{H},
 \end{aligned}
-\feq
-, Eq. \ref{diffusion:zero:gradient:start} with boundary conditions becomes as follows:
+\feq 
+Eq. \ref{diffusion:zero:gradient:start} with boundary conditions becomes as follows:
 \beq
 \label{diffusion:zero:gradient:middle}
 \begin{aligned}
@@ -1523,17 +1208,17 @@ Therefore, the solution in a general form is represented as:
 To find unknown coefficients $C_m$ one needs to substitute the expression above to the initial
 condition:
 \beq
-\Theta(0,\xi)=C_0-C_{wall}=\sum_m{C_m \sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2
+\Theta(0,\xi)=C_0-\cstar=\sum_m{C_m \sqrt{\xi}J_{\frac{1}{4}}\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)}\\
 \feq
 Using the Stourm-Liouville theorem one can multiply by $\xi^{5/2}
 J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)$ and integrate left and right parts of the equation:
 \beq
 \begin{aligned}
-&\bigl(C_0-C_{wall}\bigr) \int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+&\bigl(C_0-\cstar\bigr) \int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}=C_m\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}\\
-&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+&C_m = (C_0-\cstar ) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}
 \end{aligned}
@@ -1541,21 +1226,24 @@ J_{\frac{1}{4}}\Bigl(\frac{m^2 \xi^2}{2}\Bigr)$ and integrate left and right par
 Therefore, the overall solution is specified as:
 \beq
 \begin{aligned}
-&C(x,y)=C_{wall}+\sum_{m}{C_m
+&C(x,y)=\cstar+\sum_{m}{C_m
 \sqrt{\frac{y}{H}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{H^2}\Bigr)\exp\Bigl(-\frac{m^4}{Pe}
 \frac { x }{H}\Bigr)}\\
-&C_m = (C_0-C_{wall}) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+&C_m = (C_0-\cstar) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}
 \end{aligned}
 \feq
-For the sake of completeness, we list $5$ first coefficients $C_1=-1.5217$, $C_2=-0.4933$, $C_3=-0.3243$, $C_4=-0.2486$, $C_5=-0.2044$. 
+For the sake of completeness, we list $5$ first coefficients for a case $C_0=0$ and $\cstar=1$:
+$C_1=-1.5217$, $C_2=-0.4933$, $C_3=-0.3243$, $C_4=-0.2486$, $C_5=-0.2044$. 
 \subsection{The Poiseuille parabolic profile}
-The problem can be formulated through the following PDE:
+\label{appendix:poiseuille}
+Close to the previous example but with a different velocity profile, the benchmark can be
+formulated through the following PDE:
 \beq
 \begin{aligned}
 &\frac{\partial C}{\partial x} U(y)=D\frac{\partial^2 C}{\partial y^2}\\
-&C(0,y)=0,\, C(x,\pm \delta)=C_s,\, \frac{\partial C}{\partial y }(x,0)=0\\
+&C(0,y)=0,\, C(x,\pm \delta)=\cstar,\, \frac{\partial C}{\partial y }(x,0)=0\\
 &U(y)=U_0 \Bigl(1-\bigl(\frac{y}{\delta}\bigr)^2\Bigr)
 \end{aligned}
 \feq
@@ -1564,13 +1252,13 @@ the following equation can be obtained:
 \beq
 \begin{aligned}
 &\frac{\partial \Theta}{\partial \zeta}(1-\xi^2)=\frac{\partial^2 C}{\partial \xi^2}\\
-\Theta(\zeta,\xi)=C-C_s\,\Theta(0,\xi)=-C_s\,\Theta(0,\pm 1)=0\\
+&\Theta(\zeta,\xi)=C-\cstar\,\Theta(0,\xi)=-\cstar\,\Theta(0,\pm 1)=0
 \end{aligned}
 \feq
 After separation of variables, $\Theta(\zeta,\xi)=X(\zeta)Y(\xi)$ one can come up with two
 equations:
 \beq
-\label{fourier:separation:variables}
+\label{fourier:separation:variables:parabolic}
 \begin{aligned}
 &\frac{\mathrm{d}X(\zeta)}{\mathrm{d}\zeta}+m^4 X(\zeta)=0\\
 &\frac{\mathrm{d^2}Y(\xi)}{\mathrm{d}\xi^2}+m^4 (1-\xi^2) Y(\xi)=0
@@ -1594,7 +1282,7 @@ hypergeometric function \cite{abramowitz}:
 \end{aligned}
 \feq 
 Taking symmetry conditions in the consideration by leaving only even solution, Eq.
-(\ref{fourier:separation:variables}) has a solution as:
+(\ref{fourier:separation:variables:parabolic}) has a solution as:
 \beq
 Y_m=C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 x^2\Bigr) 
 \feq
@@ -1603,14 +1291,14 @@ ${_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \Bigr)=0$. First ten ei
 found using numerical methods, as $1.2967$, $2.3811$,$3.1093$,$3.6969$,$4.2032$,$4.6548$,$5.0662$,
 $5.4467$, $5.8023$,$6.1373$. One needs to satisfy one more condition to obtain coefficients $C_m$:
 \beq
--C_{s}=\sum_m{C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
+-\cstar=\sum_m{C_m e^{-m^2 x^2/2} {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
 x^2\Bigr)} 
 \feq
 One can multiply both parts on $(1-x^2){_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
-x^2\Bigr)$ and through orthoganality Sturm-Liouiville theorem obtain coefficients:
+x^2\Bigr)$ and through orthoganality (Stourm-Liouiville theorem) obtain coefficients:
 \beq
 \label{coeff:series:parabolic:profile}
-C_m=-C_s \frac{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
+C_m=-\cstar \frac{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
 {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
 x^2\Bigr)\mathrm{d}x}}{\int_{x=0}^{1}{(1-x^2)e^{-m^2 x^2/2}
 {_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2
@@ -1618,16 +1306,12 @@ x^2\Bigr)^2\mathrm{d}x}}
 \feq
 Therefore a whole solution can be written as:
 \begin{equation}
-C=C_{s}-C_s \sum_{m=0}{C_m e^{-m^4 \frac{x}{\delta}\frac{1}{Pe}} e^{-m^2
+C=\cstar-\cstar \sum_{m=0}{C_m e^{-m^4 \frac{x}{\delta}\frac{1}{Pe}} e^{-m^2
 y^2/(2\delta^2)}{_1F_1}\Bigl(-\frac{m^2}{4}+\frac{1}{4},\frac{1}{2},m^2 \frac{y^2}{\delta^2}\Bigr)},
 \end{equation}
-where coefficients $C_m$ are taken from Eq. (\ref{coeff:series:parabolic:profile}). The comparison
-between profiles is represented in Fig. \ref{fig:parabolic:comparison}.
-\begin{figure}[htb!]
-\includegraphics[width=\textwidth]{Figures/parabolic_profile_comparison.eps}
-\caption{Comparison between analytical profile and simulations with pressure antibounceback
-conditions. One can see given a low resolution of the profile a nice coincedence.}
-\end{figure}
+where coefficients $C_m$ are taken from Eq. (\ref{coeff:series:parabolic:profile}). For the case
+$\cstar$, first ten coefficients equal to  $1.2008$, $-0.2991$, $0.1608$, $-0.1074$, $0.0796$,
+$-0.0627$, $0.0515$, $-0.0435$, $0.0375$, $-0.0329$.
 
 \section{Free surface boundary conditions}
 \label{appendix-free-surface}
@@ -1635,7 +1319,8 @@ There are a few implementations of free boundary conditions \cite{ginzburg-free,
 However, we developed the easy solver to impose the free surface boundary conditions at the
 complicated surface of the bubble. The reason is to impose the symmetric boundary conditions.
 Because the boundary is the staircase approximation, one can find the normal to the boundary which
-is always located by the angle of multiple of $45$, see Fig. \ref{fig:free:surface}. Imposing the
+is always located by the angle of multiple of $45$ degrees, see Fig. \ref{fig:free:surface}. This
+can be done automatically by the` simple coding. Imposing the
 symmetric boundary conditions requires $U_{n,F}$=$U_{n,B}$ and $U_{\tau,F}=U_{\tau,B}$. We can copy
 populations in the certain order to do it, for example $f_{B,i}=f_{F,\bar{i}}$, where $c_i$ and
 $c_{\bar{i}}$ are complementary directions, where $c_{i,n}=-c_{\bar{i},n}$ and
@@ -1643,11 +1328,12 @@ $c_{i,\tau}=c_{\bar{i},\tau}$, where $c_{i,n}=(\bm{c_i} \cdot \bm{n})\bm{n}$ and
 $c_{i,\tau}=\bm{c_i}-(\bm{c_i}\cdot \bm{n})\bm{n}$.  
 
 \begin{figure}
-\includegraphics[width=\textwidth]{Figures/free_surface.eps}
-\caption{Free-surface boundary condition represented in the lattice Boltzmann. By crosses we outline boundary nodes, by circle the fluid node is outlined. \label{fig:free:surface}}
+\includegraphics[width=0.5\textwidth]{Figures/free_surface.eps}
+\caption{Free-surface boundary condition represented in the lattice Boltzmann. By crosses we outline
+boundary nodes, by circle the fluid node is outlined. Populations at the corner boundary nodes are
+essentially the population of the fluid node, but in the certain order. \label{fig:free:surface}}
 \end{figure}
 \bibliographystyle{unsrtnat}
 \bibliography{paper}
-
 \end{document}
 
