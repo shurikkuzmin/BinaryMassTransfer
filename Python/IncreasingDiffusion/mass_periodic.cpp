@@ -512,7 +512,7 @@ void stream()
 
 void calculate_mass_transfer(int time_counter)
 {
-	static std::ofstream fconc("concentration.dat");
+	static std::ofstream fconc("concentration_periodic.dat");
 	
     double conc=0.0;
     int counter; 	

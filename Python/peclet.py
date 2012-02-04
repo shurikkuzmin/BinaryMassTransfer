@@ -174,6 +174,10 @@ def check_average_concentration(dir_name,factor,subtract):
     capillary_str=[str(x) for x in [9,21,42,60,84]]
     capillaries=[0.097,0.254,0.526,0.750,1.040]
     velocities=[0.0055,0.0143,0.0297,0.0424,0.05538]
+    velocities_slug=[0.0046,0.0108,0.0209,0.0293,0.0397]
+    velocities_gas=[0.0016,0.0041,0.0080,0.0101,0.0135]
+    
+
 
     scale=[2,4,8,10,20,40]
     #scale=[8,10,20,40]
@@ -194,7 +198,8 @@ def check_average_concentration(dir_name,factor,subtract):
     for scale_counter in range(0,len(scale_str)-subtract):
         os.chdir(scale_str[scale_counter])
         #exam_point=int(20*factor*scale[len(scale_str)-subtract-1]/scale[scale_counter])
-        exam_point=int(24.0/(velocities[counter]*scale[scale_counter]))        
+        #exam_point=int(24.0/(velocities[counter]*scale[scale_counter]))        
+        exam_point=10;        
         #name=str(20000*factor*scale[len(scale_str)-subtract-1]/scale[scale_counter])
         #name="density"+"0"*(7-len(name))+name+".dat"        
         #print "Filename=",name
@@ -213,7 +218,43 @@ def check_average_concentration(dir_name,factor,subtract):
         pylab.figure(1)
         pylab.plot(velocities[counter]*scale[scale_counter]*concentration[1:,0],aver_concentration,styles[scale_counter])
         pylab.figure(2)
-        pylab.plot(velocities[counter]*scale[scale_counter]*concentration[1:,0]/3000.0,3000.0/(velocities[counter]*scale[scale_counter]*concentration[1:,0])*numpy.log(1.0/(1.0-aver_concentration)),styles[scale_counter],linewidth=2)                
+        
+        #this plot is in terms of unit cells        
+        #pylab.plot(velocities[counter]*scale[scale_counter]*concentration[1:,0]/3000.0,3000.0/(velocities[counter]*scale[scale_counter]*concentration[1:,0])*numpy.log(1.0/(1.0-aver_concentration)),styles[scale_counter],linewidth=2)                
+        #this plot is in terms of time        
+        pylab.plot(concentration[1:,0]/1000.0,3000.0/(velocities[counter]*scale[scale_counter]*concentration[1:,0])*numpy.log(1.0/(1.0-aver_concentration)),styles[scale_counter],linewidth=2)                
+
+        pylab.figure(99)
+        pylab.plot(velocities[counter]*scale[scale_counter]*concentration[1:,0]/3000.0,3000.0/(velocities[counter]*scale[scale_counter]*concentration[1:,0])*numpy.log(1.0/(1.0-concentration[1:,2])),styles[scale_counter],linewidth=2)                
+      
+
+        pylab.figure(3)
+        window_len=10     
+        conc=[]
+        for i in range(0,len(aver_concentration)-window_len):
+            conc.append(3000.0/(velocities[counter]*scale[scale_counter]*1000.0*window_len)\
+                        *numpy.log((1.0-aver_concentration[i])/(1.0-aver_concentration[i+window_len])))   
+        pylab.plot(conc,styles[scale_counter])
+        pylab.ylim(ymin=0.0,ymax=0.5)
+        pylab.figure(4)
+        vanbaten=[]
+        mult_vanbaten=(velocities_gas[counter]+velocities_slug[counter])*scale[scale_counter]
+        for i in range(0,len(aver_concentration)-window_len):
+            vanbaten.append((aver_concentration[i+window_len]-aver_concentration[i])*3000.0/(1000*mult_vanbaten*window_len*(1.0-aver_concentration[i+window_len/2])))   
+        pylab.plot(velocities[counter]*scale[scale_counter]*concentration[0:len(aver_concentration)-window_len,0]/3000.0,\
+                   vanbaten,styles[scale_counter])
+        pylab.ylim(ymin=0.0,ymax=0.5)
+        
+        pylab.figure(100)
+        vanbaten_final=[]
+        mult_vanbaten=(velocities_gas[counter]+velocities_slug[counter])*scale[scale_counter]
+        for i in range(0,len(aver_concentration)-window_len):
+            vanbaten_final.append((aver_concentration[i+window_len]-aver_concentration[i])*3000.0/(1000*mult_vanbaten*window_len*(1.0-concentration[i+window_len/2,2])))   
+        pylab.plot(velocities[counter]*scale[scale_counter]*concentration[0:len(aver_concentration)-window_len,0]/3000.0,vanbaten_final,styles[scale_counter])
+        pylab.ylim(ymin=0.0,ymax=1.0)
+        pylab.xlim(xmax=15)
+        
+        
         #pylab.figure(99,figsize=(12,3))
         print 3000.0/(velocities[counter]*scale[scale_counter]*concentration[exam_point,0])*numpy.log(1.0/(1.0-aver_concentration[exam_point-1]))
         legs.append(scale_str[scale_counter])        
@@ -227,22 +268,75 @@ def check_average_concentration(dir_name,factor,subtract):
     #fig=pylab.figure(99)
     
     fig=pylab.figure(2)    
-    fig.subplots_adjust(top=0.9,bottom=0.15)
+    fig.subplots_adjust(top=0.9,bottom=0.15,left=0.18)
     pylab.legend(legs)
     pylab.xticks(fontsize=20)
     pylab.yticks(fontsize=20)
     pylab.ylim(ymax=0.5,ymin=0.0)
+    #pylab.xlabel(r'''$\mathrm{Cell\,Units}$''',fontsize=30)
     pylab.xlabel(r'''$\mathrm{Time}\times 10^3$''',fontsize=30)
-    pylab.ylabel(r'''$C$''',fontsize=30)    
+    
+    pylab.ylabel(r'''$k_L a \frac{L_{\mathrm{unit}}}{U_{\mathrm{liq}}+U_{\mathrm{gas}}}$''',fontsize=30)    
     pylab.title(r'''$Ca='''+str(capillary)+'''$''',fontsize=30)
     #pylab.savefig("aver_conc_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+    pylab.savefig("aver_conc_scale_ca_time"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+
+
+    fig=pylab.figure(99)    
+    fig.subplots_adjust(top=0.9,bottom=0.15,left=0.18)
+    pylab.legend(legs)
+    pylab.xticks(fontsize=20)
+    pylab.yticks(fontsize=20)
+    pylab.ylim(ymax=0.75,ymin=0.0)
+    pylab.xlabel(r'''$\mathrm{Cell\,Units}$''',fontsize=30)
+    #pylab.xlabel(r'''$\mathrm{Time}\times 10^3$''',fontsize=30)
+    
+    pylab.ylabel(r'''$k_L a \frac{L_{\mathrm{unit}}}{U_{\mathrm{liq}}+U_{\mathrm{gas}}}$''',fontsize=30)    
+    pylab.title(r'''$Ca='''+str(capillary)+'''$''',fontsize=30)
+    #pylab.savefig("aver_conc_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+    pylab.savefig("aver_vanbaten_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+
+
+    fig=pylab.figure(4)    
+    fig.subplots_adjust(top=0.9,bottom=0.15,left=0.18)
+    pylab.legend(legs)
+    pylab.xticks(fontsize=20)
+    pylab.yticks(fontsize=20)
+    pylab.ylim(ymax=0.75,ymin=0.0)
+    pylab.xlim(xmax=15)
+    pylab.xlabel(r'''$\mathrm{Cell\,Units}$''',fontsize=30)
+    #pylab.xlabel(r'''$\mathrm{Time}\times 10^3$''',fontsize=30)
+    
+    pylab.ylabel(r'''$k_L a \frac{L_{\mathrm{unit}}}{U_{\mathrm{liq}}+U_{\mathrm{gas}}}$''',fontsize=30)    
+    pylab.title(r'''$Ca='''+str(capillary)+'''$''',fontsize=30)
+    #pylab.savefig("aver_conc_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+    pylab.savefig("vanbaten_aver_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+
+    fig=pylab.figure(100)    
+    fig.subplots_adjust(top=0.9,bottom=0.15,left=0.18)
+    pylab.legend(legs)
+    pylab.xticks(fontsize=20)
+    pylab.yticks(fontsize=20)
+    pylab.ylim(ymax=0.75,ymin=0.0)
+    pylab.xlabel(r'''$\mathrm{Cell\,Units}$''',fontsize=30)
+    #pylab.xlabel(r'''$\mathrm{Time}\times 10^3$''',fontsize=30)
+    
+    pylab.ylabel(r'''$k_L a \frac{L_{\mathrm{unit}}}{U_{\mathrm{liq}}+U_{\mathrm{gas}}}$''',fontsize=30)    
+    pylab.title(r'''$Ca='''+str(capillary)+'''$''',fontsize=30)
+    #pylab.savefig("aver_conc_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+    pylab.savefig("vanbaten_full_scale_ca"+str(capillary)[0:1]+str(capillary)[3:]+".eps",format="EPS",dpi=300)
+
+
+
 
 def check_average_jos_concentration(dir_name,scales):
     capillary_str=[str(x) for x in [9,21,42,60,84]]
     capillaries=[0.097,0.254,0.526,0.750,1.040]
     
     velocities=[0.0055,0.0143,0.0297,0.0424,0.05538]
-
+    velocities_slug=[0.0046,0.0108,0.0209,0.0293,0.0397]
+    velocities_gas=[0.0016,0.0041,0.0080,0.0101,0.0135]
+    
     os.chdir("JosScalingPeclet/"+dir_name)
     
     geometry=numpy.loadtxt("geometry.dat")
@@ -291,7 +385,21 @@ def check_average_jos_concentration(dir_name,scales):
         pylab.figure(3)
         pylab.plot(conc,styles[scale_counter])
         print 3000.0/(velocities[counter]*float(scale)*concentration[exam_point,0])*numpy.log(1.0/(1.0-aver_concentration[exam_point-1]))
-        legs.append(scale)        
+        legs.append(scale)
+        
+        pylab.figure(4)
+        conc_inlet_outlet=numpy.log((1.0-concentration[:,2])/(1.0-concentration[:,3])) #*(float(scale)*velocities_slug[counter])*1000        
+        #pylab.plot(conc_inlet_outlet)
+        #pylab.plot((concentration[1:,1]-concentration[:-1,1]))
+        multiplier=float(scale)*velocities_slug[counter]/(velocities_slug[counter]+velocities_gas[counter])
+        mult_vanbaten=float(scale)*(velocities_slug[counter]+velocities_gas[counter])        
+        vanbaten=[]        
+        for i in range(0,dims[0]-window_len):
+            vanbaten.append((aver_concentration[i+window_len]-aver_concentration[i])*3000.0/(1000*mult_vanbaten*window_len*(1.0-aver_concentration[i+window_len/2])))   
+        
+        #pylab.plot((concentration[:,3]-concentration[:,2])*multiplier/(1.0-aver_concentration)) #/3000.0)        
+        pylab.plot(vanbaten)
+        pylab.plot()        
         os.chdir("..")
         
     fig=pylab.figure(3)
@@ -592,23 +700,30 @@ def check_yue_dependance():
     yue2_correlation=2.0*3000.0/hydro_diam*numpy.power(1.0/(15.*peclets),0.5)\
         *numpy.power((velocities/(velocities_gas+velocities_liq)),0.5)\
         *numpy.power(bubble_lengths/3000.0,0.3)
-    pylab.plot(peclets,aver_coefficients,"ko",markersize=6)
-    pylab.plot(peclets,yue_correlation,"ks",markersize=6)
-    pylab.xlabel(r'''$\mathrm{Peclet}$''',fontsize=20)
-    pylab.ylabel(r'''$k_L a\frac{L}{U_{\mathrm{gas}}+U_{\mathrm{liq}}}$''',fontsize=20)
-    pylab.legend(["Our simulations","Yue correlation"])
+    #fitting procedure
+    fitfunc = lambda p, x: p[0]*(x**p[1]) # Target function
+    errfunc = lambda p, x, y: fitfunc(p, x) - y # Distance to the target function
+    p0 = [aver_coefficients[0]*numpy.sqrt(peclets[0]), -0.5] # Initial guess for the parameters
+    p1, success = scipy.optimize.leastsq(errfunc, p0[:],args=(peclets,aver_coefficients))
+    peclets_range=numpy.arange(peclets[0],14000,100)
+    print p1
     
+    fig=pylab.figure()
+    pylab.plot(peclets_range,p1[0]*numpy.power(peclets_range,p1[1]),"k--")
+
+
+    pylab.xticks(fontsize=16)
+    pylab.yticks(fontsize=16)
+    pylab.plot(peclets,aver_coefficients,"ko-",markersize=6)
+    pylab.plot(peclets,yue_correlation,"ks-",markersize=6)
+    pylab.xlabel(r'''$\mathrm{Peclet}$''',fontsize=30)
+    pylab.ylabel(r'''$k_L a\frac{L}{U_{\mathrm{gas}}+U_{\mathrm{liq}}}$''',fontsize=30)
+    pylab.legend(["Fitting","Simulations","Yue correlation"],fancybox=True)
+    fig.subplots_adjust(left=0.2,bottom=0.15)    
+    pylab.savefig("correlations_comparison.eps",format="EPS",dpi=300)
     
 
-    #fitting procedure
-    #fitfunc = lambda p, x: p[0]*(x**p[1]) # Target function
-    #errfunc = lambda p, x, y: fitfunc(p, x) - y # Distance to the target function
-    #p0 = [aver_coefficients[0]*numpy.sqrt(peclets[0]), 0.5] # Initial guess for the parameters
-    #p1, success = scipy.optimize.leastsq(errfunc, p0[:],args=(peclets,aver_coefficients))
-    
-    #print p1
-    #pylab.plot(peclets_range,p1[0]*numpy.power(peclets_range,p1[1]),"k--")
-    #pylab.legend(["Simulations","Correlation"])
+        #pylab.legend(["Simulations","Correlation"])
     #pylab.text(2000,10,r'''$'''+str(p1[0])+r'''Pe^'''+str(p1[1])+r'''$''',bbox=True)
     #pylab.savefig("volumetric_mass_peclet.eps",format="EPS",dpi=300)    
     
@@ -636,7 +751,7 @@ if __name__=="__main__":
     #check_average_sym_concentration("21",["15","20"])
     
     #check_dependance()
-    #check_yue_dependance()    
-    give_overall_characteristics()     
+    check_yue_dependance()    
+    #give_overall_characteristics()     
      
     pylab.show()
