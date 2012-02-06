@@ -15,6 +15,23 @@
 \newcommand{\beqalstar}{\begin{equation*}\begin{aligned}}
 \newcommand{\feqalstar}{\end{aligned}\end{equation*}}
 \newcommand{\vol}{k_L\,a}
+\newcommand{\lbubble}{L_{\mathrm{bubble}}}
+\newcommand{\lunit}{L_{\mathrm{unit}}}
+\newcommand{\lslug}{L_{\mathrm{slug}}}
+\newcommand{\ububble}{U_{\mathrm{bubble}}}
+\newcommand{\uliq}{U_{\mathrm{liq}}}
+\newcommand{\ugas}{U_{\mathrm{gas}}}
+\newcommand{\uoutlet}{U_{\mathrm{outlet}}}
+\newcommand{\cbubble}{C_{\mathrm{bubble}}}
+\newcommand{\cinlet}{C_{\mathrm{inlet}}}
+\newcommand{\coutlet}{C_{\mathrm{outlet}}}
+\newcommand{\coverall}{C_{\mathrm{overall}}}
+\newcommand{\cstar}{C^{*}}
+\newcommand{\cmedium}{C_{\mathrm{medium}}}
+\newcommand{\volnondim}{\vol \frac{\lunit}{\ububble+\ugas}}
+\newcommand{\omegaplus}{\omega_{+}}
+\newcommand{\omegaminus}{\omega_{-}}
+\newcommand{\holdup}{\varepsilon_{\mathrm{gas}}}
 
 \begin{document}
 \section{Motivation}
@@ -389,7 +406,8 @@ $0.989$&$0.00012$&$1.2215$&$16101062$\\
 \end{table}
 
 \subsection{Comparison between different boundary conditions}
-The mass transfer coefficient by the definition of used in the paper of \citet{vanbaten} is as
+The mass transfer coefficient by the definition of used in the paper of \citet{vanbaten-circular} is
+as
 follows:
 \begin{equation}
 dd

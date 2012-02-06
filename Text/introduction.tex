@@ -183,6 +183,7 @@ simulations and comparison between them are presented.
 By the definition the mass transfer coefficient from the surface with the imposed constant
 concentration $\cbubble$ is the following:
 \beq
+\label{eq:main:definition}
 k_L=\frac{\dot{m}}{P \Delta C},
 \feq
 where $\dot{m}$ is the mass rate $\Bigl[\frac{kg}{s}\Bigr]$, $P$ is the area of the surface
@@ -1057,18 +1058,22 @@ C(x)= \cstar \Bigl(1-\exp\bigl(-\vol \frac{x}{\uliq+\ugas} \bigr)\Bigr)
 %\feqal
 %Parameters $\frac{\uliq+\ugas-\ububble}{\uliq+\ugas}$ were calculated and for representative
 %Capillary numbers equal to $0.11,0.04,-0.02,-0.06,-0.10$.
-Therefore, the following correlation was examined between adjacent cells:
+In the case of present simulations the situation is different as the reference frame is moving with
+the bubble. Thus, the correlation between adjacent cells as follows:
 \beqal
 \label{volumetric:between:adjacent:cells}
-&C_1=C(x)=C^* \Bigl(1-e^{-\vol \frac{x}{\ugas+\uliq}}\Bigr)\\
-&C_2=C(x+L)=C^* \Bigl(1-e^{-\vol \frac{x+L}{\ugas+\uliq}}\Bigr)\\
-&k_L\frac{L}{\ugas+\uliq}=\frac{C^*-C_1}{C^{*}-C_2}
+&C_1=C(x)=C^* \Bigl(1-e^{-\vol \frac{x}{\ugas+\uliq-\ububble}}\Bigr)\\
+&C_2=C(x+L)=C^* \Bigl(1-e^{-\vol \frac{x+L}{\ugas+\uliq-\ububble}}\Bigr)\\
+&k_L\frac{L}{\ugas+\uliq-\ububble}=\frac{C^*-C_1}{C^{*}-C_2}\\
+&k_L\frac{L}{U}=\frac{C^*-C_1}{C^*-C_2},
 \feqal
-Fig. \ref{fig:unit:4} shows one of the examples for velocity scale $20$ and  $4$ unit numbers (all
-scales produce the same results) for the volumetric mass transfer coefficient based on difference
-between two adjacent cells concentration averages. One can see that this number is different in
-comparison with the number used for periodic boundary
-conditions. Moreover, it is changed from segment to segment. The same dependencies can be found for
+where $U=\ugas+\uliq-\ububble$. We will see later that this characteristic is really important to
+see whether the liquid slug is mixed. Fig. \ref{fig:unit:4} shows one of the examples for velocity
+scale $20$ and  $4$ unit numbers (all
+scales produce the same results) for the volumetric mass transfer coefficient $k_L \frac{L}{U}$
+(different from $\volnondim$) based on difference
+between two adjacent cells concentration averages. One can see that this number is changed from
+segment to segment. The same dependencies can be found for
 $6$ and $8$ unit cells simulations but we do not present them here.
 
 However, if one wants to examine how the average concentration changes in time according to Eq.
@@ -1086,9 +1091,12 @@ thing for the volumetric mass transfer correlation, see Fig. \ref{fig:moving:ave
 %\includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale15.eps}\\
 \includegraphics[width=0.5\textwidth]{Figures/aver_units4scale20.eps}\hfill
 \includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale20.eps}\\
-\caption{Average concentrations and volumetric coefficients for $4$ units cells. The volumetric
+\caption{Average concentrations (left) and volumetric coefficients (right) $\vol \frac{L}{U}$ (
+different from $\volnondim$) for $4$ units cells. The volumetric
 mass transfer coefficient is calculated based on the difference between averages for different unit
-cells.
+cells. One can see that the numbers for the volumetric mass transfer coefficient are different for
+different unit cells. This is the indication that the liquid slug is mixed and the spatial location
+does not easily transfers to time domain. 
 \label{fig:unit:4}}
 \end{figure}
 \begin{figure}[htb!]
@@ -1098,7 +1106,7 @@ cells.
 \caption{The non-dimensional volumetric mass transfer coefficient defined in Eq.
 \ref{moving:average} for $4$ (top left),$6$ (top right),$8$ cell units (bottom). Only scale
 $10$ is presented since all other simulations produce the same results. One can see that $4$ unit
-cells is not enough to see avoid the influence of boundaries. However, the results for $6$ and $8$
+cells is not enough to avoid the influence of boundaries. However, the results for $6$ and $8$
 unit cells are consistent and show that beginning from third unit cell the results and ending with
 prelast cell results are consistent with periodic boundary simulations and
 \citet{vanbaten-circular} formulations.
@@ -1107,27 +1115,47 @@ prelast cell results are consistent with periodic boundary simulations and
 
 \subsection{$Ca=1.040$ results}
 The same correlations were examined for the different velocity pattern $Ca=1.040$ and initial
-velocity $\ububble=0.055$ and initial diffusion $D=0.0008375$. A few unit cells simulation for this
+velocity $\ububble=0.055$ and initial diffusion $D=0.0008375$. A few unit cells simulation for
+this
 capillary number are unstable. To improve stability we changed original Peclet number by increasing
 diffusion to reveal all the correlations. The results for unit cells are the same as for $Ca=0.097$:
 at least $6$ unit cells are required to be simulated to avoid the influence of boundaries. Thus,
-only $6$ unit cells results are presented in Fig. \ref{fig:6:units:ca1040}.One can see that the
-volumetric mass transfer coefficient based
-on the difference between unit cells averages is constant for internal
-unit cells. This case is different from the previous case where those coefficients were not equal
-to each other. The average concentration being constant means that there is no backward convection
-flux and there is no slug tracer mixing. This test is a good example to indicate whether there is
-mixing in the liquid slug or not.
+only $6$ unit cells results are presented in Fig. \ref{fig:6:units:ca1040}. As well the volumetric
+mass transfer coefficient, Eq. \ref{volumetric:between:adjacent:cells}, is shown in Fig.
+\ref{fig:6:units:ca1040}. One can see that the average volume concentration, as well the volumetric
+mass transfer coefficients, come to the constant and are not increasing with time. Thus, all the
+mass generated with medium is transfered through the boundaries. This is the indication that the
+liquid slug is not mixed. Thus, the volumetric mass transfer coefficient $\volnondim$ can be
+calculated according to the definition, Eq. \ref{eq:main:definition}:
+\beq
+\label{inlet:outlet:spatial:location}
+\vol = \frac{\dot{m}}{V \Delta C},
+\feq 
+where $V$ is the unit cell volume, $\Delta C$ is the concentration difference between the bubble
+surface concentration $\cstar$ and the average medium concentration $C_{aver}$. Note that in this
+case one can calculate the mass generation as:
+\beq
+\dot{m}=(\coutlet-\cinlet)\uoutlet,
+\feq
+where $\coutlet$ and $\cinlet$ are taken for the current unit. Fig. \ref{fig:periodic:ca1040}
+(bottom) shows the volumetric mass transfer coefficient, based on spatial calculations of
+inlet/outlet concentrations. One can see that the volumetric mass transfer coefficient is close to
+the calculated volumetric mass transfer coefficient using the time averaged approach and periodic
+boundaries one unit cells simulations. 
 \begin{figure}[htb!]
 \includegraphics[width=0.5\textwidth]{Figures/aver_units6scaleu2scaled5.eps}
 \includegraphics[width=0.5\textwidth]{Figures/novortex6scaleu2scaled5.eps}\\
 \caption{Results for 6 unit cells. The Peclet number equals to $Pe=2644$.
 One can see that average concentrations reach certain number and stay.
-That means whatever was generated by medium is transfered through
+That means whatever was
+generated by medium is transfered through the outlet
 boundary. One can see that the volumetric mass transfer coefficient based
-on the difference between unit cells averages is constant for internal
+on the difference between unit cells averages, Eq. \ref{volumetric:between:adjacent:cells}, is
+constant for internal
 unit cells. This is the indication that the tracer in the slug is not
-mixed.\label{fig:6:units:ca1040}}
+mixed and the volumetric mass transfer coefficient, $\volnondim$, can be
+calculated using the spatial approach, see Fig.
+\ref{fig:periodic:ca1040}.\label{fig:6:units:ca1040}}
 \end{figure}
 The volumetric mass transfer coefficient with periodic boundary simulations for $Pe=2644$ (velocity
 scale $2$, diffusion scale $10$) and time dependent, Eq. \ref{theor:continuous:mass:transfer},
@@ -1137,9 +1165,12 @@ Therefore, the time based simulations do not readily convert to spatial based si
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{Figures/volume_ca_104_scaleu2scaled5.eps}
 \includegraphics[width=0.5\textwidth]{Figures/aver_moving_window6scaleu2scaled5.eps}\\
-\caption{The periodic (left) and time unit cells averaging volumetric mass transfer coefficients.
-One can see that they coincide, but are different from spatial based volumetric mass transfer
-coefficient, see Fig. \ref{fig:6:units:ca1040} \label{fig:periodic:ca1040}}
+\includegraphics[width=0.5\textwidth]{Figures/flux_moving_window6scaleu2scaled5.eps}\\
+\caption{The periodic (top left), time unit cells averaging (top right), and spatial location
+(bottom), Eq. \ref{inlet:outlet:spatial:location}, calculated  volumetric mass transfer
+coefficients. One can see that they all coincide. However, the periodic boundary conditions based
+calculations produce the overestimated volumetric mass transfer
+coefficient. \label{fig:periodic:ca1040}}
 \end{figure}
 
 \subsection{Experiment comparison}
@@ -1177,10 +1208,15 @@ to the correlation by \citet{yue-mass}.\label{fig:volume:mass:coefficient}}
 This work examines a way to calculate the volumetric mass transfer coefficient in the framework of
 the lattice Boltzmann method. Overall, the recipe is to perform periodic boundary
 conditions simulations and calculate the volumetric mass transfer coefficient based on the averaged
-domain concentration through any formulation as they produce consistent results. Formulation of
+domain concentration through any formulation as they produce consistent results. However, the
+result is the volumetric mass transfer coefficient will be overestimated using this
+approach. Formulation of
 \citet{vanbaten-circular} is inconsistent if one takes the inlet/outlet flux averaged concentration
 to be characteristic concentration. A few unit cells simulations are harder to perform, but they
-have indicator of how well the liquid slug is mixed. Finally, a sample of results was
+have indicator of how well the liquid slug is mixed. As well, for velocity patterns for $Ca\geq
+0.7$ simulations with a few unit cells allow to calculate the volumetric mass transfer
+coefficient based on the spatial location, not time averaged values used in all other
+approaches. Finally, a sample of results was
 compared with the experimental correlation of \citet{yue-mass}. 
 \appendix
 \section{Analytical solution for parabolic profile with zero velocity gradient at $0$}
