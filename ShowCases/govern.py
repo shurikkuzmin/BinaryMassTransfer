@@ -1,4 +1,4 @@
-import numpy
+#import numpy
 import os
 import subprocess
 def modify_file(length,width_value,force):
@@ -15,23 +15,29 @@ def modify_file(length,width_value,force):
     f.close()
     f2.close()
 def run_simulations():
-    capillary=numpy.linspace(0.03,0.9,30)
-    capillary_str=[str(x) for x in range(3,93,3)]
+    capillary=[0.01*x for x in range(9,93,10)]
+    capillary_str=[str(x) for x in range(9,93,10)]
     force_init=6e-6/16;
     width=0.1
-    for i in range(0, len(capillary)):
-        dir_temp=capillary_str[i]
-        os.mkdir(dir_temp)
-        subprocess.call(['cp','main.out',dir_temp+"/"])
-        subprocess.call(['cp','binary.pbs',dir_temp+"/"])
-        os.chdir(dir_temp)
-        os.mkdir("tmp")
-        ratio=capillary[i]/0.05
-        force=force_init*ratio
-        width_value=int(width[i]*200)
-        modify_file(length,width_value,force)
-        subprocess.call(['qsub','binary_new.pbs'])
+    for length in range(200,1400,150):
+        subprocess.call(['mkdir','-p',str(length)])
+        subprocess.call(['cp','main.out',str(length)+"/"])
+        subprocess.call(['cp','binary.pbs',str(length)+"/"])
+        os.chdir(str(length))
+        for i in range(0, len(capillary)):
+            dir_temp=capillary_str[i]
+            subprocess.call(['mkdir','-p',dir_temp])
+            subprocess.call(['cp','main.out',dir_temp+"/"])
+            subprocess.call(['cp','binary.pbs',dir_temp+"/"])
+            os.chdir(dir_temp)
+            subprocess.call(["mkdir","-p","tmp"])
+            ratio=capillary[i]/0.05
+            force=force_init*ratio
+            width_value=int(width*200)
+            modify_file(length,width_value,force)
+            subprocess.call(['qsub','binary_new.pbs'])
         
+            os.chdir("..")
         os.chdir("..")
 
 if __name__=="__main__":

@@ -12,7 +12,7 @@ const int NY=202;
 const int NX=3000;
 
 int width=10;
-int len=500;
+int length=500;
 //Time steps
 int N=300000;
 int NOUTPUT=50000;
@@ -394,7 +394,7 @@ int main(int argc, char* argv[])
 		//Writing files
 		if (counter%NOUTPUT==0)
 		{
-			if (if phase[NX/2][NY/2]!=phase[NX/2][NY/2])
+			if (phase[NX/2][NY/2]!=phase[NX/2][NY/2])
 			{
 				std::cout<<"There were some NaN values.\n";
 				return 0;
