@@ -726,7 +726,27 @@ def check_yue_dependance():
         #pylab.legend(["Simulations","Correlation"])
     #pylab.text(2000,10,r'''$'''+str(p1[0])+r'''Pe^'''+str(p1[1])+r'''$''',bbox=True)
     #pylab.savefig("volumetric_mass_peclet.eps",format="EPS",dpi=300)    
+
+def check_vanbaten_dependance():
+    aver_coefficients=numpy.array([0.21,0.14,0.095,0.074,0.0601])
+    holdups=numpy.array([0.302466666667,0.288423333333,0.271146666667,0.252866666667,0.229446666667])
+    widths=numpy.array([0.092,0.132,0.157,0.167,0.177])
+    velocities=numpy.array([0.0055,0.0143,0.0297,0.0424,0.05538])
+    velocities_liq=numpy.array([ 0.00459266431535,0.0107317293541,0.0208964048893,0.0292353942998,0.0362306511905])    
+    velocities_gas=holdups*velocities    
+    bubble_lengths=numpy.array([1159,1224,1238,1193,1118])
+    omega=1.99
+    diffusion=1.0/3.0*(1.0/omega-0.5)
+
+
+    peclets=velocities*200.0/diffusion
     
+    vanbaten=3000.0/(velocities_liq+velocities_gas)*4.0*numpy.sqrt(diffusion*velocities/numpy.pi)\
+             *numpy.sqrt(bubble_lengths-200.0*(1.0-2.0*widths))/(3000.0*200.0)\
+             +3000.0/(velocities_liq+velocities_gas)*2.0*numpy.sqrt(2.0)*numpy.sqrt(diffusion*velocities)\
+             *numpy.sqrt(200.0*(1.0-2.0*widths))/(3000.0*200.0)
+    pylab.plot(peclets,aver_coefficients,"+-")
+    pylab.plot(peclets,vanbaten)
     
 if __name__=="__main__":
     #modify_file()
@@ -751,7 +771,8 @@ if __name__=="__main__":
     #check_average_sym_concentration("21",["15","20"])
     
     #check_dependance()
-    check_yue_dependance()    
+    #check_yue_dependance()    
+    check_vanbaten_dependance()
     #give_overall_characteristics()     
      
     pylab.show()
