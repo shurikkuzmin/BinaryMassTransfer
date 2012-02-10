@@ -747,6 +747,7 @@ def check_vanbaten_dependance():
              *numpy.sqrt(200.0*(1.0-2.0*widths))/(3000.0*200.0)
     pylab.plot(peclets,aver_coefficients,"+-")
     pylab.plot(peclets,vanbaten)
+    pylab.ylim(ymin=0.0)
     
 if __name__=="__main__":
     #modify_file()

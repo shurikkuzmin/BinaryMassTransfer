@@ -17,7 +17,7 @@ int length=500;
 int N=300000;
 int NOUTPUT=50000;
 int NSIGNAL=100;
-
+int NTHRESHOLD=10000;
 
 //Fields and populations
 double f[NX][NY][9], f2[NX][NY][9], g[NX][NY][9], g2[NX][NY][9];
@@ -368,14 +368,18 @@ int main(int argc, char* argv[])
     std::cout<<"Force="<<force_x<<"\n";
 
     init();
-
-
+    double force_x_init=force_x;
+    
 	for(int counter=0;counter<=N;counter++)
 	{
 
+        if (counter<NTHRESHOLD)
+            force_x=0.3*force_x_init+0.7*force_x_init*double(counter)/double(NTHRESHOLD);
+        else
+            force_x=force_x_init;
         collide_bulk();
         update_bounce_back();
-
+        
 		//Streaming
 		for(int iX=0;iX<NX;iX++)
 			for(int iY=1;iY<NY-1;iY++)

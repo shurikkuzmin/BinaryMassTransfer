@@ -32,7 +32,8 @@ def run_simulations():
             os.chdir(dir_temp)
             subprocess.call(["mkdir","-p","tmp"])
             ratio=capillary[i]/0.05
-            force=force_init*ratio
+            ratio2=1.0/(1.0+(length-200.0)*(length-200.0)/(150.0*150.0*26.0))
+            force=force_init*ratio*ratio2
             width_value=int(width*200)
             modify_file(length,width_value,force)
             subprocess.call(['qsub','binary_new.pbs'])

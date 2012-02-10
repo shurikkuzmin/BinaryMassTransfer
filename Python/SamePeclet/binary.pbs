@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script for running serial program on glacier
 #PBS -S /bin/bash
-#PBS -l walltime=36:00:00
+#PBS -l walltime=48:00:00
 #PBS -l mem=1GB
 #PBS -l procs=1
 ###PBS -l nodes=2:ppn=16
@@ -55,5 +55,6 @@ str="Starting run at =`date`"
 #module load vtk
 #unset TMPDIR
 #export -n TMPDIR
-./main.out TOCHANGE1 TOCHANGE2 TOCHANGE3 > output.txt
+#module load mpi/openmpi/1.4.3
+./main.out TOCHANGE > output.txt
 echo "Job finished with exit code $? at: `date`"
