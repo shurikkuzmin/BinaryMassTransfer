@@ -332,7 +332,11 @@ def check_average_concentration(dir_name,factor,subtract):
 def check_average_jos_concentration(dir_name,scales):
     capillary_str=[str(x) for x in [9,21,42,60,84]]
     capillaries=[0.097,0.254,0.526,0.750,1.040]
-    
+
+    ux=numpy.loadtxt("UnitCells/"+dir_name+"/"+"vely0200000.dat").transpose()
+    uy=numpy.loadtxt("UnitCells/"+dir_name+"/"+"velx0200000.dat").transpose()
+    geometry=numpy.loadtxt("UnitCells/"+dir_name+"/"+"geometry.dat").transpose()
+  
     velocities=[0.0055,0.0143,0.0297,0.0424,0.05538]
     velocities_slug=[0.0046,0.0108,0.0209,0.0293,0.0397]
     velocities_gas=[0.0016,0.0041,0.0080,0.0101,0.0135]
@@ -396,10 +400,22 @@ def check_average_jos_concentration(dir_name,scales):
         vanbaten=[]        
         for i in range(0,dims[0]-window_len):
             vanbaten.append((aver_concentration[i+window_len]-aver_concentration[i])*3000.0/(1000*mult_vanbaten*window_len*(1.0-aver_concentration[i+window_len/2])))   
+        pylab.plot(vanbaten)        
+        
+        pylab.figure(5)
+        #pylab.plot(conc_inlet_outlet)
+        #pylab.plot((concentration[1:,1]-concentration[:-1,1]))
+        multiplier=float(scale)*velocities_slug[counter]/(velocities_slug[counter]+velocities_gas[counter])
+        mult_vanbaten=float(scale)*(velocities_slug[counter]+velocities_gas[counter])        
+        my=[]
+        inlet_flux=float(scale)*numpy.sum(ux[1:-1,0])*concentration[:,2]
+        outlet_flux=float(scale)*numpy.sum(ux[1:-1,0])*concentration[:,3]
+        for i in range(0,dims[0]-window_len):
+            my.append(((concentration[i+window_len,1]-concentration[i,1])/(1000*window_len)\
+                       +outlet_flux[i+window_len/2]-inlet_flux[i+window_len/2])/(200.0*mult_vanbaten*(1.0-aver_concentration[i+window_len/2])))        
         
         #pylab.plot((concentration[:,3]-concentration[:,2])*multiplier/(1.0-aver_concentration)) #/3000.0)        
-        pylab.plot(vanbaten)
-        pylab.plot()        
+        pylab.plot(my)
         os.chdir("..")
         
     fig=pylab.figure(3)
@@ -424,6 +440,8 @@ def check_average_jos_concentration(dir_name,scales):
     pylab.ylabel(r'''$k_L a \frac{L}{U_{\mathrm{gas}}+U_{\mathrm{bubble}}}$''',fontsize=30)    
     pylab.title(r'''$Ca='''+str(capillary)+'''$''',fontsize=30)
     pylab.savefig("jos_aver_conc_scale_ca"+str(capillary)[0:1]+str(capillary)[2:]+".eps",format="EPS",dpi=300)
+    
+    
 
 def check_average_sym_concentration(dir_name,scales):
     capillary_str=[str(x) for x in [9,21,42,60,84]]
@@ -765,7 +783,7 @@ if __name__=="__main__":
     #check_average_concentration("84",10,5)    
     
     #check_average_jos_concentration("9",["2","4","6","8","10","15","20","40"])
-    #check_average_jos_concentration("9",["2","10","20","40"])
+    check_average_jos_concentration("9",["2","10","20","40"])
     #check_average_jos_concentration("21",["15","20"])
     
     #check_average_sym_concentration("9",["2","10","20","40"])
