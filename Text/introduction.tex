@@ -43,26 +43,55 @@ This work presents a thorough procedure of how to determine the volumetric mass 
 coefficient
 in the context of lattice Boltzmann simulations for Bretherton/Taylor bubble train motion. The
 novelty of this work lies in the establishing
-a thorough procedure of how to measure the volumetric mass transfer coefficient depending on the
-capillary number $Ca$ regime. For example, for $Ca<0.7$ the flow has a vortex in front of the
-bubble, but for the larger capillary number it hasn't. In case of mass
-sources to be comparable of the representative unit cell (inhomogenous
-situation), one cannot estimate  the strategies to measure the volumetric mass transfer coefficient
-are presented. The strategies of how to speed up simulations, what the boundaries conditions are
-thoroughly examined. Overall, all methods are consistent between each other as soon as the averaged
-domain concentration is taken as the characteristic concentration. Though more difficult to setup
-simulations with a few unit cells can give additional information about how well the liquid slug is
-mixed. The work is of use to people performing mass transfer numerical simulations within the
+a thorough procedure of how to measure the volumetric mass transfer coefficient addressing the
+following challenges: the flow pattern  depends on the capillary number $Ca$ regime, i.e. for
+$Ca<0.7$ the flow has a vortex in front of the
+bubble, but for the larger capillary number it hasn't;  the mass sources is comparable of the
+representative unit cell size (inhomogenous situation is different from the homogenous well-mixed
+media \cite{jos-mass}); the connection between time and space domains for moving bubbles; the
+definition of the mass transfer coefficient which is defined through the characteristic
+concentration (inlet/outlet concentration, average concentration). The following boundary conditions
+were examined: periodic boundary conditions, open boundaries, and a few unit cells open boundary
+simulations. It was shown that the time dependent average concentration to be a characteristic
+concentration produce robust results, though a bit overpredicted. The inlet/outlet flux averaged
+concentration to be a characteristic concentration produce unreliable results. In comparison, a few
+unit cells open boundaries conditions resemble physical situation most and are harder to conduct
+but provide the volumetric mass transfer coefficient based only on the spatial information for the
+capillary number $Ca>0.7$. As well, a few unit cells simulations can provide more information about
+mixing in the liquid slug in comparision with the periodic boundary conditions. We show
+that all presented in literature strategies are extreme limits of one equation,
+Eq. {\color{red} give equation number here}. Finally, the correlation for different Peclet numbers
+is compared with analytical predictions presented by \citet{vanbaten-circular} and shows a good
+comparison. The work is of use to people performing mass transfer numerical simulations for bubble
+train flow in microchannels and within the
 lattice Boltzmann context.
 \end{abstract}
 
 \section{Introduction}
-The volumetric mass transfer coefficient is a very important characteristic for microchannels 
-design \cite{kreutzer-overview}. It allows to
-properly manufacture a microchannel with necessary properties to ensure that chemical
-reactions are performed in the best manner. Many chemical microchannel configurations
-\cite{kreutzer-pressure-drop}  The flow for microchannels we focus on is the bubble train
-motion, where bubbles organized in a train are traveling through the liquid media. This
+The monolith reactors during last years are getting more attention as alternative to slurry
+reactors and trickle bed reactors \cite{kreutzer-overview,bercic-mass}. The bubble flow we focus in
+this work, so-called Bretherton-Taylor flow \cite{bretherton,taylor}, describes the flow through
+a liquid medium of equal sized, long in comparison with the height bubbles in microchannels, see
+Fig. \ref{fig:benchmark:hydro}. This flow regime
+is usually characterized by surface tension dominance over inertia and viscous effects and by
+comparatively small gas flow velocities \cite{yue-mass}. Due to surface tension dominance and small
+scales of microchannels, bubble train flow exhibit advantageous properties which can not be achieved
+in macroscopic counterparts: such as thin films \cite{bretherton} which can remarkably enhance mass
+transfer in the film from gas or wall; the plug flow nature that separates liquid slugs from each
+other allowing to perform chemical reactions in slugs \cite{kreutzer-overview} or be an indicator of
+the liquid velocity \cite{taylor}; the flow pattern depending on the capillary number $Ca$
+\cite{heil-bretherton,heil-threedim}.  Overall, nowadays one can find a large number of applications
+of Bretherton-Taylor bubble train flow: continous flow analyzers, lung openings, chemical reactions
+as hydrogenation of nitroaromatics, 2-ethyl-hexenal, Fischer-Tropsch synthesis, etc. One can find a
+lot of different application references in extensive reviews \cite{kreutzer-overview,
+gupta-review,yue-mass}. 
+
+Among different applications of microchannel flows, this work is focused on the mass transfer
+study from gas to liquid. The good understanding of mass transfer and how it depends on the
+parameters as the capillary number, the Reynolds number, slug and bubble lengths allows to properly
+manufacture a microchannel with necessary properties to ensure that chemical
+reactions are performed in the best manner \cite{bercic}. A number 
+  This
 configuration is interesting due to several reasons: hydrodynamic velocity patterns are completely
 different for different capillary numbers, the bubble occupies the significant part of the unit cell
 and the flow can be assumed periodic. 
