@@ -670,6 +670,7 @@ def check_dependance():
 def check_yue_dependance():
     aver_coefficients=numpy.array([0.21,0.14,0.095,0.074,0.0601])
     holdups=numpy.array([0.302466666667,0.288423333333,0.271146666667,0.252866666667,0.229446666667])
+    widths=numpy.array([0.092,0.132,0.157,0.167,0.177])
 
     velocities=numpy.array([0.0055,0.0143,0.0297,0.0424,0.05538])
     velocities_liq=numpy.array([ 0.00459266431535,0.0107317293541,0.0208964048893,0.0292353942998,0.0362306511905])    
@@ -728,16 +729,22 @@ def check_yue_dependance():
     
     fig=pylab.figure()
     pylab.plot(peclets_range,p1[0]*numpy.power(peclets_range,p1[1]),"k--")
-
-
+    vanbaten=3000.0/(velocities_liq+velocities_gas)*4.0*numpy.sqrt(diffusion*velocities/numpy.pi)\
+             *numpy.sqrt(bubble_lengths-200.0*(1.0-2.0*widths))/(3000.0*200.0)\
+             +3000.0/(velocities_liq+velocities_gas)*2.0*numpy.sqrt(2.0)*numpy.sqrt(diffusion*velocities)\
+             *numpy.sqrt(200.0*(1.0-2.0*widths))/(3000.0*200.0)
+    #pylab.plot(peclets,aver_coefficients,"+-")
+    
     pylab.xticks(fontsize=16)
     pylab.yticks(fontsize=16)
     pylab.plot(peclets,aver_coefficients,"ko-",markersize=6)
     pylab.plot(peclets,yue_correlation,"ks-",markersize=6)
+    pylab.plot(peclets,vanbaten,"kv-",markersize=6)
     pylab.xlabel(r'''$\mathrm{Peclet}$''',fontsize=30)
     pylab.ylabel(r'''$k_L a\frac{L}{U_{\mathrm{gas}}+U_{\mathrm{liq}}}$''',fontsize=30)
-    pylab.legend(["Fitting","Simulations","Yue correlation"],fancybox=True)
+    pylab.legend(["Fitting","Simulations","Yue correlation","Analytical correlation"],fancybox=True)
     fig.subplots_adjust(left=0.2,bottom=0.15)    
+    pylab.ylim(ymin=0.0)    
     pylab.savefig("correlations_comparison.eps",format="EPS",dpi=300)
     
 
@@ -783,15 +790,15 @@ if __name__=="__main__":
     #check_average_concentration("84",10,5)    
     
     #check_average_jos_concentration("9",["2","4","6","8","10","15","20","40"])
-    check_average_jos_concentration("9",["2","10","20","40"])
+    #check_average_jos_concentration("9",["2","10","20","40"])
     #check_average_jos_concentration("21",["15","20"])
     
     #check_average_sym_concentration("9",["2","10","20","40"])
     #check_average_sym_concentration("21",["15","20"])
     
     #check_dependance()
-    #check_yue_dependance()    
-    check_vanbaten_dependance()
+    check_yue_dependance()    
+    #check_vanbaten_dependance()
     #give_overall_characteristics()     
      
     pylab.show()

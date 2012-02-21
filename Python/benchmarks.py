@@ -5,7 +5,7 @@ import scipy.special
 import math
 #import matplotlib.tri as tri
 
-coeff=32
+coeff=1
 omega=1.0/(0.5+0.5/coeff)
 radius=39
 diffusion=1.0/3.0*(1.0/omega-0.5)
@@ -50,7 +50,7 @@ def read_files(file_dir):
     legs=numpy.ravel(legs)   
     pylab.title(r'''$D='''+str(diffusion)[0:6]+'''$''',fontsize=30)
     pylab.legend(legs,fancybox=True,loc=2)
-    pylab.xlabel(r'''$x$''',fontsize=20)
+    pylab.xlabel(r'''$r$''',fontsize=20)
     pylab.ylabel(r'''$C$''',fontsize=20)
     #pylab.legend(legs,fancybox=True,labelspacing=0.1)
     pylab.savefig("cylinder"+str(diffusion)[2:6]+".eps",dpi=300)        
@@ -1096,7 +1096,7 @@ if __name__=="__main__":
 
     #read_file(file_name)
     
-    #read_files(file_dir)
+    read_files(file_dir)
     #show_bessel()    
     #read_film(file_dir)    
     #film_analytical()    
@@ -1110,5 +1110,5 @@ if __name__=="__main__":
     #comparison_two_analytics(file_dir)    
     #irandoust_construction(file_dir)    
     #final_comparison()
-    final_comparison_zero_gradient()    
+    #final_comparison_zero_gradient()    
     pylab.show()

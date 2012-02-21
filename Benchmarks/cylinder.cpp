@@ -19,7 +19,7 @@ const int NPOP=9;
 
 //Time steps
 int N=64000;
-int NOUTPUT=1600;
+int NOUTPUT=200;
 
 //Fields and populations
 double *f;
@@ -37,7 +37,7 @@ int *bottom;
 int *top;
 
 //BGK relaxation parameter
-double omega=1.0/(0.5+0.5/32.0); ///1.99;
+double omega=1.0/(0.5+0.5/1.0); ///1.99;
 double omega_plus=2.0-omega;
 double omega_minus=omega;
 

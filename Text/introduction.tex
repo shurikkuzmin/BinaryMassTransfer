@@ -60,7 +60,7 @@ but provide the volumetric mass transfer coefficient based only on the spatial i
 capillary number $Ca>0.7$. As well, a few unit cells simulations can provide more information about
 mixing in the liquid slug in comparision with the periodic boundary conditions. We show
 that all presented in literature strategies are extreme limits of one equation,
-Eq. {\color{red} give equation number here}. Finally, the correlation for different Peclet numbers
+Eq. \ref{main:main:main}. Finally, the correlation for different Peclet numbers
 is compared with analytical predictions presented by \citet{vanbaten-circular} and shows a good
 comparison. The work is of use to people performing mass transfer numerical simulations for bubble
 train flow in microchannels and within the
@@ -68,6 +68,7 @@ lattice Boltzmann context.
 \end{abstract}
 
 \section{Introduction}
+\label{intro}
 The monolith reactors during last years are getting more attention as alternative to slurry
 reactors and trickle bed reactors \cite{kreutzer-overview,bercic-mass}. The bubble flow we focus in
 this work, so-called Bretherton-Taylor flow \cite{bretherton,taylor}, describes the flow through
@@ -151,7 +152,10 @@ hydrodynamics fields by imposing a free-slip condition at the bubble surface. Ho
 where the shape of the bubble is simple. Moreover, the characteristic concentration to be averaged outlet concentration underpredicts the volumetric transfer coefficient for small capillary
 numbers $Ca<0.1$ and overpredicts for larger capillary numbers $Ca>0.7$.
 
-Addressing situations for a rich number of hydrodynamic patterns, shapes, effects for a bubble train authors feel that they need to examine more carefully the strategies and assumptions which stay behind the mass transfer coefficient numerical simulations measurements. We aim at establishing numerical simulations procedures as to how properly obtain the volumetric
+Addressing situations for a rich number of hydrodynamic patterns, shapes, effects for a bubble
+train authors feel that they need to examine more carefully the strategies and assumptions which
+stay behind the mass transfer coefficient numerical simulations measurements. We aim at establishing
+numerical simulations procedures as to how properly obtain the volumetric
 mass transfer coefficient via a study of different boundary conditions, different characteristic concentration definitions, and address the following situations:
 \begin{description}
 \item[I] In numerical simulations \cite{vanbaten-circular,kreutzer-overview}, the bubble shape is approximated by two hemispheres and a cylinder which is valid only for the capillary number $Ca\leq 0.1$. It is known \cite{kreutzer-overview} that the liquid slug is well mixed with the concentrator. Due to homogeneity periodic boundary conditions were used, and the averaged in space inlet/outlet concentration as the characteristic concentration was used \cite{vanbaten-circular}. In comparison, we obtain bubble shapes and hydrodynamic fields from multiphase simulations \cite{kuzmin-binary2d,kuzmin-binary3d} and examine different boundary conditions with a few unit cells ($1$ to $10$ unit cells). 
@@ -194,7 +198,11 @@ at the particular mass transfer problems, both problems are of homogeneous natur
 guide as how to simulate the non-homogenous problems.           
 
 The paper is organized as follows. We start with definitions of the volumetric mass transfer coefficient and apply them 
-for the bubble train to derive expressions to connect space and time domain. Then the lattice Boltzmann model used to simulate mass transfer is presented followed by benchmarks. Finally, numerical simulations of different boundary conditions and a few unit cells simulations for different hydrodynamic patterns are presented to establish the thorough procedure to determine the volumetric mass transfer coefficient. 
+for the bubble train to derive expressions to connect space and time domain. Then the lattice
+Boltzmann model used to simulate mass transfer is presented followed by benchmarks. Finally,
+numerical simulations of different boundary conditions and a few unit cells simulations for
+different hydrodynamic patterns are presented to establish the thorough procedure to determine the
+volumetric mass transfer coefficient. 
 
 \section{Mass transfer definitions}
 By the definition the mass transfer coefficient from the surface with the imposed constant
@@ -239,7 +247,7 @@ where $\vol$ is the volumetric mass transfer coefficient defined as:
 \feq
 where $P$ is the source surface, $V$ is the unit cell volume.
 \item
-The previous consideration is able to predict mass transfer happening in moving with the velocity
+Let us predict mass transfer happening in moving with the velocity
 $U$ liquid, see Fig. \ref{fig:moving:frame}. 
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/mass_transfer.eps}
@@ -259,6 +267,7 @@ giving the same equation but only in the coordinate domain:
 C(x)= \cstar \Bigl(1-\exp\bigl(-k_L a \frac{x}{U} \bigr)\Bigr).
 \label{main:mass:transfer:expression} 
 \feq
+Note that the concentration $C(x)$ does not depend on time. 
 
 \item If one transfers to the frame moving with the liquid velocity $U$, then the situation will be
 the same as in the first case. However, one can connect the time and spatial location with the
@@ -266,50 +275,56 @@ velocity $U$ ($t=\frac{x}{U}$) to obtain the same equation as in the case 2.
 \end{enumerate}
 
 \subsection{Bubble train}
-In the application to the bubble train flow, if one can think of one bubble to be a point source,
-then all considerations above are valid. For example, the expression
+In the application to the bubble train flow, it is useful to think of one bubble to be a point
+source to make all considerations above valid. For example, the expression
 (\ref{main:mass:transfer:expression}) was used in the experiments by
 \citet{bercic-mass}. However, one should be accurate with the definition of velocities because two
 different phases co-exist in the bubble train flow. Usually, one can take the velocity $U$ to be as
 a bulk velocity or $U=\ugas+\uliq$, where $\ugas$ and $\uliq$ are liquid and gas
 superficial velocities correspondingly. 
 
-Though the experimental measurements are straightforward as measuring concentrations at different
+Thus, the experimental measurements are straightforward as measuring concentrations at
+different
 locations and calculating the volumetric mass transfer coefficient through the logarithmic
 function. However, if one wants to analytically estimate the mass transfer coefficients, the
 situation is much more complicated because of two phases presence and complicated bubble
 geometry. Phases can have different mixing patterns
-from film to slug and from slug to film. As it was mentioned before depending on the capillary
+from film to slug and from slug to film. Also, as it was mentioned before depending on the capillary
 number the mixing velocity pattern is different. Analytical approaches
 \cite{irandoust,vanbaten-circular} assume that the
 contributions from film and bubble caps can be calculated separately. However, one can see that
 such 
-an assumption for bubble caps (slug well mixed and the concentration is uniformly distributed over
+an assumption (slug well mixed and the concentration is uniformly distributed over
 the slug) usually overpredicts the mass transfer \cite{irandoust}. This happens since some tracer
 concentration from film is mixed with the slug and changes the overall concentration in the slug.
-Thus, all estimations for the analytical mass as well do not account mutual mass transfer from
+Thus, all estimations for analytical mass trass calculation  do not account for mutual mass
+transfer from
 neighbouring bubbles.
 
 Another issue is that if the slug is long enough then the film saturates with the tracer
-concentration and its influence on the mass transfer can be negligible \cite{vanbaten-circular}.
-Mixing patterns of the film and the liquid slugs are of great importance for the analytical
+concentration and its influence on mass transfer can be negligible \cite{vanbaten-circular}.
+Mixing patterns of the film and liquid slugs are of great importance for the analytical
 estimation of the mass transfer \cite{yue-mass}. However, the assumptions usually taken for the
 mass transfer calculation are small capillary number and certain mixing patterns which help to
 estimate the mass transfer using the penetration theory of \citet{higbie}.
 
-The numerical approach can take into the account the complicated mixing patterns and geometries.
-However, there is a  challenge to restore the continous approach as it is seen in experiments. Next
+In comparison with analytical calculations and simplifications, the numerical approach can take into
+the account the complicated mixing patterns and geometries. However, there are challenges as to
+mimic the continuous picture like moving with bulk velocity $U$ reacting medium as it is seen in
+experiments. Thus, the questions indicated in Section \ref{intro}, as the choice of the
+characteristic concentration, the choice of boundary conditions, arise. Next
 section gives more details about numerical simulations.
  
 \subsection{Numerical simulations}
 \label{section:cases}
-To restore the continuous picture one needs to perform a number of bubbles simulations. As we saw
-before there are two approaches towards it - either to simulate
+Ideally one needs to mimic the continuous picture as it is seen in experiments. Thus, one needs to
+perform mass transfer simulations for a number of unit cells. As it was indicated above there are
+two approaches towards it - either to simulate
 the bubble train and then to measure concentration along the pipe, Eq.
 \ref{main:mass:transfer:expression}, or to transfer to the reference frame moving with the bulk
 velocity $U$ and conduct same measurements. However, both methods do require a tracking of
 moving bubbles which is complicated from the numerical point of view. Therefore, one needs to come
-up with the simple smaller domain calculations of the mass transfer coefficient, which mimic the
+up with simple smaller domain calculations of the mass transfer coefficient, which mimic the
 continuous picture with infinite numbers of the bubbles closely. 
 
 To avoid complications with moving grids, our
@@ -319,47 +334,59 @@ needs to examine the equation for the continuous approach, Eq.
 
 We perform simulations in the frame moving with the bubble (velocity
 $\ububble$), that the bubble position stands steady. The bubble velocity $\ububble$ is
-different from the bulk velocity $\ugas+\uliq$. In this case we need to perform a coordinate $x$
+different from the bulk velocity $\ugas+\uliq$. In this case one needs to perform a coordinate $x$
 variable change:
 \beqal
 \label{theor:average:concentration:time}
 &x(t)=\ububble t\\
 &C(x)=\cstar \Bigl(1-\exp\bigl(-\vol \frac{x}{\ugas+\uliq}\bigr)\Bigr)\\
-&C(t)=\cstar \Bigl(1-\exp\bigl(-\vol\, t \frac{\ububble}{\ugas+\uliq}\bigr)\Bigr).
+&\langle C(t)\rangle=\cstar \Bigl(1-\exp\bigl(-\vol\, t \frac{\ububble}{\ugas+\uliq}\bigr)\Bigr),
 \feqal
+where $\langle C(t)\rangle$ is the characteristic concentration averaged in space
+concentration. The geometry is not one-dimensional and one needs the characteristic concentration
+to be only as a function of time. One can have different choices of
+$\langle C(t) \rangle$ as the averaged in whole domain concentration or inlet/outlet averaged in
+space concentrations.  Note that $C(x)$ is not averaged in time as $\overline{C(x)}$ since $C(x)$
+ideally should not depend on time. 
 Therefore, one can obtain the volumetric mass transfer coefficient through the concentration:
 \beqal
 \label{theor:one:concentration:time}
-&\vol\, t \frac{\ububble}{\ugas+\uliq}=\ln \frac{\cstar}{\cstar-C(t)}\\
-&\volnondim=\frac{\lunit}{\ububble t}\ln \frac{\cstar}{\cstar-C(t)},
+&\vol\, t \frac{\ububble}{\ugas+\uliq}=\ln \frac{\cstar}{\cstar-\langle C(t)\rangle}\\
+&\volnondim=\frac{\lunit}{\ububble t}\ln \frac{\cstar}{\cstar-\langle C(t) \rangle},
 \feqal
 where the parameter $\vol \frac{\lunit}{\ugas+\uliq}$ is non-dimensional. One can also measure the
 volumetric mass transfer coefficient from concentrations given at times $t_1$ and $t_2$:
 \beq
 \label{theor:continuous:mass:transfer}
 \volnondim=\frac{\lunit}{\ububble
-(t_2-t_1)}\ln\frac{C^{*}-C(t_1)}{C^{*}-C(t_2)}.
+(t_2-t_1)}\ln\frac{C^{*}-\langle C(t_1) \rangle}{C^{*}-\langle C(t_2) \rangle}.
 \feq
 Expressions (\ref{theor:average:concentration:time}) and (\ref{theor:continuous:mass:transfer}) are
-the cornerstones of the present work. The main questions arisen in the present work are to define
-$C(t)$ and  the boundary conditions to produce a proper volumetric mass transfer coefficient
+cornerstones of the present work. The main questions arisen in the present work are to define the
+characteristic concentration $\langle C(t) \rangle$ and  boundary conditions to calculate a proper
+volumetric mass transfer coefficient
 $\vol$. 
   
-Three possible scenarios of conducting numerical simulations are possible: 
+Three possible scenarios of conducting numerical simulations are examined in this work: 
 \begin{enumerate}
-\item As far as the hydrodynamic flow is periodic, one can make an assumption of the same boundary
-conditions applied to the tracer concentration. Therefore, only one unit cell is simulated with
+\item The bubble train multiphase simulations are conducted by applying periodic boundary
+conditions \cite{kuzmin-binary2d,kuzmin-binary3d}. One
+can make an assumption of same boundary
+conditions applied to the tracer concentration to simulate mass transfer. Therefore, only one unit
+cell is simulated with
 periodic boundary conditions, see Fig. \ref{fig:benchmark}. As well, no tracer leaves a
 domain. The situation resembles a situation for the plug flow, where no tracer can leave a unit
-domain. We expect such a situation happening for small Capillary numbers $Ca<0.1$, where the film
-is thin and saturates fast with the tracer. Though easier to implement, it rises certain critisism
-towards the inlet concentration to be equal to the outlet concentration. In the continuous
-formulation there is the concentration difference between inlet and outlet involving the volumetric
-mass transfer coefficient:
-\beq
-\volnondim=\ln\frac{\cstar-\cinlet}{\cstar-\coutlet}.
-\feq
-The concentration $C(t)$ required for calculation the volumetric mass transfer coefficient, Eq.
+domain. We expect such a situation resembles most the mass transfer for small Capillary numbers
+$Ca<0.1$, where the liquid slug is well mixed and one have a homogenuous concentration in the unit
+cell. Though easier to implement, it rises certain critisism
+about the inlet concentration to be equal to the outlet concentration. In the continuous
+formulation as it is seen in experiments there is the concentration difference between inlet and
+outlet involving the volumetric
+mass transfer coefficient, see second equation in system \ref{theor:one:concentration:time}.
+
+One needs also address the choice of the characteristic concentration. For example, the
+characteristic concentration $\langle C(t) \rangle$ required for calculation the volumetric mass
+transfer coefficient, Eq.
 \ref{theor:one:concentration:time}, can be taken as the average concentration in the domain:
 \beq
 \label{average:concentration:definition}
@@ -371,32 +398,40 @@ C(t)=\frac{\int_{liquid}{C \mathrm{d}V}}{\int{\mathrm{d}V}}.
 coefficient (bottom) for the bubble located near the entrance (top) and at the middle of the domain
 (bottom). \label{fig:benchmark}}
 \end{figure}
-\item The second approach is the same as the first one but the concentration is taken as in
+\item The second approach is the same as the first one but the characteristic concentration is taken
+as in
 \cite{vanbaten-circular}. The characteristic concentration is taken as the inlet/outlet
-concentration:
+concentration. For the two-dimensional flow between plates inlet/outlet concentrations can be found
+as:
 \beqal
-&\cinlet=\frac{\int{U(y) C(0,y,t) \mathrm{d}y}}{\int{U(0,y) \mathrm{d}y}}\\
-&\coutlet=\frac{\int{U(y) C(\lunit,y,t) \mathrm{d}y}}{\int{U(\lunit,y) \mathrm{d}y}}\\
-&\cinlet=\coutlet.
+&\langle \cinlet(t) \rangle=\frac{\int{U(y) C(0,y,t) \mathrm{d}y}}{\int{U(0,y) \mathrm{d}y}}\\
+&\langle \coutlet(t) \rangle=\frac{\int{U(y) C(\lunit,y,t) \mathrm{d}y}}{\int{U(\lunit,y)
+\mathrm{d}y}}\\
+&\cinlet(\bm{x},t)=\coutlet(\bm{x},t),\,\text{due to periodicity}.
 \feqal
-Therefore the assumptions  of this approach is that the difference between inlet and outlet is not
-considerably large and the tracer is well mixed in the slug. 
+Therefore, the assumptions  of this approach is
+that the difference between inlet and outlet is not
+considerably large and the tracer is well mixed in the slug, so that the inlet or outlet
+concentrations equal to the average concentration. 
 
 \item
-The approach of \citet{vanbaten-circular} is taken. Periodic boundary conditions were used. By the
-definition the mass transfer coefficient is
-proportional to the gain of the mass in the system divided by the concentration difference
+The approach of \citet{vanbaten-circular} is examined. Periodic boundary conditions were used. We
+used the
+definition of the mass transfer coefficient to be proportional to the gain of the mass in the system
+divided by the concentration difference
 multiplied on the surface area:
 \beq
-\vol=\frac{\dot{m}}{P \Delta C}\frac{P}{V}=\frac{\dot{m}}{V (\cstar-C(t))},
+\vol=\frac{\dot{m}}{P \Delta C}\frac{P}{V}=\frac{\dot{m}}{V (\cstar-\langle C(t) \rangle)},
 \feq
 where mass difference in the domain can be calculated as:
 \beq
-\dot{m}=\frac{m_2-m_1}{t_2-t_1}=\frac{\int_{liq}{C(t_2)\mathrm{d}V}-\int_{liq}{C(t_1)\mathrm{d}V}}{
-t_2-t_1 } .
+\dot{m}=\frac{m_2-m_1}{t_2-t_1}=\frac{\int_{liq}{C(\bm{x},t_2)\mathrm{d}V}-\int_{liq}{
+C(\bm{x},t_1)\mathrm { d } V} } {
+t_2-t_1 },
 \feq
+where the integration element $\mathrm{d}V=\mathrm{d}x\mathrm{d}y=\mathrm{d}\bm{x}$.
 In the approach of \citet{vanbaten-circular} the inlet and outlet concentrations were taken as the
-characteristic concentration $C(t)$.
+characteristic concentration $\langle C(t) \rangle $.
 
 %\item 
 %The approach of the opened boundaries was examined, see Fig. \ref{fig:benchmark:jos}. At the inlet
@@ -408,16 +443,19 @@ characteristic concentration $C(t)$.
 %calculated according to Eq. \ref{theor:average:concentration:time} with the characteristic
 %concentration accoring to Eq. \ref{average:concentration:definition}. \label{fig:benchmark:jos}}
 %\end{figure}
-
 \item 
 The last approach to be examined in this paper is the approach of the simulation of a lot of unit
 volumes, see Fig. \ref{fig:benchmark:alot}. This situation corresponds to the simulation of the
-bubble train head, after injecting to the pipe and travelling along the pipe. The argument here is
-that behind a certain number of the bubble train head, the influence of the boundaries will be
-diminished. Thus, the average concentration in time will be governed by Eq.
+bubble train head, after injecting to the pipe and travelling along the pipe. One can see that this
+situation corresponds most to the experimental picture. By simulation of a certain number of the
+bubble train head, the influence of the boundaries can be
+diminished. In this case, there is no ambiguity in the choice of the
+characteristic concentration in this case. The average concentration in time will be governed
+by Eq.
 \ref{theor:continuous:mass:transfer}. This simulation statement is of most correspondence to
 experiments and should give right answer. However, one of the
-disadvantages is to simulate a certain number of unit cells, thus increasing a computational
+disadvantages is to simulate a certain number of unit cells ($1$ to $10$ in this case), thus
+increasing a computational
 complexity.
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/benchmark_alot.eps}\\
@@ -425,17 +463,40 @@ complexity.
 \end{figure}
 \end{enumerate} 
 
-Before all the approaches will be examined we will perform benchmarks of parts of geometries that
-form a problem.
+One can notice that all the examined cases are extreme cases of one equation. The choice of boundary
+conditions to use  or how many unit cells to simulate are not of importance but one needs only to
+understand a proper mass balance for medium, which states:
+\beq
+\label{main:main:main}
+\vol=\frac{\dot{m}-\int{\coutlet(t) u(\lunit,y)\mathrm{d}y}+\int{\cinlet(t) u(0,y)\mathrm{d}y}}{V
+\Delta C}, 
+\feq
+where $\Delta C=\cstar-\langle C(t) \rangle$ with $\langle C(t) \rangle$ to be the average
+concentration in whole liquid domain. Eq. \ref{main:main:main} is nothing else but a proper mass
+balance: whatever was generated by the bubble surface equals to the mass domain change minus
+whatever left domain plus whatever entered domain. Periodic boundary condition is the extreme
+limiting case of Eq. \ref{main:main:main} as $\int{\coutlet(t)
+u(\lunit,y)\mathrm{d}y}=\int{\cinlet(t) u(0,y)\mathrm{d}y}$. Thus, the mass change in the domain is
+only because of the generating bubble surface. In this case, to calculate the volumetric mass
+transfer coefficient one needs to track not only spatial information to calculate the averaged over
+domain characteristic concentration  $\langle C(t) \rangle$ but as well time information to
+calculate the mass change in the domain. It will be shown later, that for $Ca>0.7$ where velocity
+pattern is changed, one can use only spatial information to calculate $\int{\cinlet(t) u(0,y)
+\mathrm{d}y}$ and $\int{\coutlet(t) u(\lunit,y)\mathrm{d}y}$ as far as mass change in the domain is
+zero, i.e. $\dot{m}=0$.
+
+Before we examine all the test cases above, the lattice Boltzmann mass transfer
+benchmarks will be presented. 
 
 \section{Validation}
-As for analytical expressions the problem of the mass transfer can be decomposed to the following
-parts: the mass transfer from two hemispheres and the mass transfer from the film. We will examine
+For analytical expressions the problem of the mass transfer can be decomposed to the following
+parts: the mass transfer from two circumferences and the mass transfer from the film. We will
+examine
 these problems with the help of the lattice Boltzmann method and compare them against analytical
 solutions. The next sections will present the lattice Boltzmann method and a few benchmarks.
 
 \subsection{TRT $D2Q9$ model}
-The lattice Boltzmann equation (LBE) operates on a rectangular grid representing the
+The lattice Boltzmann equation (LBE) operates on a square/cubic grid representing the
 physical domain. It utilizes
 probability distribution functions (also known as particle populations)
 containing information about
@@ -447,7 +508,7 @@ The LBE is typically implemented as follows:
 \begin{equation}
 \label{standard:implementation}
 \begin{aligned}
-&f_i^{*}(\bm{x},t)= f_i(\bm{x},t)-\omega \bigl(f_i(\bm{x},t)-f_i^{eq}(\bm{x},t)\bigr),&&\text{
+&f_i^{*}(\bm{x},t)= f_i(\bm{x},t)-\omega \bigl(f_i(\bm{x},t)-eq_i(\bm{x},t)\bigr),&&\text{
 collision step}\\
 &f_i(\bm{x}+\bm{c_i},t+1)=f_i^{*}(\bm{x},t),&&\text{ propagation step}, 
 \end{aligned}
@@ -457,8 +518,8 @@ where $f_i$ is the probability distribution function in the direction $\bm{c_i}$
 relaxation parameter. Collision operator, $-\omega \bigl(f_i- f_i^{eq}\bigr)$ is so-called BGK
 collision operator \cite{bgk}. However, the approach to be used here is the TRT
 (two-relaxation-times) collision operator \cite{ginzburg-main,ginzburg-saturated-flow}. In
-comparison with the widely used BGK collision operator, TRT collision operator have better accuracy
-for diffusion and convection fluxes, larger range of parameters where the LBM scheme is stable.
+comparison with the widely used BGK collision operator, TRT collision operator has better accuracy
+for diffusion and convection fluxes, and larger range of parameters where the LBM scheme is stable.
 
 The TRT collision operator \cite{ginzburg-boundary-main}
 decomposes the populations and the equilibrium
@@ -484,7 +545,7 @@ Note that the BGK collision operator is the particular subclass of the TRT relax
 $\omegaplus=\omegaminus$. In comparison with the BGK collision operator,
 the TRT collision operator has the additional degree of freedom. Thus, the TRT operator then
 introduces
-so-called magic (free) parameter
+the free parameter
 $\Lambda=\Bigl(\frac{1}{\omegaplus}-\frac{1}{2}\Bigr)\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}
 \Bigr)$. 
 This free parameter controls the effective location of the bounce-back
@@ -496,8 +557,9 @@ stability \cite{kuzmin-stability-optimal,kuzmin-d1q3,servan-trt-stability}.
 In particular, $\Lambda=\frac{1}{4}$ achieves the optimal stability for the
 linear advection-diffusion isotropic equation \cite{kuzmin-stability-optimal}. 
 
-The parameters $\omegaplus$, $\omegaminus$ and $f_i^{eq}$ fully define the lattice Boltzmann
-procedure. The two-dimensional nine velocities LBM $D2Q9$ is defined on the set of lattice
+The parameters $\omegaplus$, $\omegaminus$ and $eq_i$ fully define the lattice Boltzmann
+procedure. The two-dimensional nine velocities LBM $D2Q9$ we used in this work is defined on the set
+of lattice
 velocities with coordinates:
 \beqal
 &c_{ix}=\{0,1,0,-1,0,1,-1,-1,1\},\text{ for } i=0\dots8\\
@@ -511,12 +573,16 @@ The equilibrium functions for $D2Q9$ TRT model are represented as \cite{kuzmin-s
 &eq_i^{(m)}=t_i^{(m)} c_e+ eq_i^{(a)}\\
 &eq_i^{(u)}=t_i^{(u)} \frac{u_x^2+u_y^2}{2}+\frac{u_x^2-u_y^2}{4} p_i^{(xx)}+g_{xy}^{(u)}\frac{u_x
 u_y}{4} p_i^{xy}\\
-&eq_i^{(a)}=\frac{D_{xx}-D_{yy}}{4} p_i^{xx}+\frac{D_{xy}}{4} p_i^{(xy)},
+&eq_i^{(a)}=\frac{K_{xx}-K_{yy}}{4} p_i^{xx}+\frac{D_{xy}}{4} p_i^{(xy)},
 \end{aligned}
 \end{equation}
-where $D_{xx,yy,xy}$ are components of the diffusion tensor, $c_e=\frac{D_{xx}+D_{yy}}{2}$, the tensor $p_i^{(xx)}=c_{ix}^2-c_{iy}^2$, the tensor  $p_i^{(xy)}=c_{ix} c_{iy}$, the weights
+where $K_{xx,yy,xy}$ are proportional to components of the diffusion tensor,
+$c_e=\frac{K_{xx}+K_{yy}}{2}$, parameters $g^{(u)}$ and $g^{u}_{xy}$ are either zero or one (see
+below), the tensor $p_i^{(xx)}=c_{ix}^2-c_{iy}^2$, the tensor $p_i^{(xy)}=c_{ix} c_{iy}$, the
+weights
 $t_i^{(u,m,a)}$ can be chosen based on stability criteria. Though not the best set of weights for
-stability, but the most spread set of weights, so called ``hydrodynamic`` weights, was chosen:
+stability \cite{kuzmin-stability-optimal}, but the most spread set of weights, so called
+``hydrodynamic`` weights, was chosen:
 \begin{equation}
 t_i^{(u)}=t_i^{(m)}=t_i^{(a)}=\Bigl\{0,\frac{1}{3},\frac{1}{3},\frac{1}{3},\frac{1}{3},\frac{1}{12},
 \frac {1}{12},\frac{1}{12},\frac{1}{12}\Bigr\}
@@ -526,41 +592,52 @@ It can be shown through the Chapman-Enskog procedure \cite{chapman}, that the si
 with the equilibrium function presented above restores the anisotropic
 advection-diffusion equation:
 \beq
-\partial_t C+ \partial_{\alpha} C u_{\alpha}=\partial_{\alpha\beta} K_{\alpha\beta} C,
+\partial_t C+ \partial_{\alpha} C u_{\alpha}=\partial_{\alpha\beta} D_{\alpha\beta} C,
 \feq
-where $K_{\alpha\beta}=\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)D_{\alpha\beta}$
+where $D_{\alpha\beta}=\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)K_{\alpha\beta}$
 with the
 following diffusion tensor:
 \begin{equation}
 D_{\alpha\beta}=
 \begin{pmatrix}
-D_{xx} + (g^{(u)}-1) u_x^2 & D_{xy}+(g_{xy}^{(u)}-1)u_x u_y\\
-D_{xy} + (g_{xy}^{(u)}-1) u_x u_y& D_{yy}+(g^{(u)}-1) u_y^2 
+D_{xx} + \Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)(g^{(u)}-1) u_x^2 &
+D_{xy}+\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)(g_{xy}^{(u)}-1)u_x u_y\\
+D_{xy} + \Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)(g_{xy}^{(u)}-1) u_x u_y&
+D_{yy}+\Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)(g^{(u)}-1) u_y^2. 
 \end{pmatrix}
 \end{equation}
-We want to resolve the isotropic advection-diffusion equation, $D=D_{xx}=D_{yy}$ or $K=K_{xx}=K_{yy}$, with the non-diagonal diffusion tensor components to be zero $D_{xy}=0$. In comparison with the $D2Q5$ model, with the $D2Q9$ it is
+We want to resolve the isotropic advection-diffusion equation, $D=D_{xx}=D_{yy}$ or
+$K=K_{xx}=K_{yy}$, with the non-diagonal diffusion tensor components to be zero $D_{xy}=0$. In
+comparison with the $D2Q5$ model, with the $D2Q9$ it is
 possible to cancel the numerical diffusion by the proper choice
 of the equilibrium functions, i.e. $g_{xy}^{(u)}=g^{(u)}=1$.  The particular choice of parameters
-used in simulations is $c_e=\frac{1}{3}$, $\Lambda=\frac{1}{4}$. Thus, the diffusion coefficient $K$
-is matched through $\omegaminus$, i.e. $K=c_e
+used in simulations is $c_e=\frac{1}{3}$, $\Lambda=\frac{1}{4}$. Thus, the diffusion coefficient $D$
+is matched through $\omegaminus$, i.e. $D=c_e
 \Bigl(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)=\frac{1}{3}(\frac{1}{\omegaminus}-\frac{1}{2}\Bigr)$.
-From hereon, without a loss of generality we refer to diffusion coefficient 
-$K$ as $D$.  Free relaxation parameter $\omegaplus$ can be found through $\Lambda$. For particular
+ Free relaxation parameter $\omegaplus$ can be found through $\Lambda$. For particular
 choice $\Lambda=\frac{1}{4}$ (the optimal stability parameter), $\omegaplus$ can be found easily as
-$\omegaplus=2-\omegaminus$.  Fig. \ref{stability:d2q9} shows the stability limits for the $D2Q9$
-model $c_e$ against $U^2=u_x^2+u_y^2$ for two particular choices.
-\begin{figure}[htb!]
-\includegraphics[width=\textwidth]{Figures/d2q9_stability.eps}
-\caption{The stable sub-domains of the $D2Q9$ schemes ($\Lambda=\frac{1}{4}$)
-are plotted for standard (hydrodynamic) weights (left) and uniform weights (right, not mentioned here) when the
-numerical diffusion is removed, partially or completely. For particular choice used in this work (hydrodynamic weights, $c_e=\frac{1}{3}$, left picture), the achieved stable velocity is $u_x^2+u_y^2\leq\frac{2}{3}$. The non-negativity of populations (green+yellow) is for BGK stability. One can see that the achieved maximum stable velocity is twice smaller $u_x^2+u_y^2\leq \frac{1}{3}$ for the BGK collision operator.The proper choice of weights can
-allow to obtain  total triangle $0 \leq u_x^2+u_y^2 \leq 1- c_e$ (the
-uniform weights only).
-\label{stability:d2q9}}
-\end{figure}
+ $\omegaplus=2-\omegaminus$.  
+
+%Fig. \ref{stability:d2q9} shows the stability limits for the $D2Q9$
+% model $c_e$ against $U^2=u_x^2+u_y^2$ for two particular choices.
+% \begin{figure}[htb!]
+% \includegraphics[width=\textwidth]{Figures/d2q9_stability.eps}
+% \caption{The stable sub-domains of the $D2Q9$ schemes ($\Lambda=\frac{1}{4}$)
+% are plotted for standard (hydrodynamic) weights (left) and uniform weights (right, not mentioned
+%here) when the
+% numerical diffusion is removed, partially or completely. For particular choice used in this work
+%(hydrodynamic weights, $c_e=\frac{1}{3}$, left picture), the achieved stable velocity is
+%$u_x^2+u_y^2\leq\frac{2}{3}$. The non-negativity of populations (green+yellow) is for BGK
+%stability. One can see that the achieved maximum stable velocity is twice smaller $u_x^2+u_y^2\leq
+%\frac{1}{3}$ for the BGK collision operator.The proper choice of weights can
+% allow to obtain  total triangle $0 \leq u_x^2+u_y^2 \leq 1- c_e$ (the
+% uniform weights only).
+% \label{stability:d2q9}}
+% \end{figure}
+
 Boundary conditions for the mass transfer used in this work are all of Dirichlet type. We validated
 two types of boundary conditions: Inamuro boundary conditions \cite{inamuro-scalar-boundary} and
-Pressure anti bounce-back boundary conditions \cite{ginzburg-multireflection}. However, the
+pressure anti bounce-back boundary conditions \cite{ginzburg-multireflection}. However, the
 simulation results presented in this work are only pressure anti bounce-back due to its simplicity
 to handle any complicated type of boundary:
 \beq
@@ -573,13 +650,17 @@ $\bar{i}$ is the direction number opposite to $i$ and is located at the fluid $F
 $B$ is located at the location $F+c_i$. 
 
 Note that the parameters of the lattice
-Boltzmann are connected with the physical parameters only through the non-dimensional
+Boltzmann scheme are connected with the physical parameters only through the non-dimensional
 numbers governing the physics of the problem. In our case, this number is the Peclet number, $Pe=\frac{\ububble L}{D}$.
 Therefore, one can substitute any quantity, i.e.
 $\ububble$ in the lattice Boltzmann units as soon as the
-Peclet number is the matched in physical space and numerical simulations. This fact that $\ububble$ can be chosen arbitrarily is extremely useful in the context of numerical simulations, since can increase the time step, or decrease the computational demand by order of magnitude to obtain meaningful results. This point will be extensively covered later. 
+Peclet number is the matched in physical space and numerical simulations. This fact that $\ububble$
+can be chosen arbitrarily is extremely useful in the context of numerical simulations, since it can
+increase the time step, or decrease the computational demand by order of magnitude to obtain
+meaningful results. This point will be extensively covered later. 
 
-Next section will cover LBM benchmarks for problems that form the mass transfer problem, as mass transfer from the film  and hemispheres.
+Next section will cover LBM benchmarks that resemble the mass transfer problem from a bubble, as as
+mass transfer from the film  and circumferences.
 
 \subsection{The radial case}
 The case to be examined here is the mass transfer from the stair-case boundary forming a circle. It
@@ -612,8 +693,9 @@ different diffusion coefficients are presented in Fig.\ref{fig:cylinder:benchmar
 \includegraphics[width=0.5\textwidth]{Figures/cylinder0833.eps}\\
 \includegraphics[width=0.5\textwidth]{Figures/cylinder0104.eps}
 \includegraphics[width=0.5\textwidth]{Figures/cylinder0052.eps}\\
-\caption{Profiles for different diffusion parameters varied with $\omegaminus$. One can see that the diffusion from the non-linear boundaries is captured
-accurately \label{fig:cylinder:benchmark}.}
+\caption{Profiles for different diffusion parameters varied with $\omegaminus$. One can see that the
+diffusion from curved boundaries is captured
+accurately \label{fig:cylinder:benchmark}. $x$ is the distance from the center.}
 \end{figure}
 
 \subsection{Parabolic profile with the velocity zero gradient at the wall}
@@ -630,9 +712,10 @@ The procedure to solve this PDE is presented in Appendix \ref{appendix:zero:grad
 \label{analytical:solution:zero:gradient}
 \begin{aligned}
 &C(x,y)=\cstar+\sum_{m}{C_m
-\sqrt{\frac{y}{H}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{H^2}\Bigr)\exp\Bigl(-\frac{m^4}{Pe}
-\frac { x }{H}\Bigr)}\\
-&C_m = (C_0-\cstar \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
+\sqrt{\frac{y}{\delta}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{\delta^2}\Bigr)\exp\Bigl(-\frac{
+m^4 } { Pe }
+\frac { x }{\delta}\Bigr)}\\
+&C_m = (C_0-\cstar) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}
 \end{aligned}
@@ -647,7 +730,9 @@ $D=\frac{1}{3}\Bigl(\frac{1}{\omega}-\frac{1}{2}\Bigr)=0.0185$.
 \caption{Comparison with the analytical concentration contours, Eq.
 \ref{analytical:solution:zero:gradient}, for the diffusion coefficient $D=0.0185$. Simulation was
 performed on grid $80\times 1600$. The constant concentration is imposed with the
-anti bounce-back conditions, Eq. \ref{antibb}. \label{fig:parabolic:zero:gradient}}
+anti bounce-back conditions, Eq. \ref{antibb}. Coordinate $x$ and $y$ are non-dimensionalized on
+the height of the channel. $\delta=H/2$ is the half of the channel height
+\label{fig:parabolic:zero:gradient}}
 \end{figure}
  
 \subsection{Poiseulle velocity parabolic profile}
@@ -682,7 +767,7 @@ examine all the cases to calculate the volumetric mass transfer coefficient, Sec
 
 \section{Numerical approach}
 \label{sec:numerics}
-The code was utilized to obtain the flow patterns for different capillary numbers
+The multiphase code was utilized to obtain the flow patterns for different capillary numbers
 \cite{kuzmin-binary2d}. Five particular cases were chosen to examine, their results are summarized
 in Table \ref{table:capillary:cases}. 
 \begin{table}[htb!]
@@ -717,23 +802,22 @@ $Ca<0.2$ is of the order of a few millions. Thus, one wants to increase the avai
 while keeping the Peclet number the same. This helps to stability of the method as well, since
 $\omegaminus$ is not close to its stability limit $\omegaminus=0.5$. 
 
-Given all the considerations above, one needs to approach the mass transfer in the following
-steps:
+Given all the considerations above, the approach we take for mass transfer is:
 \begin{description}
  \item[Flow field] Given the capillary number $Ca$, one needs to obtain hydrodynamic fields around
 the bubble using the binary liquid lattice Boltzmann model according to work
 \cite{kuzmin-binary2d}. Periodic boundary conditions are used. The grid used in this work is
 $202\times 3000$ which corresponds to fluid domain size $200\times3000$. The grid resolution is
-taken to insure grid
-independency of results.  
+taken to ensure grid
+independency of results \cite{kuzmin-binary2d}.  
  \item[Bubble reference frame] Once the hydrodynamics is resolved, the mass transfer simulations
-are conducted in the moving reference frame with the bubble. Then the bubble stands still and the
+are conducted in the reference frame moving with the bubble. Then the bubble stands still and the
 flow is coming around the
-bubble. We impose a steady concentration of the trace on the surface
+bubble. We impose a steady concentration on the surface
 of the bubble with the anti bounce-back condition, Eq. \ref{antibb}.
  \item[Velocity improvement] Due to necessity to increase velocity one can scale the velocity to
 perform fast simulations, one needs to improve velocity. This issue arises because of the
-multiphase model used in simulations.The binary liquid lattice Boltzmann model is the diffusive
+multiphase model used in simulations. The binary liquid lattice Boltzmann model is the diffusive
 interface model. Thus, the
 transition between gas and liquid is the continuous function. We obtain the bubble shape according
 to the phase indicator $\phi$ as used in \cite{kuzmin-binary2d}, say $\phi<0$. The velocity of the
@@ -746,20 +830,23 @@ This small velocity is amplified upon the velocity scaling and is inconsistent w
 advection-diffusion equation.
 
 
-Thus, before performing the mass transfer simulations one additional one-component hydrodynamic
-simulation is performed. A special additional free-surface solver was developed in order to dispose
-the normal to surface velocity components. We take results from the multiphase simulations, extract
+Thus, before performing the mass transfer simulations one additional single phase hydrodynamic
+simulation is performed. An additional free-surface solver was developed in order to obtain
+consistent with the advection-diffusion equation velocity field. We take results from the
+multiphase simulations, extract a
 bubble shape using the phase indicator $\phi<0$, approximate the bubble shape by the stair-case
 line. Then,the obtained bubble velocity is imposed on walls. This corresponds to conducting
 simulation in the reference frame moving with the bubble. In addition, the free-slip boundary
 condition on the bubble surface is imposed. Appendix \ref{appendix-free-surface} covers the simple
-free-slip boundary conditions drastically improving velocity patterns. The system is tterate until a
+free-slip boundary conditions implementation drastically improving velocity patterns. The system is
+iterated until a
 steady state is reached. Note, that these type of simulations are much faster than original
 multiphase simulations. As the output all the non-zero velocity components perpendicular to the
-bubble surface are completely illuminated. We compared original multiphase simulations with
+bubble surface are completely eliminated. We compared original multiphase simulations with
 one-component free-slip simulations. All quantities as superficial slug and bubble velocities are
-within $3\%$ for the capillary number in the range $0.05\leq Ca \leq 1.0$. This small trick helps to
-make mass transfer simulations stable and faster, since the velocity scaling can be done easier. One
+within $3\%$ for the capillary number in the range $0.05\leq Ca \leq 1.0$. This simulation helps to
+make mass transfer simulations stable and faster, since the velocity scaling can be done easier and
+streamlines are non-penetrating through the interface. One
 can see in Fig. \ref{fig:free:surface} two streamlines profiles for $Ca=0.097$  and $Ca=1.040$.
 \begin{figure}[htb!]
 \includegraphics[angle=90,width=\textwidth]{Figures/performed_ca0097.eps}\\
@@ -777,8 +864,8 @@ specifically separated the hydrodynamic problem from the mass transfer problem. 
 solve these simultaneous problems, then one needs to match all the non-dimensional parameters, as
 the capillary number (viscous forces over surface tension), the Schmidt number (viscous diffusion
 rate over mass diffusion rate), the Peclet number (convection over diffusion), the Reynolds number
-(inertia over viscous forces) and the Sherwood
-number (convection mass transfer over diffusion mass transfer):
+(inertia over viscous forces). As the output one can obtain the Sherwood number dependancy on other
+parameter (convection mass transfer over diffusion mass transfer):
 \begin{equation}
 \begin{aligned}
 &Re=\frac{\ububble L}{\nu_{\mathrm{liq}}},&&Ca=\frac{\ububble \mu_{\mathrm{liq}}}{\gamma}\\
@@ -791,19 +878,21 @@ number (convection mass transfer over diffusion mass transfer):
 \section{Results}
 This section covers simulation results. We first examine the possibility to increase the fluid
 velocity while keeping the Peclet number the same. After that we will examine the periodic boundary
-conditions for $5$ capillary cases, open boundary simulations, and finally we will examine many
+conditions for $5$ capillary number cases,  and finally we will examine
+many
 cells simulations for two representative cases velocity patterns, as $Ca=0.0907$ and $Ca=1.04$
 (see Fig. \ref{fig:streamlines:tweaked:velocity}). 
 
 \subsection{Keeping Peclet}
 \label{section:keeping:peclet}
 This section addresses the performance of the simulations. The ulimate goal is to increase
-velocity at least by several orders while keeping dimensionless parameters the same to speed up
+velocity at least by several orders of magnitude while keeping dimensionless parameters the same to
+speed up                                      
 simulations. Increasing velocity can also help to resolve a lot of unit cells to represent a
 continous picture.
 
 With the given bubble shape and velocity pattern only nondimensional parameter Peclet number governs
-the advection-diffusion equation:
+the advection-diffusion equation represented in the lattice Boltzmann system as:
 \beq
 Pe=\frac{\ububble N_y}{D}.
 \feq
@@ -856,15 +945,18 @@ $2$&$0.0848$&$200000$&$0.3489$\\
 $2$&$0.1176$&$200000$&$0.3675$\\
 \hline
 \end{tabularx}
-\caption{Table representing how one can speed up simulations. One iteration in the lattice
+\caption{This table presents the achievable stable velocity $\ububble$ when one scales velocity. One
+iteration in the lattice
 Boltzmann system corresponds to time difference as
 $\Delta t=\frac{U_{\mathrm{bubble,LB}}}{U_{\mathrm{bubble,phys}}} \Delta x$. Therefore the speed up
-of the simulation is proportional to the  $U_{\mathrm{bubble,LB}}$. Thus, the time iterations
+of the simulation is proportional to the  $U_{\mathrm{bubble,LB}}$. Note that all time
+iterations
 indicated in the table correspond to the one time moment in physical space. One can see that
-scaling produces adequate results.  One can see that the stability limit is approximately around
-$U_{bubble}=0.1$ for the diffusion coefficient
+scaling produces adequate results.  The achievable stable velocity is around $U_{bubble}=0.1$ for
+the diffusion coefficient
 $D=1/3(1/1.99-0.5)=0.000837$. Average concentrations are in the reasonable agreement. The contour
-profiles for all of these cases are presented in Fig. \ref{fig:contours:scaling:peclet}
+profiles for all of these cases (capillary number $Ca$ and all scales) are presented in Fig.
+\ref{fig:contours:scaling:peclet}.
 \label{table:scaling:peclet}}
 \end{table}
 The corresponding to Table \ref{table:scaling:peclet} concentration contour profiles for different
@@ -879,7 +971,9 @@ faster.
 \includegraphics[height=0.25\textwidth]{Figures/contourlines_scale_ca14.eps}\\
 \caption{Concentration contour profiles for velocity scalings as identified in Table
 \ref{table:scaling:peclet} (top to bottom:
-$Ca=0.097,0.254,0.526,0.750,1.040$).\label{fig:contours:scaling:peclet}}
+$Ca=0.097,0.254,0.526,0.750,1.040$). Thick lines correspond to
+all different scales indicated in Table
+\ref{table:scaling:peclet}. Agreement is reasonable. \label{fig:contours:scaling:peclet}}
 \end{figure}
 
 \subsection{Average concentration}
@@ -889,34 +983,37 @@ the time. Eq. \ref{theor:one:concentration:time} shows how
 the volumetric mass transfer coefficient depends on
 time, i.e. streamwise coordinate:
 \beqal
-&\vol t \frac{\ububble}{\ugas+\uliq}=\ln\frac{\cstar}{\cstar-C(t)}\\
-&\vol \frac{\lunit}{\ugas+\uliq}=\frac{\lunit}{\ububble t} \ln \frac{C^*}{C^*-C(t)},\\
+&\vol t \frac{\ububble}{\ugas+\uliq}=\ln\frac{\cstar}{\cstar-\langle C(t) \rangle}\\
+&\vol \frac{\lunit}{\ugas+\uliq}=\frac{\lunit}{\ububble t} \ln \frac{C^*}{C^*-\langle C(t)
+\rangle},\\
 \feqal
-where $C(t)$ is the average concentrations.
+where $\langle C(t) \rangle$ is the average concentration in the whole liquid domain.
 Simulations for coefficient $\vol \frac{\ububble}{\ugas+\uliq}$ are shown in Fig.
 \ref{fig:aver:conc:different:capillaries:time} for different Peclet numbers and velocity scalings
 indicated in Table \ref{table:scaling:peclet}. Because in the definition of the volumetric mass
 transfer coefficient there is the logarithm function, thus when the average concentration goes
 close to $\cstar=1$ then Eq. \ref{theor:one:concentration:time} gives inadequate results due to
- accuracy of the logarithmic function. However, the more interesting thing is to put the same plots
-as in Fig. \ref{fig:aver:conc:different:capillaries:time} against the number of unit cells length
-which the bubble passes with the given velocity as $\mathrm{scale}\cdot\frac{\mathrm{\ububble\cdot
-t}}{L}$. Fig. \ref{fig:aver:conc:different:capillaries} shows the volumetric mass transfer
+ accuracy of the logarithmic function. Fig. \ref{fig:aver:conc:different:capillaries:time} presents
+the volumetric mass transfer coefficient against number of time iterations. However, due to scaling
+each simulation has a different physical time step. We scaled curves against number of cell
+units which tracer will pass with the given bubble velocity, i.e. 
+$N_{\text{cell\,units}}=\frac{\text{scale} \ububble t}{\lunit}$.  Fig.
+\ref{fig:aver:conc:different:capillaries} shows the volumetric mass transfer
 dependency against the distance in unit cells length. One can see in Table
 \ref{table:steady:state:average} that for different Peclet numbers different time (number of unit
-cells) is required to achieve the steady state. Also, Table \ref{table:steady:state:average} shows
-the achieved steady state volumetric mass transfer coefficient. One can see tendention that for
+cells) is required to achieve the steady state. For example, for
 larger Peclet number less time steps are required to achieve the steady state condition. 
 
 Overall one is guaranteed to obtain the steady state volumetric mass transfer coefficient for
 periodic boundaries simulations if the following conditions are fulfilled:
 \begin{description}
-\item Scaling is performed as $U_{max}=\mathrm{scale}\cdot\ububble\leq 0.1$.
-\item The larger Peclet number the less time is required. One can extrapolate data from Table
+\item[I] Scaling is performed as $U_{max}=\mathrm{scale}\cdot\ububble\leq 0.1$.
+\item[II] The larger Peclet number the less time is required. One can extrapolate data from Table
 \ref{table:steady:state:average}, say $L_{\mathrm{steady}}$ and perform the following number of
 iterations as $\mathrm{scale}\cdot \ububble\cdot N_{\mathrm{iter}}\leq L_{\mathrm{steady}}$. 
 \end{description}
-
+Also, Table \ref{table:steady:state:average} shows
+the achieved steady state volumetric mass transfer coefficient. 
 \begin{figure}[htb!]
 \includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca_time097.eps}
 \includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca_time054.eps}\\
@@ -927,9 +1024,9 @@ iterations as $\mathrm{scale}\cdot \ububble\cdot N_{\mathrm{iter}}\leq L_{\mathr
 against time. One can see
 that all curves have the same minimum corresponding to the volumetric mass transfer coefficient.
 Some simulations show the volumetric mass transfer coefficient going up due to the average
-concentration being close to $\cstar$. All of them show excellent agreement. Note, that with the
+concentration being close to $\cstar$. All of them show an excellent agreement. Note, that with the
 scaling one can reduce the amount of calculations drastically. However, one needs to be attentive
-because with the large velocity scaling average concentration can fastly approach $\cstar$, thus
+because with the large velocity scaling average concentration can quickly approach $\cstar$, thus
 getting an infinite volumetric mass transfer coefficient.
 \label{fig:aver:conc:different:capillaries:time}}
 \end{figure}
@@ -940,7 +1037,9 @@ getting an infinite volumetric mass transfer coefficient.
 \includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca05.eps}\\
 \includegraphics[width=0.5\textwidth]{Figures/aver_conc_scale_ca14.eps}
 \caption{Volumetric mass transfer coefficient for different capillaries and scales against the
-bubble traveling distance in the laboratory frame. Table \ref{table:steady:state:average}
+bubble traveling distance in the laboratory frame. ''Cell Units`` axis is refered to the physical
+distance of how many unit cells the bubble passes until the steady state is reached. Table
+\ref{table:steady:state:average}
 summarizes results.\label{fig:aver:conc:different:capillaries}}
 \end{figure}
 \begin{table}[htb!]
@@ -961,13 +1060,15 @@ Peclet number helps to achieve the steady state faster.\label{table:steady:state
 \end{table}
 
 \subsection{Periodic boundaries with the inlet/outlet characteristic concentration}
+\label{results:periodic:inlet:outlet}
 When the characteristic concentration is taken as in the formulation of \citet{vanbaten-circular},
 i.e. the inlet/outlet flux averaged concentration, then the results are quite different. One can
 see in Fig. \ref{fig:volumetric:char:concentration:vanbaten} the calculated volumetric mass transfer
 is different from the domain averaged calculated volumetric mass transfer coefficient. For example,
 for small capillary numbers, i.e. $Ca=0.097,0.254,0.526$ the predicted values are overpredicted
-($\volnondim=0.3,0.25,0.1$). When the pattern is changed, i.e. $Ca=0.75,1.04$ the calculated values
-are underpredicted than in previous case, i.e. $\volnondim=0.06,0.04$.
+($\volnondim=0.3,0.25,0.1$). When the velocity pattern is changed from having vortex in front of
+the bubble to not having it,  i.e. $Ca=0.75,1.04$ the calculated values
+are underpredicted than in the previous case, i.e. $\volnondim=0.06,0.04$.
 \begin{figure}[htb!]
 \includegraphics[width=0.5\textwidth]{Figures/aver_vanbaten_scale_ca097.eps}
 \includegraphics[width=0.5\textwidth]{Figures/aver_vanbaten_scale_ca054.eps}\\
@@ -983,8 +1084,8 @@ than values specified in Table \ref{table:steady:state:average} depending on the
 \end{figure}
 
 
-
 \subsection{\citeauthor{vanbaten-circular} formulation}
+\label{results:vanbaten}
 The van Baten formulation which is calculated as the change of mass in domain with characteristic
 concentrations to be as the average domain simulation and as the averaged flux input/output
 concentration. One can see them in Fig. \ref{fig:vanbaten} for $Ca=0.097$ and
@@ -992,7 +1093,9 @@ $Ca=1.04$. One can see that results are consistent with the simulations in Secti
 \ref{main:results:periodic} for the volumetric mass transfer coefficient measured with the domain
 averaged concentration in the whole range of capillary numbers. Note that for $Ca=0.097$ the
 obtained mass transfer coefficient is less than in Section \ref{main:results:periodic}. However, as
-it will be shown later this coefficient coincides with the many units formulation. The inlet/outlet
+it will be shown later the obtained volumetric mass transfer coefficient for $Ca=0.0097$ has the
+same value as for the simulations of a few unit cells. The
+inlet/outlet
 flux averaged concentration is shown to be consistent only for velocity patterns related to larger
 Capillary numbers, i.e. $Ca\geq0.7$. 
 \begin{figure}
@@ -1003,11 +1106,12 @@ Capillary numbers, i.e. $Ca\geq0.7$.
 \caption{The \citet{vanbaten-circular} formulations for $Ca=0.097$ (top) and
 $Ca=1.04$ (bottom) with the characteristic concentration being domain
 averaged (left) and inlet/outlet flux averaged concentration (right). One can
-see that \citet{vanbaten-circular} formulation is good with the average
-characteristic concentration for capillary numbers regimes without
-vortex. Moreover, the values are more close to values obtained with many cells
-simulations, see Fig. \ref{fig:moving:average:ca0097}. However, the characteristic concentration
-being inlet/outlet flux averaged concentration does not produce consistent results.
+see that \citet{vanbaten-circular} formulation is good with the characteristic concentration being
+the average concentration. Moreover, the values are more close to values obtained with many cells
+simulations, see Fig. \ref{fig:moving:average:ca0097}, than in comparison with periodic boundary
+simulations in Section \ref{main:results:periodic}. However, the characteristic concentration
+being inlet/outlet flux averaged concentration does not produce consistent results as in Section
+\ref{results:periodic:inlet:outlet}.
 \label{fig:vanbaten}}
 \end{figure}
 
@@ -1029,36 +1133,68 @@ being inlet/outlet flux averaged concentration does not produce consistent resul
 %\end{figure}
 
 \subsection{Performing a number of cell units simulations}
-One needs to examine a few units simulations to obtain a proper volumetric
-mass transfer coefficient. This section studies the quantity of the unit cells on the volumetric
-mass transfer coefficient to be independent of the number of unit cells. We chose two different
+A few unit cells simulations naturally resemble the real experiments picture.  The idea here is
+that if one have enough number of unit cells then results of internal unit cells should be
+independent of boundaries and correspond to experiments. A few unit cells simulations physically
+correspond to the simulation of bubble train head. If boundaries are eliminated then the average
+domain characteristic should be changed in time according to Eq.
+\ref{theor:continuous:mass:transfer}. It means that there is no ambiguity to choose the
+characteristic concentration. The characteristic concentration is the averaged domain concentration
+as it is seen in experiments.
+
+This section studies a number of the unit cells required for the volumetric
+mass transfer coefficient to be independent of boundaries. We chose two
+different
 velocity patterns (see Fig. \ref{fig:streamlines:tweaked:velocity} for $Ca=0.097$ and $Ca=1.04$) to
 perform a few number of cells simulations. For $Ca=0.097$ we performed simulations with
-$4$,$6$,$8$,$10$ number of cells, for $Ca=1.040$ - $4$,$6$,$8$ cells to be examined. However,
+$4$,$6$,$8$,$10$ number of cells, for $Ca=1.040$ only $4$,$6$,$8$ unit cells simulations.
+However,
 simulations with $10$ unit cells domain length produce the same results as $8$ unit cells.
 Thus, it won't be covered here, especially as it requires extensive computational resources (grid is
 $30000\times 200$). 
 
 As it was discussed in the previous section we want to keep
-velocity around $0.05-0.1$ to from . The number of steps for mass to cross whole domain is
+velocity around $0.05-0.1$. The number of steps for mass to cross whole domain is
 limited from above by $1.5 \frac{\lunit}{\ububble}$, which takes into the account the bulk
 velocity. If $\ububble$ is taken as $0.05$ then for
 the domain size $\lunit=3000$ one can obtain the following number of iteration for mass transfer to
 cross the unit cell $1.5 \frac{3000}{0.05}=90000$. Therefore, $10^{6}$ time iterations are enough
-for system consisting of $10$ cell units to be stabilized. For more accurate estimations depending
+for system consisting of $10$ cell units. For more accurate estimations of number of time
+iterations depending
 on the Peclet number one can refer to Section \ref{section:keeping:peclet}.
 
 \subsection{$Ca=0.097$ results}
-To understand the process happening in unit cells one need to keep a track of a few
-characteristics. We chose following representative characteristics: the average concentration in
-the unit cell with time, the concentration difference between adjacent unit cells. The latter is
-the interesting characteristics which shows how well slug liquid is mixed (to be shown later). The
-argument behind this characteristic is that if the following situation is fulfilled: the continuity
-equation is satisfied then the concentration along the coordinate changes according to Eq.
-\ref{main:mass:transfer:expression}:
+There are two characteristics we want to track for a few unit cells simulations: the average
+concentration in
+the unit cell with time (see Eq. \ref{theor:continuous:mass:transfer}), and the accumulated mass
+rate in the domain adjusted with inlet/outlet fluxes (see Eq. \ref{main:main:main}). The former
+resembles the experimental picture: if one have enough unit cells then the average domain
+concentration should change in time according to Eq. \ref{theor:continuous:mass:transfer}: 
 \beq
-C(x)= \cstar \Bigl(1-\exp\bigl(-\vol \frac{x}{\uliq+\ugas} \bigr)\Bigr)
+\label{moving:average}
+\vol\frac{\lunit}{\ugas+\uliq}=\frac{\lunit}{\ububble (t_2
+-t_1)}\ln\Bigl(\frac{C^*-C_1}{C^*-C_2}\Bigr)
 \feq
+The
+latter is the main equation that can help to obtain the volumetric mass transfer coefficient from
+mass transfer simulations with any bounary conditions (periodic boundary conditions, open
+boundaries). Eq.\ref{main:main:main} can be rewritten as:
+\beq
+\begin{aligned}
+\volnondim=\frac{\lunit}{\ugas+\ububble} \frac{V \frac{(\langle C(t_2)\rangle - \langle C(t_1)
+\rangle)}{t_2-t-1}}{\dots}\\
+\frac{-\int{\coutlet(\lunit,y,t^*) u(\lunit,y) \mathrm{d} y}+\int{\cinlet(0,y,t^*)
+u(0,y)\mathrm{d} y}}{V (\cstar - \langle C(t^*) \rangle)},
+\end{aligned}
+\feq
+where $t^*$ is medium time between $t_1$ and $t_2$.
+%The
+%argument behind this characteristic is that if the following situation is fulfilled: the continuity
+%equation is satisfied then the concentration along the coordinate changes according to Eq.
+%\ref{main:mass:transfer:expression}:
+%\beq
+%C(x)= \cstar \Bigl(1-\exp\bigl(-\vol \frac{x}{\uliq+\ugas} \bigr)\Bigr)
+%\feq
 %After the transition to the reference frame moving with the velocity $\ububble$, one will have the
 %same continuous picture but the concentration dependency will change since velocity is changed as
 %well:
@@ -1075,46 +1211,45 @@ C(x)= \cstar \Bigl(1-\exp\bigl(-\vol \frac{x}{\uliq+\ugas} \bigr)\Bigr)
 %\feqal
 %Parameters $\frac{\uliq+\ugas-\ububble}{\uliq+\ugas}$ were calculated and for representative
 %Capillary numbers equal to $0.11,0.04,-0.02,-0.06,-0.10$.
-In the case of present simulations the situation is different as the reference frame is moving with
-the bubble. Thus, the correlation between adjacent cells as follows:
-\beqal
-\label{volumetric:between:adjacent:cells}
-&C_1=C(x)=C^* \Bigl(1-e^{-\vol \frac{x}{\ugas+\uliq-\ububble}}\Bigr)\\
-&C_2=C(x+L)=C^* \Bigl(1-e^{-\vol \frac{x+L}{\ugas+\uliq-\ububble}}\Bigr)\\
-&k_L\frac{L}{\ugas+\uliq-\ububble}=\frac{C^*-C_1}{C^{*}-C_2}\\
-&k_L\frac{L}{U}=\frac{C^*-C_1}{C^*-C_2},
-\feqal
-where $U=\ugas+\uliq-\ububble$. We will see later that this characteristic is really important to
-see whether the liquid slug is mixed. Fig. \ref{fig:unit:4} shows one of the examples for velocity
-scale $20$ and  $4$ unit numbers (all
-scales produce the same results) for the volumetric mass transfer coefficient $k_L \frac{L}{U}$
-(different from $\volnondim$) based on difference
-between two adjacent cells concentration averages. One can see that this number is changed from
-segment to segment. The same dependencies can be found for
-$6$ and $8$ unit cells simulations but we do not present them here.
+%In the case of present simulations the situation is different as the reference frame is moving with
+%the bubble. Thus, the correlation between adjacent cells as follows:
+%\beqal
+%\label{volumetric:between:adjacent:cells}
+%&C_1=C(x)=C^* \Bigl(1-e^{-\vol \frac{x}{\ugas+\uliq-\ububble}}\Bigr)\\
+%&C_2=C(x+L)=C^* \Bigl(1-e^{-\vol \frac{x+L}{\ugas+\uliq-\ububble}}\Bigr)\\
+%&k_L\frac{L}{\ugas+\uliq-\ububble}=\frac{C^*-C_1}{C^{*}-C_2}\\
+%&k_L\frac{L}{U}=\frac{C^*-C_1}{C^*-C_2},
+%\feqal
+%where $U=\ugas+\uliq-\ububble$. We will see later that this characteristic is really important to
+%see whether the liquid slug is mixed. 
+Fig. \ref{fig:unit:6} shows average concentrations in different units and $\volnondim$ based on Eq.
+\ref{main:main:main} calculated for each unit for velocity
+scale $10$ and  $6$ unit cells (all velocity scales produce same results). One can see that the
+volumetric mass transfer cofficient is consistent for internal segments, i.e. $3-5$. One can see
+that Eq. \ref{main:main:main} for a few unit cells produce the same results as periodic boundary
+conditions in Section \ref{main:results:periodic}. The same dependencies
+can be found for
+$8$ and $10$ unit cells simulations but we do not present them here. As well we do not present $4$
+units cells simulation results which are influenced by inlet and outlet boundaries. 
 
-However, if one wants to examine how the average concentration changes in time according to Eq.
-\ref{theor:continuous:mass:transfer} for different unit cells then one will see interesting
-thing for the volumetric mass transfer correlation, see Fig. \ref{fig:moving:average:ca0097}:
-\beq
-\label{moving:average}
-\vol\frac{\lunit}{\ugas+\uliq}=\frac{\lunit}{\ububble (t_2
--t_1)}\ln\Bigl(\frac{C^*-C_1}{C^*-C_2}\Bigr)
-\feq
+The non-dimensional volumetric mass transfer coefficient calculated based on Eq.
+\ref{theor:continuous:mass:transfer} (averaged domain concentration changes in times) is
+represented in Fig. \ref{fig:moving:average:ca0097} for different unit cells. One can see that the
+results are less than the volumetric mass transfer coefficient , but consistent with the mass flux
+concentration based on \citeauthor{vanbaten-circular} formulation with the characteristic
+concentration being averaged domain concentration (see Section \ref{results:vanbaten}).
 \begin{figure}[htb!]
 %\includegraphics[width=0.5\textwidth]{Figures/aver_units4scale10.eps}\hfill
 %\includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale10.eps}\\
 %\includegraphics[width=0.5\textwidth]{Figures/aver_units4scale15.eps}\hfill
 %\includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale15.eps}\\
-\includegraphics[width=0.5\textwidth]{Figures/aver_units4scale20.eps}\hfill
-\includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale20.eps}\\
-\caption{Average concentrations (left) and volumetric coefficients (right) $\vol \frac{L}{U}$ (
-different from $\volnondim$) for $4$ units cells. The volumetric
-mass transfer coefficient is calculated based on the difference between averages for different unit
-cells. One can see that the numbers for the volumetric mass transfer coefficient are different for
-different unit cells. This is the indication that the liquid slug is mixed and the spatial location
-does not easily transfers to time domain. 
-\label{fig:unit:4}}
+\includegraphics[width=0.5\textwidth]{Figures/aver_units6scale10.eps}\hfill
+\includegraphics[width=0.5\textwidth]{Figures/right_def_6scale10.eps}\\
+%\includegraphics[width=0.5\textwidth]{Figures/coeff_units4scale20.eps}\\
+\caption{Average concentrations (left) and volumetric coefficients (right) for $6$ units cells. The
+volumetric
+mass transfer coefficient is calculated based on Eq. \ref{main:main:main} and accounts for inlet
+and outlet fluxes. \label{fig:unit:6}}
 \end{figure}
 \begin{figure}[htb!]
 \includegraphics[width=0.5\textwidth]{Figures/aver_moving_window4scale10.eps}
@@ -1132,44 +1267,48 @@ prelast cell results are consistent with periodic boundary simulations and
 
 \subsection{$Ca=1.040$ results}
 The same correlations were examined for the different velocity pattern $Ca=1.040$ and initial
-velocity $\ububble=0.055$ and initial diffusion $D=0.0008375$. A few unit cells simulation for
-this
-capillary number are unstable. To improve stability we changed original Peclet number by increasing
-diffusion to reveal all the correlations. The results for unit cells are the same as for $Ca=0.097$:
+velocity $\ububble=0.055$ and initial diffusion $D=0.0008375$. If only velocity scaling is
+performed then a few unit cells simulations for
+this capillary number  are unstable. To improve stability we changed original Peclet number by
+increasing
+diffusion. The results for unit cells are the same as for $Ca=0.097$:
 at least $6$ unit cells are required to be simulated to avoid the influence of boundaries. Thus,
-only $6$ unit cells results are presented in Fig. \ref{fig:6:units:ca1040}. As well the volumetric
-mass transfer coefficient, Eq. \ref{volumetric:between:adjacent:cells}, is shown in Fig.
-\ref{fig:6:units:ca1040}. One can see that the average volume concentration, as well the volumetric
-mass transfer coefficients, come to the constant and are not increasing with time. Thus, all the
+only $6$ unit cells results are presented in Fig. \ref{fig:6:units:ca1040}, that show only the
+average concentration for each unit cell. One can see that the average volume concentration come to
+constant values and are not increasing with time. Thus, all the
 mass generated with medium is transfered through the boundaries. This is the indication that the
-liquid slug is not mixed. Thus, the volumetric mass transfer coefficient $\volnondim$ can be
-calculated according to the definition, Eq. \ref{eq:main:definition}:
+liquid slug is not mixed. Note that the periodic boundary conditions can not show whether the
+liquid slug is mixed or not, since the averaged domain concentration is always increasing in time. 
+Thus, the volumetric mass transfer coefficient $\volnondim$ can be calculated according to the
+definition, Eq. \ref{main:main:main}:
 \beq
 \label{inlet:outlet:spatial:location}
-\vol = \frac{\dot{m}}{V \Delta C},
+\vol =
+\frac{\dot{m}-\int{\coutlet(y)u(\lunit,y)\mathrm{d}y}+\int{\cinlet(y)u(\lunit,y)\mathrm{d}y}}{V
+\Delta C},
 \feq 
 where $V$ is the unit cell volume, $\Delta C$ is the concentration difference between the bubble
-surface concentration $\cstar$ and the average medium concentration $C_{aver}$. Note that in this
-case one can calculate the mass generation as:
-\beq
-\dot{m}=(\coutlet-\cinlet)\uoutlet,
-\feq
-where $\coutlet$ and $\cinlet$ are taken for the current unit. Fig. \ref{fig:periodic:ca1040}
+surface concentration $\cstar$ and the averaged liquid domain concentration $\langle
+C(t)\rangle$. There is no accumulated mass in the domain. Thus, $\dot{m}=0$. As periodic boundary
+conditions this case is another extreme limit of Eq. \ref{main:main:main}. Note that to calculate
+the volumetric mass transfer coefficient one needs only the spatial information and does not
+require the knowledge of how concentration is changed in time. 
+
+Fig. \ref{fig:periodic:ca1040}
 (bottom) shows the volumetric mass transfer coefficient, based on spatial calculations of
 inlet/outlet concentrations. One can see that the volumetric mass transfer coefficient is close to
 the calculated volumetric mass transfer coefficient using the time averaged approach and periodic
 boundaries one unit cells simulations. 
 \begin{figure}[htb!]
+\begin{center}
 \includegraphics[width=0.5\textwidth]{Figures/aver_units6scaleu2scaled5.eps}
-\includegraphics[width=0.5\textwidth]{Figures/novortex6scaleu2scaled5.eps}\\
-\caption{Results for 6 unit cells. The Peclet number equals to $Pe=2644$.
+\end{center}
+%\includegraphics[width=0.5\textwidth]{Figures/novortex6scaleu2scaled5.eps}\\
+\caption{Results for $6$ unit cells. The Peclet number equals to $Pe=2644$.
 One can see that average concentrations reach certain number and stay.
 That means whatever was
 generated by medium is transfered through the outlet
-boundary. One can see that the volumetric mass transfer coefficient based
-on the difference between unit cells averages, Eq. \ref{volumetric:between:adjacent:cells}, is
-constant for internal
-unit cells. This is the indication that the tracer in the slug is not
+boundary. O This is the indication that the tracer in the slug is not
 mixed and the volumetric mass transfer coefficient, $\volnondim$, can be
 calculated using the spatial approach, see Fig.
 \ref{fig:periodic:ca1040}.\label{fig:6:units:ca1040}}
@@ -1177,23 +1316,28 @@ calculated using the spatial approach, see Fig.
 The volumetric mass transfer coefficient with periodic boundary simulations for $Pe=2644$ (velocity
 scale $2$, diffusion scale $10$) and time dependent, Eq. \ref{theor:continuous:mass:transfer},
 average volumetric mass transfer coefficient are presented in Fig. \ref{fig:periodic:ca1040}. Note
-that they coincide but are different from calculated coefficients based on spatial location.
-Therefore, the time based simulations do not readily convert to spatial based simulations.
+that they coincide. Therefore, for certain hydrodynamic patterns one can easily convert time
+domain to the spatial domain calculations.
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{Figures/volume_ca_104_scaleu2scaled5.eps}
 \includegraphics[width=0.5\textwidth]{Figures/aver_moving_window6scaleu2scaled5.eps}\\
 \includegraphics[width=0.5\textwidth]{Figures/flux_moving_window6scaleu2scaled5.eps}\\
-\caption{The periodic (top left), time unit cells averaging (top right), and spatial location
-(bottom), Eq. \ref{inlet:outlet:spatial:location}, calculated  volumetric mass transfer
+\caption{The periodic (top left, $1$ unit cell, Eq. \ref{theor:continuous:mass:transfer}), unit
+cells averaged domain concentrations in time (top right, $6$ unit cells, Eq.
+\ref{theor:continuous:mass:transfer}), and spatial location
+(bottom, $6$ unit cells, Eq. \ref{inlet:outlet:spatial:location}) calculated  volumetric mass
+transfer
 coefficients. One can see that they all coincide. However, the periodic boundary conditions based
-calculations produce the overestimated volumetric mass transfer
-coefficient. \label{fig:periodic:ca1040}}
+calculations produce a bit overestimated volumetric mass transfer
+coefficient. As well one can see that the averaged domain concentration simulations (top right)
+reach the steady volumetric concentrations fast and after that start decaying. It is not convenient
+to use them in practical cases for not mixed slug, i.e. $Ca>0.7$. \label{fig:periodic:ca1040}}
 \end{figure}
 
-\subsection{Experiment comparison}
+\subsection{Experiment and Analytical correlations comparison}
 The goal of this paper is not to compare with the experiment correlations, but give the
-procedure to perform numerical simulations in the lattice Boltzmann framework. However, the small
-comparison is performed. 
+procedure to perform numerical simulationsrof  in the lattice Boltzmann framework. However, the
+small comparison is performed.
 Unfortunately the experiments to the best authors' knowledge measuring the mass flux for infinite
 width  bubbles flowing between parallel plates are absent. However, one of interesting
 correlations for the mass transfer volumetric coefficient was presented by
@@ -1209,32 +1353,54 @@ correlations for the mass transfer volumetric coefficient was presented by
 \Bigl(\frac{\lbubble}{\lbubble+\lslug}\Bigr)^{0.3} \propto Pe^{-\frac{1}{2}}
 \feqal
 One can see that approximately the volumetric mass transfer correlation should be proportional to
-$Pe^{-0.5}$. Fig. \ref{fig:volume:mass:coefficient} shows a comparison between corelation by
-\citet{yue-mass} and the current simulations coefficients presented in Table
-\ref{table:steady:state:average}. The coefficients are not far from each other, given the difference
-between two-dimensional and three-dimensional cases. The fitting procedure showed that the power of
+$Pe^{-0.5}$. As well one can use analytical estimations for the volumetric mass transfer
+coefficient calculated using Higbie penetration theory \cite{higbie}. One can show following works
+\cite{irandoust,vanbaten-circular} that the analytical expression for the flow between plats has
+the following form:
+\beq
+\label{vanbaten:analytical:expresssion}
+\begin{aligned}
+\volnondim=&\frac{\lunit}{\ugas+\uliq}\Bigl(4 \sqrt{D \ububble}{\pi}
+\frac{\sqrt{\lbubble-H (1-2\delta)}}{\lunit H}\\
+&+2 \sqrt{2} \sqrt{D \ububble} \frac{\sqrt{H
+(1-2\delta)}}{\lunit H}\Bigr),
+\end{aligned}
+\feq
+where $H$ is the channel height, $\delta$ is the film thickness.
+
+Fig. \ref{fig:volume:mass:coefficient} shows a comparison between corelation by
+\citet{yue-mass}, analitical expression, Eq. \ref{vanbaten:analytical:expresssion} and the current
+simulations coefficients presented in Table
+\ref{table:steady:state:average}. The coefficients are close to each other, especially given that
+the correlation by \citet{yue-mass} is for three-dimensional cases. The fitting procedure showed
+that the power of
 the Peclet number $Pe$ is $-0.50038$ which is close to $-0.5$. 
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/correlations_comparison.eps}
-\caption{Comparison between correlation by \citet{yue-mass} and mass transfer coefficient based
+\caption{Comparison between correlation by \citet{yue-mass}, analytical correlation following work
+\cite{irandoust} and mass transfer coefficient based
 on periodic boundary conditions. The fitting curve is proportional to $Pe^{-0.5}$ which corresponds
-to the correlation by \citet{yue-mass}.\label{fig:volume:mass:coefficient}}
+to all correlations. As well one can see that the deviation from the analytical expression becomes
+larger because the analytical expression does not account for the velocity pattern and a bubble
+shape change.\label{fig:volume:mass:coefficient}}
 \end{figure}
 
 \section{Conclusion}
 This work examines a way to calculate the volumetric mass transfer coefficient in the framework of
-the lattice Boltzmann method. Overall, the recipe is to perform periodic boundary
+the lattice Boltzmann method. Overall, the easiest recipe is to perform periodic boundary
 conditions simulations and calculate the volumetric mass transfer coefficient based on the averaged
-domain concentration through any formulation as they produce consistent results. However, the
-result is the volumetric mass transfer coefficient will be overestimated using this
-approach. Formulation of
+domain concentration through any formulation as they produce consistent results. The best accuracy
+is achieved with formulations based on the mass difference or on the averaged domain concentrations
+taken in different times, Eq. \ref{theor:continuous:mass:transfer}. Eq.
+\ref{theor:average:concentration:time} gives a bit overestimated volumetric mass transfer
+coefficient. Formulation of
 \citet{vanbaten-circular} is inconsistent if one takes the inlet/outlet flux averaged concentration
 to be characteristic concentration. A few unit cells simulations are harder to perform, but they
 have indicator of how well the liquid slug is mixed. As well, for velocity patterns for $Ca\geq
 0.7$ simulations with a few unit cells allow to calculate the volumetric mass transfer
 coefficient based on the spatial location, not time averaged values used in all other
 approaches. Finally, a sample of results was
-compared with the experimental correlation of \citet{yue-mass}. 
+compared with the experimental correlation of \citet{yue-mass} and shows a good agreement. 
 \appendix
 \section{Analytical solution for parabolic profile with zero velocity gradient at $0$}
 \label{appendix:zero:gradient}
@@ -1250,16 +1416,17 @@ The problem is defined in terms of PDE as follows:
 The non-dimensional parameters are introduced:
 \beq
 \begin{aligned}
-&\frac{\partial C}{\partial \frac{x}{H}} \frac{U_0}{H}
-\Bigl(\frac{y}{H}\Bigr)^2=\frac{D}{H^2}\frac{\partial^2 C}{\partial \frac{y^2}{H^2}}\\
-&C(0,y)=C_0,\, C(x,0)=\cstar,\, \frac{\partial C}{\partial y }(x,H)=0\\
+&\frac{\partial C}{\partial \frac{x}{\delta}} \frac{U_0}{\delta}
+\Bigl(\frac{y}{\delta}\Bigr)^2=\frac{D}{\delta^2}\frac{\partial^2 C}{\partial
+\frac{y^2}{\delta^2}}\\
+&C(0,y)=C_0,\, C(x,0)=\cstar,\, \frac{\partial C}{\partial y }(x,\delta)=0\\
 \end{aligned}
 \feq
 After a change of variables:
 \beq
 \begin{aligned}
-&\zeta=\frac{x}{H} \frac{D}{U_0 H}=\frac{1}{Pe}\frac{x}{H}\\
-&\xi=\frac{y}{H},
+&\zeta=\frac{x}{\delta} \frac{D}{U_0 \delta}=\frac{1}{Pe}\frac{x}{\delta}\\
+&\xi=\frac{y}{\delta},
 \end{aligned}
 \feq 
 Eq. \ref{diffusion:zero:gradient:start} with boundary conditions becomes as follows:
@@ -1356,8 +1523,9 @@ Therefore, the overall solution is specified as:
 \beq
 \begin{aligned}
 &C(x,y)=\cstar+\sum_{m}{C_m
-\sqrt{\frac{y}{H}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{H^2}\Bigr)\exp\Bigl(-\frac{m^4}{Pe}
-\frac { x }{H}\Bigr)}\\
+\sqrt{\frac{y}{\delta}}J_{\frac{1}{4}}\Bigl(\frac{m^2}{2}\frac{y^2}{\delta^2}\Bigr)\exp\Bigl(-\frac{
+m^4 } { Pe }
+\frac { x }{\delta}\Bigr)}\\
 &C_m = (C_0-\cstar) \frac{\int_{\xi=0}^{1}{\xi^{5/2} J_{\frac{1}{4}}\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}{\int_{\xi=0}^{1}{\xi^3 J_{\frac{1}{4}}^2\Bigl(\frac{m^2
 \xi^2}{2}\Bigr)\mathrm{d}\xi}}
