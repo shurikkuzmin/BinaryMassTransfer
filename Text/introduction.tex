@@ -15,10 +15,12 @@
 \newcommand{\feqal}{\end{aligned}\end{equation}}
 \newcommand{\beqalstar}{\begin{equation*}\begin{aligned}}
 \newcommand{\feqalstar}{\end{aligned}\end{equation*}}
+\newcommand{\kl}{k_L}
 \newcommand{\vol}{k_L\,a}
 \newcommand{\lbubble}{L_{\mathrm{bubble}}}
 \newcommand{\lunit}{L_{\mathrm{unit}}}
 \newcommand{\lslug}{L_{\mathrm{slug}}}
+\newcommand{\lfilm}{L_{\mathrm{film}}}
 \newcommand{\ububble}{U_{\mathrm{bubble}}}
 \newcommand{\uliq}{U_{\mathrm{liq}}}
 \newcommand{\ugas}{U_{\mathrm{gas}}}
@@ -70,29 +72,22 @@ lattice Boltzmann context.
 \section{Introduction}
 \label{intro}
 The monolith reactors during last years are getting more attention as a promising alternative to slurry
-reactors and trickle bed reactors \cite{kreutzer-overview,bercic-mass}. Monolith reactors usually operate in Bretherton-Taylor regime \cite{bretherton,taylor} which describes a flow through
+reactors and trickle bed reactors \cite{kreutzer-overview,bercic-mass}. Reactors usually operate in Bretherton-Taylor regime \cite{bretherton,taylor} which describes a flow through
 a liquid medium of equally sized, long bubbles, see
 Fig. \ref{fig:benchmark:hydro}. This flow regime
-is characterized by surface tension dominance over inertia and viscous effects and by
-comparatively small gas flow velocities \cite{yue-mass}. Due to surface tension dominance and small
-scales of microchannels, bubble train flow exhibit advantageous properties which can not be achieved
+is characterized by surface tension dominance over inertia and viscous effects, and by
+comparatively small gas flow velocities \cite{yue-mass}. Due to surface tension dominance bubble train flow exhibit advantageous properties which can not be achieved
 in macroscopic counterparts: liquid thin films \cite{bretherton} between bubbles and walls remarkably enhance mass
-transfer from gas and walls to liquid; the plug flow nature that separates liquid slugs from each
-other allowing to perform chemical reactions in slugs \cite{kreutzer-overview} or be an indicator of
-the liquid velocity \cite{taylor}; the flow pattern depending on the capillary number $Ca$
-\cite{heil-bretherton,heil-threedim}.  Overall, nowadays one can find a large number of applications
-of Bretherton-Taylor bubble train flow: continuous flow analyzers, lung openings, chemical reactions
-as hydrogenation of nitroaromatics, 2-ethyl-hexenal, Fischer-Tropsch synthesis, etc. One can find a
-lot of different application references in extensive reviews \cite{kreutzer-overview,
-gupta-review,yue-mass}. 
+transfer from gas and walls to liquid; the plug flow regime occurring in monolith reactors allows to perform chemical reactions in slugs only \cite{kreutzer-overview}. Moreover, the low slip velocity between gas and liquid is utilized in the experiments to measure liquid velocity \cite{taylor}:  bubbles travelling with approximately the same velocity as liquid can be captured with a camera. Overall, nowadays one can find a large number of applications
+of the Bretherton-Taylor bubble train flow: continuous flow analyzers to measure liquid velocity, lung openings, chemical reactions
+as hydrogenation of nitroaromatics, 2-ethyl-hexenal, Fischer-Tropsch synthesis, etc. Extensive reviews of \citet{kreutzer-overview,
+gupta-review,yue-mass} cover a significant number of applications. 
 
-Among different applications of microchannel flows, this work is focused on the mass transfer
-study from gas to liquid. The good understanding of mass transfer and how it depends on the
+This work is focused on the mass transfer 
+study from gas to liquid for the Bretherton/Taylor flow. The good understanding of mass transfer and how it depends on the
 parameters as the capillary number, the Reynolds number, slug and bubble lengths allows to properly
 manufacture a microchannel with necessary properties to ensure that chemical
-reactions are performed in the best manner. A lot of experiments \cite{bercic-mass,irandoust,kreutzer-overview} confirm 
-a number of parameters involved in mass transfer. 
-For example,
+reactions are performed in the best manner.  Experimental studies \cite{yue-mass,bercic} show a complex dependency of the mass transfer coefficient on flow parameters: bubble and slug lengths, bubble velocity, which are in the turn depend on the capillary number $Ca$ and the Reynolds number $Re$. For example,
 \citet{yue-mass} established an experimental correlation for the volumetric mass transfer coefficient for a bubble train as
 a function of the diffusion coefficient, slug and bubble lengths, and bubble velocity.  
 \begin{equation}
@@ -108,21 +103,40 @@ parameters: bubble velocity $0.4\,\mathrm{m/s}<\ububble<2\,\mathrm{m/s}$, bubble
 $1.4<\frac{\lbubble}{d_h}<6.3$, slug length $1<\frac{\lslug}{d_h}<3.2$,
 hydrodynamic diameter $d_h = 400 \mathrm{\mu m}$.
 
+Thus, the understanding of mass transfer for the bubble train flow is not possible without deep understanding of the hydrodynamic patterns. There are a number of studies available for the hydrodynamic study of the bubble train flow: experimental \citet{kreutzer-pressure-drop,cerro-space,cerro-bubble-train} and numerical \citet{wang-non-circular,kuzmin-binary3d,giavedoni-numerical,heil-threedim}. For the flow of long bubbles between parallel plates  It is indicated that  there exists a vortex in front of the bubble for $Ca<0.7$ , see Fig. \ref{fig:streamlines:tweaked:velocity}. However, for $Ca>0.7$ the vortex in front of the bubble does not exist. As well the bubble shape for low capillary numbers ($Ca<0.1$ \cite{cerro-bubble-train}) is symmetric and can be represented as two hemispheres and the cylinder for the cylindrical case. This is heavily utilized for the mass transfer analytical estimations.
+
+The mass transfer coefficient is defined as the mass flux from certain area divided by concentration difference between the surface and the surrounding medium.  Thus, analytical estimations \cite{kreutzer-overview,irandoust} are  based on decomposition of the bubble shape. The mass transfer coefficient is calculated through two separate contributions from the film and two hemispheres. For both contributions the Higbie penetration theory \cite{higbie} is utilized, which states that the mass transfer coefficient  for simple geometry flow depends on the average time of liquid packet interaction with geometrical feature. It can be calculated as $\sqrt{\frac{\pi D}{t_{\mathrm{char}}}}$, where $t_{\mathrm{char}}$ is the characteristic time of the interaction, $D$ is the diffusion coefficient. As the example for the Higbie penetration theory, the mass  transfer coefficient for the flow of bubbles in cylindrical channel is calculated as:
+\beq
+k_L=\sqrt{\frac{\pi D}{t_{\mathrm{film}}}}+\sqrt{\frac{\pi D}{t_{\mathrm{hemisphere}}}},
+\feq
+where $t_{\mathrm{film}}=\frac{\lfilm}{\ububble}$ states for the interaction time of liquid traveling through cylinder length with the bubble velocity, $t_{\mathrm{hemisphere}}=\frac{\pi R_{\mathrm{hemisphere}}}{\ububble}$ is the time which liquid in the slug goes the distance of half circumference. 
+
+Despite the simplicity, analytical expressions work perfectly for flows with low capillary numbers $Ca<0.1$ \cite{bercic-mass} where the bubble shape can be nicely approximated by hemispheres and cylinder. Moreover, because of the hydrodynamic pattern in the slug, i.e. there is a vortex in slug, one can estimate the time for fluid batch to travel whole circumference (Fig. \ref{fig:streamlines:tweaked:velocity}).   However, with the change of the capillary number the situation drastically changes. The symmetrical bubble shape changes and resembles a bullet. With the change of the shape for $Ca>0.7$ there is no vortex in front of the bubble and the Higbie theory fails to estimate contribution from bubble caps. Thus, the need of numerical simulations where all hydrodynamics fields and complicated bubble shapes are taken in the account is obvious. 
+
+However, available numerical studies of mass transfer \cite{kreutzer-overview,vanbaten-circular} are lacking the calculation of  bubble shapes as well. The mass transfer simulations are made as follows: first the bubble shape is calculated either through analytical correlations \cite{bretherton} or experimental correlations \cite{cerro-bubble-train} without directly resolving bubbles shapes through multiphase simulations. Then the mass .  The approximations of bubble shapes work well for flows with low capillary numbers, i.e. $Ca<0.1$, where the bubble shape is symmetrical. However, for flows with larger capillary numbers the correlations are not satisfactory. In addition to the bubble shape approximation, numerical simulations are performed with periodic boundary conditions. Hydrodynamic boundary conditions are obvious, but what boundary conditions to use for the mass transfer calculations is not obvious.   and can  
+the approximations of bubble shapes obtained from experiments and numerical simulations, obtained hydrodynamic fields with 
+one-component solver around the approximated bubble shape with the imposed free-slip boundary condition at the surface of the bubble.
+
+
+
+
+There are a number of reasons, such as 
+the decoupling of the mass transfer from the multiphase simulations. Authors \cite{kreutzer-overview,vanbaten-circular} uAfter that the tracer concentration is imposed at the bubble surface, and the mass transfer solver is run with the hydrodynamic fields obtained
+from the previous step. The main assumption here is the bubble shape approximation. The approximation as two hemispheres and cylinder
+\cite{vanbaten-circular} for a bubble shape is good only for small capillary numbers, say $Ca<0.1$ and cannot be used for larger capillary numbers, 
+where the bubble shape resembles a bullet shape \cite{kuzmin-binary2d,kuzmin-binary3d}. Therefore, for larger capillary numbers, i.e. $Ca>0.1$, 
+the numerical estimations do require obtaining of hydrodynamic fields and bubble shape from multiphase simulations without analytical estimations.
+
+
+
+
+
 Other correlations can be found in works of \citet{kreutzer-overview}
 and \citet{bercic-mass}. However, all of them study only a certain set of parameters but do not provide overall picture. 
 For example, in the work of \citet{bercic-mass} the bubble lengths were comparatively large that makes the film saturated
 with the tracer. Thus, the volumetric mass transfer coefficient accounts only the mass transfer from the bubble caps. 
 One can find other correlations and parameters in  the excellent overview of experimental works \cite{yue-mass}.
 
-The same scarcity for parameters study can be found in numerical simulations. There are a number of reasons, such as 
-the decoupling of the mass transfer from the multiphase simulations. Authors \cite{kreutzer-overview,vanbaten-circular} used
-the approximations of bubble shapes obtained from experiments and numerical simulations, obtained hydrodynamic fields with 
-one-component solver around the approximated bubble shape with the imposed free-slip boundary condition at the surface of the bubble.
-After that the tracer concentration is imposed at the bubble surface, and the mass transfer solver is run with the hydrodynamic fields obtained
-from the previous step. The main assumption here is the bubble shape approximation. The approximation as two hemispheres and cylinder
-\cite{vanbaten-circular} for a bubble shape is good only for small capillary numbers, say $Ca<0.1$ and cannot be used for larger capillary numbers, 
-where the bubble shape resembles a bullet shape \cite{kuzmin-binary2d,kuzmin-binary3d}. Therefore, for larger capillary numbers, i.e. $Ca>0.1$, 
-the numerical estimations do require obtaining of hydrodynamic fields and bubble shape from multiphase simulations without analytical estimations.
 
 Another challenge that can be seen in numerical simulations is the transition between continuous picture of experiments with a lot of bubbles to the simulation
 of one unit cell which is usually performed in mass transfer simulations. The experimental correlations are established for continuous system, i.e. one does
