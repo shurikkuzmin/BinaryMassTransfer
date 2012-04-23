@@ -43,29 +43,21 @@
 \begin{abstract}
 This work presents a thorough procedure of how to determine the volumetric mass transfer
 coefficient
-in the context of lattice Boltzmann simulations for Bretherton/Taylor bubble train motion. The
-novelty of this work lies in the establishing
-a thorough procedure of how to measure the volumetric mass transfer coefficient addressing the
-following challenges: the flow pattern  depends on the capillary number $Ca$ regime, i.e. for
-$Ca<0.7$ the flow has a vortex in front of the
-bubble \cite{giavedoni-numerical}, but for the larger capillary number it hasn't;  the mass sources are comparable of the
-representative unit cell size (inhomogenous situation is different from the homogenous well-mixed
-media \cite{jos-mass}); the connection between time and space domains for moving bubbles; the
-definition of the mass transfer coefficient which is defined through the characteristic
-concentration (inlet/outlet concentration, average concentration). The following boundary conditions
-were examined: periodic boundary conditions, open boundaries, and a few unit cells open boundary
+in the context of lattice Boltzmann simulations for the Bretherton/Taylor bubble train flow. In this work we address the situation when the hydrodynamic pattern changes from having a vortex in slug ($Ca<0.7$) to not having it ($Ca>0.7$) \cite{giavedoni-numerical}. For the latter case the bubble shape is not symmetric and cannot be approximated through flat surfaces and circumferences as it is done in literature \cite{vanbaten-circular,kreutzer-overview}. Moreover, with a vortex in the slug the tracer is well mixed. Thus, it is common to  use periodic boundary conditions  and inlet/outlet averaged concentration as the characteristic concentration, Eq. \ref{eq:main:definition}.  The later is not valid for flows where tracer is not well mixed. This work through examination of different boundary conditions and different characteristic concentration definitions establishes the procedure to determine the volumetric mass transfer coefficient for flows with the capillary number $0.1<Ca<1.0$. With simulations of a few unit cells the connection between time (used in simulations) and space (used in experiments) domains was established. The following boundary conditions were examined: periodic boundary conditions, open boundaries, and a few unit cells open boundary
 simulations. It was shown that the time dependent average concentration to be a characteristic
 concentration produce robust results, though a bit overpredicted. The inlet/outlet flux averaged
-concentration to be a characteristic concentration produce unreliable results. In comparison, a few
-unit cells open boundaries conditions resemble physical situation most and are harder to conduct
+concentration \cite{vanbaten-circular} to be a characteristic concentration produce unreliable results in the range of capillary numbers specified. In comparison with works \cite{vanbaten-circular,kreutzer-overview} where only one unit cell was simulated, a few
+unit cells open boundaries conditions resemble physical situation most closely and are harder to conduct
 but provide the volumetric mass transfer coefficient based only on the spatial information for the
-capillary number $Ca>0.7$. As well, a few unit cells simulations can provide more information about
-mixing in the liquid slug in comparision with the periodic boundary conditions. We show
+capillary number $Ca>0.7$. 
+%As well, a few unit cells simulations can provide more information about
+%mixing in the liquid slug in comparison with the periodic boundary conditions. 
+We show
 that all presented in literature strategies are extreme limits of one equation,
-Eq. \ref{main:main:main}. Finally, the correlation for different Peclet numbers
-is compared with analytical predictions presented by \citet{vanbaten-circular} and shows a good
-comparison. The work is of use to people performing mass transfer numerical simulations for bubble
-train flow in microchannels and within the
+Eq. \ref{main:main:main}. Finally, simulation results for different Peclet numbers
+are compared with analytical predictions presented by \citet{vanbaten-circular} and shows a good
+agreement. The work is of use to people performing mass transfer numerical simulations for bubble
+train flow in microchannels and/or within the
 lattice Boltzmann context.
 \end{abstract}
 
@@ -78,18 +70,18 @@ Fig. \ref{fig:benchmark:hydro}. This flow regime
 is characterized by surface tension dominance over inertia and viscous effects, and by
 comparatively small gas flow velocities \cite{yue-mass}. Due to surface tension dominance bubble train flow exhibit advantageous properties which can not be achieved
 in macroscopic counterparts: liquid thin films \cite{bretherton} between bubbles and walls remarkably enhance mass
-transfer from gas and walls to liquid; the plug flow regime occurring in monolith reactors allows to perform chemical reactions in slugs only \cite{kreutzer-overview}. Moreover, the low slip velocity between gas and liquid is utilized in the experiments to measure liquid velocity \cite{taylor}:  bubbles travelling with approximately the same velocity as liquid can be captured with a camera. Overall, nowadays one can find a large number of applications
+transfer from a gas and walls to liquid; the plug flow regime occurring in monolith reactors allows to perform chemical reactions in slugs only \cite{kreutzer-overview}. Moreover, the low slip velocity between gas and liquid is utilized in the experiments to measure liquid velocity \cite{taylor}:  bubbles travelling with approximately the same velocity as liquid can be captured with a camera. Overall, nowadays one can find a large number of applications
 of the Bretherton-Taylor bubble train flow: continuous flow analyzers to measure liquid velocity, lung openings, chemical reactions
 as hydrogenation of nitroaromatics, 2-ethyl-hexenal, Fischer-Tropsch synthesis, etc. Extensive reviews of \citet{kreutzer-overview,
 gupta-review,yue-mass} cover a significant number of applications. 
 
-This work is focused on the mass transfer 
-study from gas to liquid for the Bretherton/Taylor flow. The good understanding of mass transfer and how it depends on the
+This work is focused on the gas to liquid mass transfer 
+study for the Bretherton/Taylor flow. The good understanding of mass transfer and how it depends on the
 parameters as the capillary number, the Reynolds number, slug and bubble lengths allows to properly
 manufacture a microchannel with necessary properties to ensure that chemical
-reactions are performed in the best manner.  Experimental studies \cite{yue-mass,bercic} show a complex dependency of the mass transfer coefficient on flow parameters: bubble and slug lengths, bubble velocity, which are in the turn depend on the capillary number $Ca$ and the Reynolds number $Re$. For example,
+reactions are performed in the best manner. The mass transfer coefficient characterizing mass transfer is defined as the flux from the surface divided on the concentration difference between the concentration imposed on the body and the characteristic concentration in the domain. The characteristic concentration in the domain depends largely on underlying hydrodynamics fields.  For example, experimental studies \cite{yue-mass,bercic-mass} show a complex dependency of the mass transfer coefficient on flow parameters: bubble and slug lengths, bubble velocity, which are in turn depend on the capillary number $Ca$ and the Reynolds number $Re$. 
 \citet{yue-mass} established an experimental correlation for the volumetric mass transfer coefficient for a bubble train as
-a function of the diffusion coefficient, slug and bubble lengths, and bubble velocity.  
+a function of the diffusion coefficient, slug and bubble lengths, and bubble velocity: 
 \begin{equation}
 \vol =\frac{2}{d_h} \Bigl(\frac{D
 \ububble}{\lbubble+\lslug}\Bigr)^{0.5}
@@ -97,110 +89,69 @@ a function of the diffusion coefficient, slug and bubble lengths, and bubble vel
 \end{equation}
 where $\vol$ is the volumetric mass transfer coefficient, $d_h$ is the hydrodynamic capillary
 diameter, $\lbubble$ is the bubble length, $\lslug$ is the slug distance (between bubbles),
-$\ububble$ is the bubble velocity, $D$ is the diffusiont coefficient. This correlation is within $10\%$ accuracy for experimental
-results for the microchannels with rectangular/square crossections for the following range of
-parameters: bubble velocity $0.4\,\mathrm{m/s}<\ububble<2\,\mathrm{m/s}$, bubble length
-$1.4<\frac{\lbubble}{d_h}<6.3$, slug length $1<\frac{\lslug}{d_h}<3.2$,
-hydrodynamic diameter $d_h = 400 \mathrm{\mu m}$.
+$\ububble$ is the bubble velocity, $D$ is the diffusion coefficient. 
+%This correlation is within $10\%$ accuracy for experimental
+%results for the microchannels with rectangular/square crosssections for the following range of
+%parameters: bubble velocity $0.4\,\mathrm{m/s}<\ububble<2\,\mathrm{m/s}$, bubble length
+%$1.4<\frac{\lbubble}{d_h}<6.3$, slug length $1<\frac{\lslug}{d_h}<3.2$,
+%hydrodynamic diameter $d_h = 400 \mathrm{\mu m}$.
 
-Thus, the understanding of mass transfer for the bubble train flow is not possible without deep understanding of the hydrodynamic patterns. There are a number of studies available for the hydrodynamic study of the bubble train flow: experimental \citet{kreutzer-pressure-drop,cerro-space,cerro-bubble-train} and numerical \citet{wang-non-circular,kuzmin-binary3d,giavedoni-numerical,heil-threedim}. For the flow of long bubbles between parallel plates  It is indicated that  there exists a vortex in front of the bubble for $Ca<0.7$ , see Fig. \ref{fig:streamlines:tweaked:velocity}. However, for $Ca>0.7$ the vortex in front of the bubble does not exist. As well the bubble shape for low capillary numbers ($Ca<0.1$ \cite{cerro-bubble-train}) is symmetric and can be represented as two hemispheres and the cylinder for the cylindrical case. This is heavily utilized for the mass transfer analytical estimations.
+Thus, the understanding of mass transfer for the bubble train flow is not possible without deep understanding of hydrodynamic patterns. There are a number of studies available for the hydrodynamic study of the bubble train flow: experimental \cite{kreutzer-pressure-drop,cerro-space,cerro-bubble-train} and numerical \cite{wang-non-circular,kuzmin-binary3d,giavedoni-numerical,heil-threedim}. For the flow of long bubbles between parallel plates as the study case it is indicated that  there exists a vortex in the liquid slug for $Ca<0.7$ , see Fig. \ref{fig:streamlines:tweaked:velocity}. However, for $Ca>0.7$ the vortex in the liquid slug does not exist. As well the bubble shape for low capillary numbers ($Ca<0.1$ \cite{cerro-bubble-train}) is symmetric. Thus, in the case of flow between plates the bubble shape can be represented as two hemicircles and two planar interfaces. This is heavily utilized for mass transfer analytical estimations.
 
-The mass transfer coefficient is defined as the mass flux from certain area divided by concentration difference between the surface and the surrounding medium.  Thus, analytical estimations \cite{kreutzer-overview,irandoust} are  based on decomposition of the bubble shape. The mass transfer coefficient is calculated through two separate contributions from the film and two hemispheres. For both contributions the Higbie penetration theory \cite{higbie} is utilized, which states that the mass transfer coefficient  for simple geometry flow depends on the average time of liquid packet interaction with geometrical feature. It can be calculated as $\sqrt{\frac{\pi D}{t_{\mathrm{char}}}}$, where $t_{\mathrm{char}}$ is the characteristic time of the interaction, $D$ is the diffusion coefficient. As the example for the Higbie penetration theory, the mass  transfer coefficient for the flow of bubbles in cylindrical channel is calculated as:
+As mentioned before the mass transfer coefficient is defined as the mass flux from certain area, Eq. \ref{eq:main:definition}. Thus, analytical estimations \cite{kreutzer-overview,irandoust} are  based on decomposition of the bubble shape. The mass transfer coefficient is calculated through two separate contributions from two films and two hemicircles. For both contributions the Higbie penetration theory \cite{higbie} is utilized, which states that the mass transfer coefficient  for simple geometry flow depends on the average time of liquid packet interaction with a geometrical feature. It can be calculated as $\sqrt{\frac{\pi D}{t_{\mathrm{char}}}}$, where $t_{\mathrm{char}}$ is the interaction characteristic time, $D$ is the diffusion coefficient. As the example for the Higbie penetration theory, the mass  transfer coefficient for the flow of bubbles between parallel plates  is calculated as (similarly to work of \citet{vanbaten-circular}):
 \beq
-k_L=\sqrt{\frac{\pi D}{t_{\mathrm{film}}}}+\sqrt{\frac{\pi D}{t_{\mathrm{hemisphere}}}},
+k_L=2 \sqrt{\frac{\pi D}{t_{\mathrm{film}}}}+2 \sqrt{\frac{\pi D}{t_{\mathrm{circle}}}},
 \feq
-where $t_{\mathrm{film}}=\frac{\lfilm}{\ububble}$ states for the interaction time of liquid traveling through cylinder length with the bubble velocity, $t_{\mathrm{hemisphere}}=\frac{\pi R_{\mathrm{hemisphere}}}{\ububble}$ is the time which liquid in the slug goes the distance of half circumference. 
+where $t_{\mathrm{film}}=\frac{\lfilm}{\ububble}$ states for the interaction time of liquid traveling through planar part of the bubble, $t_{\mathrm{circle}}=\frac{\pi R_{\mathrm{circle}}}{\ububble}$ is the time which liquid in the slug travels the distance of half circumference. 
 
-Despite the simplicity, analytical expressions work perfectly for flows with low capillary numbers $Ca<0.1$ \cite{bercic-mass} where the bubble shape can be nicely approximated by hemispheres and cylinder. Moreover, because of the hydrodynamic pattern in the slug, i.e. there is a vortex in slug, one can estimate the time for fluid batch to travel whole circumference (Fig. \ref{fig:streamlines:tweaked:velocity}).   However, with the change of the capillary number the situation drastically changes. The symmetrical bubble shape changes and resembles a bullet. With the change of the shape for $Ca>0.7$ there is no vortex in front of the bubble and the Higbie theory fails to estimate contribution from bubble caps. Thus, the need of numerical simulations where all hydrodynamics fields and complicated bubble shapes are taken in the account is obvious. 
+Despite the simplicity, analytical expressions work well for flows with low capillary numbers $Ca<0.1$ \cite{bercic-mass} where the bubble shape is symmetrical and can be nicely approximated. Moreover, because of the hydrodynamic pattern in the slug, i.e. there is a vortex in slug, one can estimate the time for fluid batch to travel whole circumference.   However, with the change of the capillary number the situation drastically changes. The symmetrical bubble shape changes and resembles a bullet \cite{kuzmin-binary2d}. With the change of the shape and for flows with $Ca>0.7$ there is no vortex in the liquid slug. In this case the Higbie theory fails to estimate contribution from bubble caps. Thus, the need of numerical simulations where all hydrodynamics fields and complicated bubble shapes are taken in the account is obvious. 
 
-However, available numerical studies of mass transfer \cite{kreutzer-overview,vanbaten-circular} are lacking the calculation of  bubble shapes as well. The mass transfer simulations are made as follows: first the bubble shape is calculated either through analytical correlations \cite{bretherton} or experimental correlations \cite{cerro-bubble-train} without directly resolving bubbles shapes through multiphase simulations. Then the mass .  The approximations of bubble shapes work well for flows with low capillary numbers, i.e. $Ca<0.1$, where the bubble shape is symmetrical. However, for flows with larger capillary numbers the correlations are not satisfactory. In addition to the bubble shape approximation, numerical simulations are performed with periodic boundary conditions. Hydrodynamic boundary conditions are obvious, but what boundary conditions to use for the mass transfer calculations is not obvious.   and can  
-the approximations of bubble shapes obtained from experiments and numerical simulations, obtained hydrodynamic fields with 
-one-component solver around the approximated bubble shape with the imposed free-slip boundary condition at the surface of the bubble.
-
-
-
-
-There are a number of reasons, such as 
-the decoupling of the mass transfer from the multiphase simulations. Authors \cite{kreutzer-overview,vanbaten-circular} uAfter that the tracer concentration is imposed at the bubble surface, and the mass transfer solver is run with the hydrodynamic fields obtained
-from the previous step. The main assumption here is the bubble shape approximation. The approximation as two hemispheres and cylinder
-\cite{vanbaten-circular} for a bubble shape is good only for small capillary numbers, say $Ca<0.1$ and cannot be used for larger capillary numbers, 
-where the bubble shape resembles a bullet shape \cite{kuzmin-binary2d,kuzmin-binary3d}. Therefore, for larger capillary numbers, i.e. $Ca>0.1$, 
-the numerical estimations do require obtaining of hydrodynamic fields and bubble shape from multiphase simulations without analytical estimations.
-
-
-
-
-
-Other correlations can be found in works of \citet{kreutzer-overview}
-and \citet{bercic-mass}. However, all of them study only a certain set of parameters but do not provide overall picture. 
-For example, in the work of \citet{bercic-mass} the bubble lengths were comparatively large that makes the film saturated
-with the tracer. Thus, the volumetric mass transfer coefficient accounts only the mass transfer from the bubble caps. 
-One can find other correlations and parameters in  the excellent overview of experimental works \cite{yue-mass}.
-
-
-Another challenge that can be seen in numerical simulations is the transition between continuous picture of experiments with a lot of bubbles to the simulation
-of one unit cell which is usually performed in mass transfer simulations. The experimental correlations are established for continuous system, i.e. one does
-not distinguish separate bubbles, but looks to the system as a whole measuring mass concentration
-in different places \cite{bercic-mass}. In contrast, numerical simulations avoid a significant computational burden to simulate a number of unit cells 
-to mimic the continuous picture but simulate only one unit cell mass transfer. The gap between numerical simulations and experiments results in the inconsistency of the characteristic concentration determination involved in
-the volumetric mass transfer definition, Eq. \ref{eq:main:definition}. In experiments the characteristic concentration is taken as the averaged in time location concentration. 
-In numerical simulations by \citet{vanbaten-circular}, the characteristic concentration is taken as the averaged in space inlet/outlet concentration. Authors \cite{vanbaten-circular} performed  numerical
-simulations for one unit cell using periodic boundary conditions and measured the volumetric mass
-transfer coefficient as:
+However, available numerical studies of mass transfer \cite{kreutzer-overview,vanbaten-circular} are lacking the simulation of  bubble shapes. The usual simulation of the mass transfer  is performed as follows: 
+\begin{description}
+\item[I] The bubble shape is calculated either through analytical correlations \cite{bretherton} or experimental correlations \cite{cerro-bubble-train} without directly resolving bubbles shapes through multiphase simulations. 
+\item[II] Hydrodynamics fields are then obtained by performing simulations of one-component flow around the droplet by imposing the bubble velocity on the walls. Thus, the simulations are performed in the reference frame moving with the bubble. The stress free condition is imposed at the bubble surface. 
+\item[III]  The mass transfer simulations are  performed in the reference frame moving with the bubble. The saturation concentration is imposed at the bubble surface. Only one unit cell with one bubble in it is used for simulations. Periodic boundary conditions are utilized to determine the volumetric mass transfer coefficient, which is calculated through the following equation \cite{vanbaten-circular}:
 \begin{equation}
 \label{main:simulation:equation}
 \vol=\frac{\mathrm{\overline{Flux}}}{\cbubble-\langle\coutlet\rangle} \frac{\mathrm{bubble\ surface\ area}}{\mathrm{unit\
 cell\ volume}},
 \end{equation}
-where $\langle\coutlet(t)\rangle=\int{C \uoutlet \mathrm{d}A}/\int{\uoutlet\mathrm{d}A}$ is the averaged in space outlet concentration used as the characteristic concentration in the definition, Eq. \ref{eq:main:definition}. 
-The averaged in time concentration flux is calculated as the difference between overall
+where $\langle\coutlet(t)\rangle=\int{C \uoutlet \mathrm{d}A}/\int{\uoutlet\mathrm{d}A}$ is the averaged in space outlet concentration as the function of time used as the characteristic concentration in the definition, Eq. \ref{eq:main:definition}. 
+The averaged in time concentration flux ($\mathrm{\overline{Flux}}$) is calculated as the difference between the overall
 average concentration in the whole domain ($\langle\coverall\rangle=\int_{V} C \mathrm{d}V /V$)
 at time
 $t_1$ and at time $t_2$ divided on the time difference $t_2-t_1$. The agreement between numerical
-simulations \cite{vanbaten-circular} and correlations of \citet{bercic-mass} was good. However, the numerical model only
-accounts for circular capillaries and short contact times when the
-bubble film is not saturated with tracer. As well, authors took the
-approximation of bubble shapes for small capillary numbers $Ca<0.01$ and then obtained
-hydrodynamics fields by imposing a free-slip condition at the bubble surface. However, it will be shown later that this strategy is good only for small capillary numbers $Ca<0.1$
-where the shape of the bubble is simple. Moreover, the characteristic concentration to be averaged outlet concentration underpredicts the volumetric transfer coefficient for small capillary
-numbers $Ca<0.1$ and overpredicts for larger capillary numbers $Ca>0.7$.
+simulations \cite{vanbaten-circular} and correlations of \citet{bercic-mass} was good. 
+\end{description}
+There is a certain critics towards the presented numerical approaches \cite{vanbaten-circular,kreutzer-overview}. They mainly originate from the bubble shape approximation. It is taken symmetric, i.e. consisting from hemispheres and cylinder film for the case of flow in circular capillaries. This is valid  for small capillary numbers $Ca<0.1$. As it was discussed, for such capillary numbers in the reference frame moving with the bubble there is a vortex in slug. Thus, the tracer is well mixed in slug.The choice of the characteristic concentration needed for the mass transfer coefficient, Eq. \ref{eq:main:definition}, in this case  is obvious. With small differences in results it can be either averaged in the liquid slug concentration or the outlet space averaged concentration as used in formulation of \citet{vanbaten-circular}. Another critics is towards periodic boundary conditions to calculate the mass transfer coefficient. While it is clear to use periodic boundary conditions for the calculation of hydrodynamics fields for  long bubbles motion in the microchannel, it is not the case for mass transfer simulations. Experimental correlations \cite{bercic-mass} show that the concentration needed for the mass transfer calculations along the streamwise direction changes as the exponential function. However, mass transfer simulations are made only for one unit cell using the periodic boundary conditions with the same concentration at the inlet and at the outlet. The question how  one unit cell simulation corresponds to experimental measurements arises where concentration difference is measured at the distances of at least of a few unit cells difference \cite{bercic-mass}. In other words one needs to understand how the discrete one unit cell simulation corresponds to the continuous picture in experiments where one does not distinguish bubbles but takes measurements of concentration at different locations.
 
 Addressing situations for a rich number of hydrodynamic patterns, shapes, effects for a bubble
-train authors feel that they need to examine more carefully the strategies and assumptions which
-stay behind the mass transfer coefficient numerical simulations measurements. We aim at establishing
-numerical simulations procedures as to how properly obtain the volumetric
-mass transfer coefficient via a study of different boundary conditions, different characteristic concentration definitions, and address the following situations:
+train we feel that there is a need to examine more carefully the strategies and assumptions which
+stay behind the mass transfer coefficient numerical simulations. We aim at establishing
+numerical simulations procedures as to how properly obtain the mass transfer coefficient via a study of different boundary conditions, different characteristic concentration definitions. The case we want to examine is the two-dimensional case of the bubble train flow between parallel plates. The following issues will be addressed:
 \begin{description}
-\item[I] In numerical simulations \cite{vanbaten-circular,kreutzer-overview}, the bubble shape is approximated by two hemispheres and a cylinder which is valid only for the capillary number $Ca\leq 0.1$. It is known \cite{kreutzer-overview} that the liquid slug is well mixed with the concentrator. Due to homogeneity periodic boundary conditions were used, and the averaged in space inlet/outlet concentration as the characteristic concentration was used \cite{vanbaten-circular}. In comparison, we obtain bubble shapes and hydrodynamic fields from multiphase simulations \cite{kuzmin-binary2d,kuzmin-binary3d} and examine different boundary conditions with a few unit cells ($1$ to $10$ unit cells). 
-\item[II] The gas holdup, i.e. the ratio of volume occupied by a bubble to an unit cell volume, is
-non-negligible. Therefore, one cannot assume that the mass source is a point source which accounts
-to the homogenous advection-diffusion equation with the mass source \cite{jos-mass}.  Therefore, there is a logical
-mismatch: on one hand one needs to account the complicated geometry of the bubble and account for
-all velocity pattern details, on the other hand one needs to mimic the continuous picture which is
-seen in experiments. Thus, a few unit cells simulations are performed and compared with one unit cell simulations to bridge different scales.
-\item[III] For small capillary numbers as $Ca<0.7$ \cite{giavedoni-numerical} there is a vortex in
-the reference frame moving with
-the bubble, which  influences and improves the corresponding mass transfer.  For larger capillary
-numbers there is no vortex and streamlines go around the bubble, see Fig.
-\ref{fig:streamlines:tweaked:velocity}. Literature results of numerical simulations \cite{kreutzer-overview,vanbaten-circular} are all for $Ca<0.01$.  For non-homogenous situation, i.e. $Ca\geq 0.7$, we want to examine particular questions: whether periodic boundary conditions are valid to calculate the volumetric mass transfer coefficients, whether the change of hydrodynamic pattern significantly changes the way we measure the volumetric mass transfer coefficient (the inlet/outlet averaged in space concentration to be the characteristic concentration).  There is the indication in literature \cite{bercic-mass,yue-mass} of a number of parameters influencing mass transfer, as the slug length, the film thickness. However, to the best authors' knowledge it is not indicated of how the change of the hydrodynamic pattern (capillary number $Ca$ dependency) influence mass transfer. 
+\item[I] Applicability of periodic boundary conditions to determine the mass transfer coefficient when there is a change of pattern from having vortex in the slug to not having it. 
+\item[II] Validity to use the inlet/outlet averaged or domain averaged concentrations as characteristic concentrations in the definition of the mass transfer coefficient.
+\item[III] Transition of the continuous experimental picture to numerical simulations of a few unit cells mass transfer. This is the question about connection between time and space domains. In experiments the characteristic concentration is taken as an average in time, but in numerical simulations \cite{vanbaten-circular} the characteristic concentration is taken as an average in space.
+\item[IV] How the change of the hydrodynamic pattern ($Ca>0.7$) influences mass transfer.
 \end{description}
+Note that the goal of this paper is to establish procedures and boundary conditions used for the mass transfer coefficient determination. Though at the end of the manuscript we present a comparison of the volumetric mass transfer coefficient on the Peclet number with analytical \cite{irandoust} and experimental correlations \cite{yue-mass}, the thorough
+determination of the Sherwood number as a function of
+other non-dimensional parameters as gas holdup, bubble/slug lenghts, the capillary number is the goal of the future work.
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/benchmark_hydro.eps}
 \caption{Simplified sketch of the bubble train motion. Using periodic conditions for the velocity
 field is natural, but needs validation for the mass transfer. \label{fig:benchmark:hydro}}
 \end{figure}
-Note that the goal of this paper is to establish procedures and boundary conditions used for the volumetric mass transfer coefficient. Though at the end of the manuscript we present comparison of the volumetric mass transfer coefficient on the Peclet number with analytical \cite{irandoust} and experimental correlations \cite{yue-mass}, the thorough
-determination of the Sherwood number as a function of
-other non-dimensional parameters as gas holdup, bubble/slug lenghts, the capillary number is the goal of the future work.
- 
-The numerical approach we take is the lattice Boltzmann method, a relatively new CFD
+
+To establish numerical procedures we performed multiphase simulations \cite{kuzmin-binary2d,kuzmin-binary3d} for the range of capillary numbers $Ca=0.1\div 1.0$ to extract bubble shapes. For this range of capillary numbers we are able to capture the bubble shape change and the change of hydrodynamic patterns. The mass transfer simulations were performed with different boundary conditions (open, periodic) and with a few unit cells ($1$ to $10$ unit cells).  The numerical approach we take is the lattice Boltzmann method, a relatively new CFD
 competitor emerged during last $20$ years \cite{frisch,mcnamara,HJ,HSB}. During years the
 method was applied to simulate not only hydrodynamic problems \cite{yu}, but as well multiphase
 flows \cite{Shan-chen:extended,swift,gunstensen}, heat transfer
 \cite{yuan-thermal,zhang-thermal}, ferrofluids \cite{dellar-ferro,kuzmin-aniso}.
 
 The mass transfer problems in the lattice Boltzmann framework were mainly addressed in series of
-works of Dr. Ginzburg and co-authors
+works of Ginzburg and co-authors
 \cite{ginzburg-main,ginzburg-boundary-conditions,ginzburg-saturated-flow}. However, all these works
 are of general nature to simulate the advection-diffusion equation via the lattice Boltzmann
 framework. In comparison, this work focuses on the application side as to establish the procedure of how to obtain the
@@ -208,14 +159,14 @@ volumetric mass transfer coefficients for bubble train flow. One should mention 
 \citet{inamuro-scalar-boundary} about heat and mass transfers in the porous media and the work
 of \citet{jos-mass} simulates lateral mixing in cross-channel flow. While two last works are focused
 at the particular mass transfer problems, both problems are of homogeneous nature and do not
-guide as how to simulate the non-homogenous problems.           
+guide as how to obtain the mass transfer coefficient for non-homogenous problems.           
 
 The paper is organized as follows. We start with definitions of the volumetric mass transfer coefficient and apply them 
-for the bubble train to derive expressions to connect space and time domain. Then the lattice
+for the bubble train flow to derive expressions to connect space and time domains. Then the lattice
 Boltzmann model used to simulate mass transfer is presented followed by benchmarks. Finally,
 numerical simulations of different boundary conditions and a few unit cells simulations for
 different hydrodynamic patterns are presented to establish the thorough procedure to determine the
-volumetric mass transfer coefficient. 
+volumetric mass transfer coefficient. The comparison with analytical correlations is also presented. 
 
 \section{Mass transfer definitions}
 By the definition the mass transfer coefficient from the surface with the imposed constant
@@ -236,8 +187,8 @@ mass transfer coefficient in the case of complex geometries and non-trivial hydr
 There are different methods to estimate the mass transfer coefficient $k_L$. We first examine the
 theoretical definitions of the mass transfer in case of point mass sources.
 \subsection{Point mass sources}
-In what follows we will present three approaches to calculate point mass transfer
-coefficients:
+In what follows we will present three approaches to calculate point  mass transfer
+coefficients (by point source we assume the source with the infinitesimally small surface area $P$):
 \begin{enumerate}
 \item
 Let us look at the infinitesimal small domain of the volume $A \Delta x$ not
@@ -256,7 +207,7 @@ C(t)= \cstar (1-\exp(-\vol t )),
 \feq
 where $\vol$ is the volumetric mass transfer coefficient defined as:
 \beq
-\vol=k_L \frac{P}{V},
+\vol=k_L \frac{P}{A \Delta x}=k_L \frac{P}{V},
 \feq
 where $P$ is the source surface, $V$ is the unit cell volume.
 \item
@@ -268,8 +219,7 @@ $U$ liquid, see Fig. \ref{fig:moving:frame}.
 \end{figure}
 
 If one can assume that the mass point sources are distributed in the whole medium, then the mass accumulated in the unit volume $V=A \Delta x$ can be calculated as the difference of 
-mass fluxes entering and leaving domain $U \bigl(C(x+\Delta x)-C(x)\bigr)$. We assume that the
-source is a point source with the effective perimeter (area) $P$. The accumulated mass should be proportional
+mass fluxes entering and leaving domain $U \bigl(C(x+\Delta x)-C(x)\bigr)$. The accumulated mass should be proportional
 to the mass transfer coefficient:
 \beq
 U \bigl(C(x+\Delta x)-C(x)\bigr)=k_L P \bigl(\cstar-C(x)\bigr), 
@@ -299,39 +249,37 @@ superficial velocities correspondingly.
 Thus, the experimental measurements are straightforward as measuring concentrations at
 different
 locations and calculating the volumetric mass transfer coefficient through the logarithmic
-function. However, if one wants to analytically estimate the mass transfer coefficients, the
+function. However, if one wants to analytically or numerically calculate the mass transfer coefficients, the
 situation is much more complicated because of two phases presence and complicated bubble
-geometry. Phases can have different mixing patterns
-from film to slug and from slug to film. Also, as it was mentioned before depending on the capillary
+geometry. As it was mentioned before depending on the capillary
 number the mixing velocity pattern is different. Analytical approaches
 \cite{irandoust,vanbaten-circular} assume that the
 contributions from film and bubble caps can be calculated separately. However, one can see that
 such 
 an assumption (slug well mixed and the concentration is uniformly distributed over
 the slug) usually overpredicts the mass transfer \cite{irandoust}. This happens since some tracer
-concentration from film is mixed with the slug and changes the overall concentration in the slug.
-Thus, all estimations for analytical mass trass calculation  do not account for mutual mass
+concentration from film is mixed with the slug and increases the overall concentration in the slug. Thus, it decreases the mass transfer from bubble caps.
+Therefore, all estimations for the analytical mass transfer coefficient calculation  do not account for mutual mass
 transfer from
 neighbouring bubbles.
 
-Another issue is that if the slug is long enough then the film saturates with the tracer
+Another issue is that if the bubble is long enough then the film saturates with the tracer
 concentration and its influence on mass transfer can be negligible \cite{vanbaten-circular}.
 Mixing patterns of the film and liquid slugs are of great importance for the analytical
-estimation of the mass transfer \cite{yue-mass}. However, the assumptions usually taken for the
+estimation of mass transfer \cite{yue-mass}. However, the assumptions usually taken for the
 mass transfer calculation are small capillary number and certain mixing patterns which help to
 estimate the mass transfer using the penetration theory of \citet{higbie}.
 
 In comparison with analytical calculations and simplifications, the numerical approach can take into
 the account the complicated mixing patterns and geometries. However, there are challenges as to
-mimic the continuous picture like moving with bulk velocity $U$ reacting medium as it is seen in
+mimic the continuous picture like moving with bulk velocity $U=\ugas+\uliq$ reacting medium as it is seen in
 experiments. Thus, the questions indicated in Section \ref{intro}, as the choice of the
 characteristic concentration, the choice of boundary conditions, arise. Next
 section gives more details about numerical simulations.
  
 \subsection{Numerical simulations}
 \label{section:cases}
-Ideally one needs to mimic the continuous picture as it is seen in experiments. Thus, one needs to
-perform mass transfer simulations for a number of unit cells. As it was indicated above there are
+Ideally one needs to mimic the continuous picture as it is seen in experiments. Thus, mass transfer simulations for a number of unit cells is needed. As it was indicated above there are
 two approaches towards it - either to simulate
 the bubble train and then to measure concentration along the pipe, Eq.
 \ref{main:mass:transfer:expression}, or to transfer to the reference frame moving with the bulk
@@ -342,26 +290,28 @@ continuous picture with infinite numbers of the bubbles closely.
 
 To avoid complications with moving grids, our
 approach is to simulate mass transfer in the reference frame moving with the bubble. Therefore, one
-needs to examine the equation for the continuous approach, Eq.
-\ref{main:mass:transfer:expression}. 
+needs to examine  Eq.
+\ref{main:mass:transfer:expression} more closely. 
 
 We perform simulations in the frame moving with the bubble (velocity
 $\ububble$), that the bubble position stands steady. The bubble velocity $\ububble$ is
-different from the bulk velocity $\ugas+\uliq$. In this case one needs to perform a coordinate $x$
+different from the bulk velocity $U=\ugas+\uliq$. In this case one needs to perform a coordinate $x$
 variable change:
 \beqal
 \label{theor:average:concentration:time}
 &x(t)=\ububble t\\
-&C(x)=\cstar \Bigl(1-\exp\bigl(-\vol \frac{x}{\ugas+\uliq}\bigr)\Bigr)\\
+&\overline{C(x)}=\cstar \Bigl(1-\exp\bigl(-\vol \frac{x}{\ugas+\uliq}\bigr)\Bigr)\\
 &\langle C(t)\rangle=\cstar \Bigl(1-\exp\bigl(-\vol\, t \frac{\ububble}{\ugas+\uliq}\bigr)\Bigr),
 \feqal
-where $\langle C(t)\rangle$ is the characteristic concentration averaged in space
-concentration. The geometry is not one-dimensional and one needs the characteristic concentration
-to be only as a function of time. One can have different choices of
+where $\langle C(t)\rangle$ is the characteristic concentration averaged in space, $\overline{C(x)}$ is averaged in time concentration at location $x$. 
+%The geometry is not one-dimensional and one needs the characteristic concentration
+%to be only as a function of time. 
+One can have different choices of
 $\langle C(t) \rangle$ as the averaged in whole domain concentration or inlet/outlet averaged in
-space concentrations.  Note that $C(x)$ is not averaged in time as $\overline{C(x)}$ since $C(x)$
-ideally should not depend on time. 
-Therefore, one can obtain the volumetric mass transfer coefficient through the concentration:
+space concentrations used in works \cite{vanbaten-circular,kreutzer-overview}.  
+%Note that $C(x)$ is not averaged in time as $\overline{C(x)}$ since $C(x)$
+%ideally should not depend on time. 
+Therefore, one can obtain the volumetric mass transfer coefficient through the concentration averaged in space:
 \beqal
 \label{theor:one:concentration:time}
 &\vol\, t \frac{\ububble}{\ugas+\uliq}=\ln \frac{\cstar}{\cstar-\langle C(t)\rangle}\\
@@ -383,19 +333,21 @@ $\vol$.
 Three possible scenarios of conducting numerical simulations are examined in this work: 
 \begin{enumerate}
 \item The bubble train multiphase simulations are conducted by applying periodic boundary
-conditions \cite{kuzmin-binary2d,kuzmin-binary3d}. One
-can make an assumption of same boundary
-conditions applied to the tracer concentration to simulate mass transfer. Therefore, only one unit
+conditions \cite{kuzmin-binary2d,kuzmin-binary3d}. 
+%One
+%can make an assumption of same boundary
+%conditions applied to the tracer concentration to simulate mass transfer. 
+Therefore, only one unit
 cell is simulated with
 periodic boundary conditions, see Fig. \ref{fig:benchmark}. As well, no tracer leaves a
-domain. The situation resembles a situation for the plug flow, where no tracer can leave a unit
-domain. We expect such a situation resembles most the mass transfer for small Capillary numbers
-$Ca<0.1$, where the liquid slug is well mixed and one have a homogenuous concentration in the unit
-cell. Though easier to implement, it rises certain critisism
+domain. The situation resembles the plug flow situation, where no tracer can leave a unit
+domain. From the physical point of view this case resembles most the mass transfer for small Capillary numbers
+$Ca<0.1$.  The liquid slug is well mixed and one have a homogenuous concentration in the unit
+cell, i.e. the outlet and the inlet concentrations are close. Though easier to implement, it rises certain criticism
 about the inlet concentration to be equal to the outlet concentration. In the continuous
 formulation as it is seen in experiments there is the concentration difference between inlet and
 outlet involving the volumetric
-mass transfer coefficient, see second equation in system \ref{theor:one:concentration:time}.
+mass transfer coefficient, see second equation in the system \ref{theor:one:concentration:time}.
 
 One needs also address the choice of the characteristic concentration. For example, the
 characteristic concentration $\langle C(t) \rangle$ required for calculation the volumetric mass
