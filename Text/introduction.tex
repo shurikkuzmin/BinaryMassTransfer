@@ -330,29 +330,30 @@ characteristic concentration $\langle C(t) \rangle$ and  boundary conditions to 
 volumetric mass transfer coefficient
 $\vol$. 
   
-Three possible scenarios of conducting numerical simulations are examined in this work: 
+Four possible scenarios of  numerical simulations are examined in this work: 
 \begin{enumerate}
-\item The bubble train multiphase simulations are conducted by applying periodic boundary
-conditions \cite{kuzmin-binary2d,kuzmin-binary3d}. 
+\item % The bubble train multiphase simulations are conducted by applying periodic boundary
+%conditions \cite{kuzmin-binary2d,kuzmin-binary3d}. 
 %One
 %can make an assumption of same boundary
 %conditions applied to the tracer concentration to simulate mass transfer. 
-Therefore, only one unit
+One unit
 cell is simulated with
-periodic boundary conditions, see Fig. \ref{fig:benchmark}. As well, no tracer leaves a
-domain. The situation resembles the plug flow situation, where no tracer can leave a unit
-domain. From the physical point of view this case resembles most the mass transfer for small Capillary numbers
-$Ca<0.1$.  The liquid slug is well mixed and one have a homogenuous concentration in the unit
-cell, i.e. the outlet and the inlet concentrations are close. Though easier to implement, it rises certain criticism
-about the inlet concentration to be equal to the outlet concentration. In the continuous
-formulation as it is seen in experiments there is the concentration difference between inlet and
-outlet involving the volumetric
-mass transfer coefficient, see second equation in the system \ref{theor:one:concentration:time}.
+periodic boundary conditions, see Fig. \ref{fig:benchmark}. 
+Thus, no tracer leaves a
+domain like for the plug flow. 
+%From the physical point of view this case resembles the mass transfer for small Capillary numbers
+%$Ca<0.1$.  The liquid slug is well mixed and one have a homogeneous concentration in the unit
+%cell, i.e. the outlet and the inlet concentrations are close. 
+Though easier to implement, it rises certain criticism
+about the inlet concentration to be equal to the outlet concentration. As it was discussed, in experiments there is the concentration difference between the inlet and
+ the outlet.
 
-One needs also address the choice of the characteristic concentration. For example, the
-characteristic concentration $\langle C(t) \rangle$ required for calculation the volumetric mass
+The volumetric mass transfer coefficient is calculated by Eq. \ref{theor:one:concentration:time}.
+The
+characteristic concentration $\langle C(t) \rangle$ required for the volumetric mass
 transfer coefficient, Eq.
-\ref{theor:one:concentration:time}, can be taken as the average concentration in the domain:
+\ref{theor:one:concentration:time}, is taken as the average concentration in the domain:
 \beq
 \label{average:concentration:definition}
 C(t)=\frac{\int_{liquid}{C \mathrm{d}V}}{\int{\mathrm{d}V}}.
@@ -363,11 +364,8 @@ C(t)=\frac{\int_{liquid}{C \mathrm{d}V}}{\int{\mathrm{d}V}}.
 coefficient (bottom) for the bubble located near the entrance (top) and at the middle of the domain
 (bottom). \label{fig:benchmark}}
 \end{figure}
-\item The second approach is the same as the first one but the characteristic concentration is taken
-as in
-\cite{vanbaten-circular}. The characteristic concentration is taken as the inlet/outlet
-concentration. For the two-dimensional flow between plates inlet/outlet concentrations can be found
-as:
+\item The second approach is to apply periodic boundary conditions as in the first case but the characteristic concentration is taken as the inlet/outlet
+concentration \cite{vanbaten-circular}:
 \beqal
 &\langle \cinlet(t) \rangle=\frac{\int{U(y) C(0,y,t) \mathrm{d}y}}{\int{U(0,y) \mathrm{d}y}}\\
 &\langle \coutlet(t) \rangle=\frac{\int{U(y) C(\lunit,y,t) \mathrm{d}y}}{\int{U(\lunit,y)
@@ -376,13 +374,12 @@ as:
 \feqal
 Therefore, the assumptions  of this approach is
 that the difference between inlet and outlet is not
-considerably large and the tracer is well mixed in the slug, so that the inlet or outlet
+considerably large and the tracer is well mixed in the slug. Thus, the inlet or outlet
 concentrations equal to the average concentration. 
 
 \item
-The approach of \citet{vanbaten-circular} is examined. Periodic boundary conditions were used. We
-used the
-definition of the mass transfer coefficient to be proportional to the gain of the mass in the system
+The approach of \citet{vanbaten-circular} is examined. Periodic boundary conditions were used. The work \cite{vanbaten-circular}
+calculates the mass transfer coefficient as the gain of the mass in the system
 divided by the concentration difference
 multiplied on the surface area:
 \beq
@@ -391,11 +388,10 @@ multiplied on the surface area:
 where mass difference in the domain can be calculated as:
 \beq
 \dot{m}=\frac{m_2-m_1}{t_2-t_1}=\frac{\int_{liq}{C(\bm{x},t_2)\mathrm{d}V}-\int_{liq}{
-C(\bm{x},t_1)\mathrm { d } V} } {
-t_2-t_1 },
+C(\bm{x},t_1)\mathrm { d } \bm{x}} } {
+t_2-t_1 }.
 \feq
-where the integration element $\mathrm{d}V=\mathrm{d}x\mathrm{d}y=\mathrm{d}\bm{x}$.
-In the approach of \citet{vanbaten-circular} the inlet and outlet concentrations were taken as the
+In the approach of \citeauthor{vanbaten-circular} the inlet and outlet concentrations were taken as the
 characteristic concentration $\langle C(t) \rangle $.
 
 %\item 
@@ -409,46 +405,46 @@ characteristic concentration $\langle C(t) \rangle $.
 %concentration accoring to Eq. \ref{average:concentration:definition}. \label{fig:benchmark:jos}}
 %\end{figure}
 \item 
-The last approach to be examined in this paper is the approach of the simulation of a lot of unit
-volumes, see Fig. \ref{fig:benchmark:alot}. This situation corresponds to the simulation of the
+The last approach to be examined in this paper is the simulation of a few unit cells, see Fig. \ref{fig:benchmark:alot}. This situation corresponds to the simulation of the
 bubble train head, after injecting to the pipe and travelling along the pipe. One can see that this
 situation corresponds most to the experimental picture. By simulation of a certain number of the
 bubble train head, the influence of the boundaries can be
 diminished. In this case, there is no ambiguity in the choice of the
-characteristic concentration in this case. The average concentration in time will be governed
+characteristic concentration. The average concentration of any unit cell far away from boundaries will be governed
 by Eq.
 \ref{theor:continuous:mass:transfer}. This simulation statement is of most correspondence to
 experiments and should give right answer. However, one of the
 disadvantages is to simulate a certain number of unit cells ($1$ to $10$ in this case), thus
 increasing a computational
-complexity.
+burden.
 \begin{figure}[htb!]
 \includegraphics[width=\textwidth]{Figures/benchmark_alot.eps}\\
 \caption{Benchmark for a lot of units. \label{fig:benchmark:alot}}
 \end{figure}
 \end{enumerate} 
 
-One can notice that all the examined cases are extreme cases of one equation. The choice of boundary
-conditions to use  or how many unit cells to simulate are not of importance but one needs only to
-understand a proper mass balance for medium, which states:
+One can notice that all examined cases are extreme cases of one equation:
 \beq
 \label{main:main:main}
 \vol=\frac{\dot{m}-\int{\coutlet(t) u(\lunit,y)\mathrm{d}y}+\int{\cinlet(t) u(0,y)\mathrm{d}y}}{V
 \Delta C}, 
 \feq
 where $\Delta C=\cstar-\langle C(t) \rangle$ with $\langle C(t) \rangle$ to be the average
-concentration in whole liquid domain. Eq. \ref{main:main:main} is nothing else but a proper mass
+concentration in whole liquid domain, $\dot{m}$ is the mass gain in the domain,$\int{\cinlet u(0,y) \mathrm{d}y}$ and $\int{\coutlet u(\lunit,y)\mathrm{d}y}$ are inlet/outlet mass fluxes. Eq. \ref{main:main:main} describes the mass
 balance: whatever was generated by the bubble surface equals to the mass domain change minus
-whatever left domain plus whatever entered domain. Periodic boundary condition is the extreme
-limiting case of Eq. \ref{main:main:main} as $\int{\coutlet(t)
-u(\lunit,y)\mathrm{d}y}=\int{\cinlet(t) u(0,y)\mathrm{d}y}$. Thus, the mass change in the domain is
-only because of the generating bubble surface. In this case, to calculate the volumetric mass
-transfer coefficient one needs to track not only spatial information to calculate the averaged over
-domain characteristic concentration  $\langle C(t) \rangle$ but as well time information to
-calculate the mass change in the domain. It will be shown later, that for $Ca>0.7$ where velocity
-pattern is changed, one can use only spatial information to calculate $\int{\cinlet(t) u(0,y)
-\mathrm{d}y}$ and $\int{\coutlet(t) u(\lunit,y)\mathrm{d}y}$ as far as mass change in the domain is
-zero, i.e. $\dot{m}=0$.
+whatever left domain plus whatever entered domain. 
+
+Periodic boundary condition is the extreme
+limiting case of Eq. \ref{main:main:main}: 
+\beqstar
+\int{\coutlet(t)
+u(\lunit,y)\mathrm{d}y}=\int{\cinlet(t) u(0,y)\mathrm{d}y}. 
+\feqstar
+Then the mass change in the domain is
+only because of the generating bubble surface. However, to calculate the mass transfer coefficient one needs to have characteristic concentration  $\langle C(t) \rangle$ and mass gain $\dot{m}$ which do require the storage of time and space information.
+
+Another limiting case (will be shown later) is hydrodynamic pattern change $Ca>0.7$. The mass accumulation rate equals zero in this case, $\dot{m}=0$. One can use only spatial information to calculate the mass transfer coefficient, i.e. $\int{\cinlet(t) u(0,y)
+\mathrm{d}y}$ and $\int{\coutlet(t) u(\lunit,y)\mathrm{d}y}$ require only space information. 
 
 Before we examine all the test cases above, the lattice Boltzmann mass transfer
 benchmarks will be presented. 
