@@ -124,10 +124,10 @@ void initialize_geometry()
     		rho[counter]=0.0;
     		ux[counter]=0.0;
     		double factor=double(iX-0.5)/double(NX-1.5);
-    		if (iX<NX/2)
-                    uy[counter]=4.0*u0*factor*factor;//4.0*u0*(1.0-factor)*factor;
-                else
-                    uy[counter]=4.0*u0*(1.0-factor)*(1.0-factor);
+    		//if (iX<NX/2)
+                    uy[counter]=4.0*u0*(1.0-factor)*factor;//4.0*u0*factor*factor;//
+                //else
+                //    uy[counter]=4.0*u0*(1.0-factor)*(1.0-factor);
     		if ((iX==0) || (iX==NX-1))
     			uy[counter]=0.0;
     	}
