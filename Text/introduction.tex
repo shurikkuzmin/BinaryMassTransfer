@@ -103,7 +103,7 @@ $\ububble$ is the bubble velocity, and $D$ is the diffusion coefficient.
 %$1.4<\frac{\lbubble}{d_h}<6.3$, slug length $1<\frac{\lslug}{d_h}<3.2$,
 %hydrodynamic diameter $d_h = 400 \mathrm{\mu m}$.
 
-The understanding of mass transfer for the bubble train flow is not possible without deep understanding of hydrodynamic patterns.
+The understanding of mass transfer for the bubble train flow is not possible without a deep understanding of hydrodynamic patterns.
 There are several works studying the hydrodynamic properties of the bubble train flow, both
 experimental \cite{kreutzer-pressure-drop,cerro-space,cerro-bubble-train} and numerical \cite{wang-non-circular,kuzmin-binary3d,giavedoni-numerical,heil-threedim}.
  For the flow of long bubbles between parallel plates chosen here as the study case, it is indicated that  there exists a vortex 
@@ -134,14 +134,14 @@ where $t_{\mathrm{film}}=\frac{\lfilm}{\ububble}$ stands for the interaction tim
 
 Despite their simplicity, such analytical expressions work well for flows with low
 capillary numbers $Ca<0.1$ \cite{bercic-mass} where the bubble shape is
-symmetrical and can approximated with good precision. Moreover, because of the
+symmetrical and can be approximated with good precision. Moreover, because of the
 hydrodynamic pattern in the slug (i.e. presence of a vortex in slug), one can
-estimate the time for a fluid batch to travel the entire circumference.   However,
-with the increase of the capillary number the situation drastically changes -- the
+estimate the time for a fluid batch to travel the whole circumference.   However,
+with the increase of the capillary number the situation changes significantly -- the
 symmetrical bubble shape is lost and the bubble shape resembles a bullet \cite{kuzmin-binary2d}.
-For flows with $Ca>0.7$ there is also no vortex in the liquid slug anymore. The Higbie theory fails
-to estimate the mass transfer from bubble caps, which explains the need to turn to numerical simulations where all
-hydrodynamics fields as well as complex bubble shapes are taken into account.
+For flows with $Ca>0.7$ there is also no vortex in the liquid slug. In this case the Higbie theory fails
+to estimate the contribution from bubble caps, which explains the need to turn to numerical simulations where all
+hydrodynamic fields as well as complex bubble shapes are taken into account.
 
 Typical numerical studies of mass transfer
 \cite{kreutzer-overview,vanbaten-circular} do not consider the simulation of
@@ -150,7 +150,7 @@ follows:
 \begin{description}
  \item[I] The bubble shape is calculated either
 through analytical correlations \cite{bretherton} or experimental correlations
-\cite{cerro-bubble-train} without directly resolving the bubbles shapes through
+\cite{cerro-bubble-train} without directly resolving bubble shapes through
 multiphase simulations.  The expressions for bubble shapes are available only
 for flows with capillary number $Ca<0.1$.
   \item[II] Hydrodynamic fields
@@ -199,11 +199,11 @@ While it is clear that periodic boundary conditions can be employed for the calc
  of hydrodynamic fields, the same does not apply to the mass transfer coefficient
 simulations. Experimental correlations \cite{bercic-mass} show that the
 concentration along the streamwise direction changes exponentially with distance.
-Mass transfer simulations however, consider only one unit cell
-using periodic boundary conditions, and thus the same concentration at the inlet
-and at the outlet. The question how one unit cell simulations correspond to
-experimental measurements where concentration differences are measured at
- distances of at least of a few unit cells \cite{bercic-mass}. In
+Mass transfer simulations however, are made only for one unit cell
+using periodic boundary conditions with the same concentration at the inlet
+and at the outlet. The question is how one unit cell simulation corresponds to
+experimental measurements arises where concentration difference is measured at
+the distances of at least a few unit cells \cite{bercic-mass}. In
 other words one needs to understand how the discrete one unit cell simulation
 corresponds to the continuous picture in experiments where one does not
 distinguish discrete bubbles but takes measurements of concentration at different
@@ -224,8 +224,8 @@ disappears, i.e. $Ca>0.7$.
  \item[II] Validity of the inlet/outlet-averaged or domain-averaged concentrations as
 characteristic concentrations in the definition of the mass transfer
 coefficient.
- \item[III] Transition of the continuous experimental picture to
-numerical simulations with a few unit cells, the issue of correspondence
+ \item[III] Translation of the continuous experimental picture to
+numerical simulations of a few unit cells, the issue of correspondence
 between space averages (simulations \cite{vanbaten-circular}) and time averages (experiment).
 % \item[IV] Influence of the hydrodynamic pattern in flows with $Ca>0.7$ on the mass transfer.
 \end{description}
@@ -353,7 +353,7 @@ source to make all considerations above valid. For example, the expression
 \citet{bercic-mass}. However, one should be accurate with the definition of velocities because two
 different phases co-exist in the bubble train flow. Usually, one can take the velocity $U$ to be
 a bulk velocity or $U=\ugas+\uliq$, where $\ugas$ and $\uliq$ are liquid and gas
-superficial velocities, correspondingly. 
+superficial velocities, respectively. 
 
 With experimental measurements of concentration at different locations, the calculation
 of the mass transfer coefficient using the logarithmic function is straightforward.
