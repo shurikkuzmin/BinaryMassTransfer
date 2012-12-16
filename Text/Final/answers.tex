@@ -1,0 +1,112 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage{color}
+\usepackage{bm}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[normalem]{ulem}	% Part of the standard distribution
+
+
+\begin{document}
+It is our pleasure to address the reviewers' comments which improve readability of the manuscript.  Please consider our answers below. All corrections in the manuscript are marked by red.
+\section{Reviewer I}
+
+Question and Answers:
+
+\textbf{Comment:}
+This work extends previous numerical investigations of the authors on hydrodynamics of Taylor flow toward mass transfer. The underlying lattice Boltzmann method is carefully validated and 2D simulations are performed for a certain range of the capillary number while the Reynolds number is low. The numerical results are utilized for a critical comparative analysis of various concepts for evaluating the mass transfer coefficient. A general widely accepted predictive model for two-phase mass transfer in narrow channels is missing, and the present paper presents a valuable contribution to the critical evaluation of various approaches. The paper is of interest for the readers of CEJ and I recommend accepting it with a minor revision taking into account the issues listed below.
+
+\textbf{Answer:} Thank you for your comments.
+
+\textbf{Question:}  In the paper it is not clear which equations and quantities are dimensional and which not. This concerns in particular the lattice Boltzmann equations whose parameters are obviously dimensionless. These parameters are related to physical quantities which should be dimensional but are not; this leads to some confusion. For example on page 22 line 281 the diffusion coefficient D is related to omega- and on page 25 line 310 a value D=0.0185 is taken. Clearly, the physical diffusion coefficient should have dimension m**2/s. The same applies for the velocity which is always given without units, see e.g. Table 1. On the other hand on page 26 line 327 a physical bubble velocity Ububble,phys is introduced. This velocity should certainly have a dimension. To avoid confusion the authors may consider to mark dimensional quantities by supercript *.
+
+\textbf{Answer:}  We added superscript "LB" which stands for the lattice Boltzmann to distinguish non-dimensional numbers from physical ones in Section 3.1 where the lattice Boltzmann method is introduced. After Section 3.1 all simulations are done in the lattice Boltzmann system, which is non-dimensional. Hereafter, for the sake of simplicity we omit the index. Unless, it is specifically specified, all the quantities after Section 3.1 are non-dimensional (corresponding sentence was added). Thus, the quantities on pages 22 and 25 are non-dimensional. The quantity on page 26 is a physical quantity as it is absolutely rightly specified by referee (corresponding sentence is added).
+
+\textbf{Question:} The hydrodynamic simulations are performed for the five fixed combinations of Ca and Re listed in Table 1. In the mass transfer simulations these values stay fixed while the Peclet number Pe is varied by "scaling the velocity" (section 5.1). Changing Pe while keeping Re fixed means changing the Schmidt number Sc. The results for the mass transfer coefficient which are obtained from "velocity scaling" do thus represent different Schmidt numbers. This issue should be discussed in the paper and the respective values of Sc should be given (e.g. in Table 2). The authors should consider/discuss in how far the variation of Sc may have an influence on the profiles of the mass transfer coefficient displayed in Figs. 9, 10, 11.
+
+\textbf{Answer:} We added the values of the corresponding Schmidt numbers to Table 2. For Section 5.1, the diffusion is increased at the same time as velocity increases. Thus, the Schmidt number stays the same  $Sc\approx790$ for all simulations. The value was chosen corresponding to a dye with the low molecular diffusivity in order to avoid diffusion of the dye in the liquid slug and to study mass transfer related to hydrodynamics patterns. The corresponding sentences explaining the influence of the Schmidt number on the numerical simulations are added.
+
+\textbf{Question:} The authors may consider giving some information about the code. Is it an in-house code? Which hardware platform is used? What are typical CPU times?
+
+\textbf{Answer:} The following paragraph was added:
+\begin{quote}
+"The simulations were performed by using the in-house code with different modifications for different boundary conditions and in parallel. Typical mass transfer simulation (domain size is $3000\times202$ cells) for $10^{6}$ iterations takes around $24$ hours on Intel dual core CPU with the internal frequency $2$ GHz. All simulations (serial for one unit cell and parallel for a few unit cells simulation) are done using computers of WestGRID, high-performance clusters in Western Canada."
+\end{quote}
+
+\textbf{Question:} The unit numbers in the legends in Fig. 12, 13 and 14 should better start from 1 instead of 0.
+
+\textbf{Answer:} Thank you for pointing that. The figures are modified (as well Fig.15).
+
+\textbf{Question:} Figure 15 bottom: why are some data for "5 unit" zero?
+
+\textbf{Answer:} Thank you for pointing that. This was an additional line not related to the simulations. That was corrected.
+
+\textbf{Question:} In comparison to the large amount of results presented in the body of the paper, the conclusion section is rather short. It could certainly be improved. Line 552 in conclusions: the phrase "best accuracy achieved" should be put in context to a criterion used to judge on the accuracy.
+
+\textbf{Answer:} We rewrote a conclusion to outline better results and its accuracy.
+
+\textbf{Question:} 7. The authors may consider adding the following references:
+- Angeli\&Gavriilidis, Proceedings of the Institution of Mechanical Engineers Part C-Journal of Mechanical Engineering Science, 222 (2008) 737 (review paper on Taylor flow)
+- Keskin et al. AICHE J 56 (2010) 1693 (combined numerical and exp. study on Taylor flow hydrodynamics)
+- Onea et al. CES 64 (2009) 1416 and Kececi et al. Cat Today 147S (2009) S125 (qualitative numerical studies of mass transfer in Taylor flow)
+- In reference [15] the first name of the third author is not correct
+
+\textbf{Answer:} Thank you for excellent references. We added additional citations and corrected the reference.
+
+\section{Reviewer II}
+Questions and Answers:
+
+\textbf{Question:} In this manuscript the authors tested a number of procedures to calculate the effective mass transfer coefficient of a 2D bubble train traveling through the gap between two parallel plates using numerical simulations. The authors have obviously worked diligently and tested a couple of approaches. The conclusion that using periodic cell and domain-averaged concentration is sufficiently accurate should be reassuring. However, aside from this conclusion, there is not enough study of the parameter space (though the authors acknowledged that such a study will be conducted in the future), which, in my opinion, has limited the impact of this work.
+
+\textbf{Answer:}  Thank you for your comments. The amount of simulations we put into this work is large. Especially for the lattice Boltzmann method, being a relatively new method in comparison with all others, many concepts and guidelines of how to perform simulations are yet to be established. Moreover, authors (Onea, et al. Cat Today 147S 2009) who used the VOF method argue that there usage of one periodic cell combined with periodic boundary conditions is questionable. That's why we felt strongly that there is a space for the method papers combined with the guidelines for the lattice Boltzmann method.   
+ 
+\textbf{Question:} In many equations $U_{liq}$ and $U_{gas}$ are added together to form a velocity scale (line 171) to describe the effect of advection. However, in multiphase flows shouldn't there be some kind of weighting (e.g. liquid/gas holdup) applied? I do not think the physical meaning is clear when the two velocities are directly added.
+
+\textbf{Answer:} Thank you for your comment.  In the multiphase literature,  some parameters maps, for example flow patterns map, are indicated through superficial velocities of gas and liquid varying as X and Y axes. This is the reason why we wanted to comply. The connection of superficial velocities and gas holdup happens in the equation for the net velocity is $U=U_{\mathrm{liq}} + U_{\mathrm{gas}}=U_{\mathrm{liq,actual}}*\epsilon+U_{\mathrm{gas,actual}}$. However, the actual gas and liquid velocities are connected through the complicated relationship $U_{\mathrm{gas,actual}}=U_{\mathrm{liq,actual}}(Ca,\epsilon)$ as indicated in our previous work and largely depends on the geometry. We added corresponding sentences to the text.
+
+\textbf{Question:} Also, in some equations the authors added $U_{liq}$ and $U_{gas}$ together (eq. 11) and in others the authors added $U_{bubble}$ and $U_{gas}$ together (eq. 12). Why are these additions not consistent?
+
+\textbf{Answer:} Thank you for noticing it. The typo is corrected. We used macros and the error was in the definition and propagated to Eq.12 and 13.
+
+\textbf{Question:} The treatment of the free-slip BC in lattice Boltzmann is not at all clear. Aren't Un,F = Un,B and Ut,F = Ut,B going to lead to a no-slip BC? The implementation should be better explained. Some test cases or velocity field near the bubble surface should be presented to show that the free slip is indeed simulated.
+
+\textbf{Answer:} Thank you for corrections. We corrected the sign before normal component and added the better explanation in Appendix. In fact, the free slip is indeed simulated  - one can see the streamlines in the reference frame moving with the bubble. Those streamlines patterns coincide within $3\%$ with the streamlines already validated in our previous works \cite{kuzmin-binary2d,kuzmin-binary3d}.
+
+\textbf{Question:} Page 30, line 399: The author stated in some places that the velocity limit should be 0.1, but in other places 0.2 (page 31, line 403). What is the limit and why? Shouldn't velocity be limited by the Mach number in lattice Boltzmann simulations?
+
+\textbf{Answer:} We rewrote this paragraph with better explanations. We indicated that the safe velocity limit is $0.1$ across all velocities indicated in simulations (Capillary numbers). The referee is right about Mach number ($c_s=\frac{1}{\sqrt{3}}$) to be a limit for lattice Boltzmann simulations. However, this limit is theoretical and can be achieved only for the LB model without any boundary conditions or periodic boundary conditions \cite{kuzmin-stability-optimal}. In fact, with the presence of almost any boundary conditions this limit is deteriorated, especially with the variance of relaxation parameter $\omega$. Thus, numerical simulations are used to determine the stability limit. 
+
+\textbf{Question:} Figure 8: "Some lines are indistinguishable ..." I was not able to see any difference. Maybe using different colors or line styles or enlarged sections to tell them apart?
+
+\textbf{Answer:} We rewrote the caption text to the figure to explain better. All the lines are close to each other and that's the thought we want to deliver. If some lines are laying apart then the simulations produce different results, thus scaling procedure is not consistent. 
+
+\textbf{Question:} Page 51, line 57: The authors stated that the abnormal rise is due to the average concentration being too close to C*. Can this be shown by selectively plotting an example of average concentration / C* vs. cell units?
+
+\textbf{Answer:} We want to refer to Fig. 13, where you can see the average concentration and corresponding volumetric factors. One can see that the rise occurs exactly at the point where $C$ is close to $C^{*}$.
+
+\textbf{Question:} Section 5.7 - The comparison is effectively done at a Pe of 2644. Saying that the diffusivity is scaled five times is a confusing statement. Page 57, upper right figure: Why is this figure consistent with the other two? The lines clearly approach zero. Both the caption and the text (page 37) did not give any explanation.
+
+\textbf{Answer:} Thank you for improving readability of the article. We wanted to say that parameters indicated in Table 2  give $Pe=14041$. The velocity due to scaling is around $U\approx 0.1$ and that means to achieve such parameter we need to have extremely low (for lattice Boltzmann simulations) diffusion coefficient $D=U L / Pe$. The diffusion parameter $D$ is connected with the lattice Boltzmann relaxation parameter $\omega$. For low values of diffusion the relaxation parameter $\omega\approx 1.99$ which is close to theoretical stability limit $\omega_{crit}=2$. In simulations we see that simulations are unstable with the velocity pattern for $Ca=1.040$ and $Pe=14041$. This is the reason that we decrease Peclet number (or $Sc=794.84/5=158.96$)  by increasing diffusion parameter $D$ by $5$ times. The high $Pe$ and $Sc$ numbers simulations are difficult to perform not only with the LBM, but with the Volume of Fluid Method as well \cite{onea-mass}. The corresponding sentences with explanations are added. 
+
+The explanation for Fig. 15 is added as well. One needs to take a look at initial times of the top right picture, as the concentration of the unit reaches pretty fast the value of $1$, giving the mass transfer coefficient going to zero. In case of the logarithmic definition for the mass transfer coefficient (periodic boundary conditions) the value of the mass transfer coefficient goes to infinity for the same reason.
+
+\textbf{Question:} Table 1 - I did not find what $epsilon_gas$ means. Is it the gas holdup?
+
+\textbf{Answer:} That is right. We added text for that.
+
+\textbf{Question:} Eq. (5) is first mentioned on Page 4 but is not presented till page 10. I think it will be better to present it the first time it is used.
+
+\textbf{Answer:} We referred to the section.
+ 
+\textbf{Question:} Page 28 (line 372) and 29 (line 43) "Appendix Appendix B"
+
+\textbf{Answer:} The problem is not seen with our Latex compiler. Could be related to the editorial Latex compiler which produces double referral for the appendix.
+
+\textbf{Question:} Page 33 (line 462) Ca = 0.0097?
+
+\textbf{Answer:} Thank you. It is corrected.
+
+
+\bibliographystyle{unsrtnat}
+\bibliography{paper}
+
+\end{document}
