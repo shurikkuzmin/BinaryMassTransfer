@@ -549,10 +549,10 @@ def produce_new_image():
 
 
 if __name__=="__main__":
-    #file_dir="TweakingHydro2DRight/3/"
-    file_dir="ScalingPeclet/9/"    
+    file_dir="TweakingHydro2DRight/9/"
+    #file_dir="ScalingPeclet/9/"    
     #print file_dir
-    #produce_streamlines(file_dir)
+    produce_streamlines(file_dir)
     #get_velocities_compare()
     #get_velocities_compare_selection()
     #produce_one_streamline()
@@ -560,7 +560,7 @@ if __name__=="__main__":
     #produce_one_image(file_dir)    
     #produce_one_mass_image()    
     #produce_alexandra_image()    
-    produce_new_image()    
+    #produce_new_image()    
     pylab.show()
     #Ngl.end()
     
